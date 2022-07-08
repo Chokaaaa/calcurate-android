@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="btn_text_size">28sp</dimen>
+    <dimen name="btn_action_text_size">42sp</dimen>
+    <dimen name="btn_size">80dp</dimen>
+    <dimen name="btn_halfsize">40dp</dimen>
+    <dimen name="btn_margin">12dp</dimen>
+    <dimen name="btn_margin_half">6dp</dimen>
+    <dimen name="txt_main_size">50sp</dimen>
+</resources>
