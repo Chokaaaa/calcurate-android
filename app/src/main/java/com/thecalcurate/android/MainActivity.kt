@@ -1,11 +1,13 @@
 package com.thecalcurate.android
 
 import android.os.Bundle
+import android.util.Log
 import android.util.TypedValue
 import android.view.View
-import android.widget.Button
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import com.thecalcurate.android.viewmodel.CurrencyListViewModel
 import java.lang.Exception
 
 class MainActivity : AppCompatActivity() {
@@ -19,6 +21,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var b7: Button
     lateinit var b8: Button
     lateinit var b9: Button
+
     lateinit var b_equal: Button
     lateinit var b_multi: Button
     lateinit var b_divide: Button
@@ -27,8 +30,10 @@ class MainActivity : AppCompatActivity() {
     lateinit var b_percent: Button
     lateinit var b_clear: Button
 
-    //    private var b_dot: Button? = null
-    //    private var b_para2: Button? = null
+    lateinit var btn_main: ImageView
+    lateinit var btn_secondary1: ImageView
+    lateinit var btn_secondary2: ImageView
+
     lateinit var txvResult: TextView
 
     private val ADDITION = '+'
@@ -37,7 +42,6 @@ class MainActivity : AppCompatActivity() {
     private val DIVISION = '/'
     private val EQU = '='
 
-    //    private val EXTRA = '@'
     private val PERCENT = '%'
     private var SELECTED_ACTION = ' '
     private var isActionSelected = false
@@ -47,13 +51,33 @@ class MainActivity : AppCompatActivity() {
     private val onNumberClickListener = View.OnClickListener {
         val number = getNumberClicked(it.id)
         ifErrorOnOutput()
-//        exceedLength()
 
         if (isActionSelected || txvResult.text.toString() == "0") {
             txvResult.text = number.toString()
             isActionSelected = false
         } else {
             txvResult.text = txvResult.text.toString() + number
+        }
+    }
+
+    private val onActionClickListener = View.OnClickListener {
+        if (txvResult.text.isNotEmpty()) {
+            operation(getAction(it.id))
+            isActionSelected = true
+        }
+    }
+
+    private val onPercentageClickListener = View.OnClickListener {
+        if (txvResult.text.isNotEmpty()) {
+            if (!val1.isNaN()) {
+                val2 = txvResult.text.toString().toDouble()
+                val result = val1 * (0.01 * val2)
+                showResult(result)
+            } else {
+                val1 = .0
+            }
+            val result = val1 * (0.01 * val2)
+            showResult(result)
         }
     }
 
@@ -73,6 +97,18 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun getAction(viewId: Int): Char {
+        return when (viewId) {
+            R.id.btn_add -> ADDITION
+            R.id.btn_equal -> EQU
+            R.id.btn_divide -> DIVISION
+            R.id.btn_multi -> MULTIPLICATION
+            R.id.btn_sub -> SUBTRACTION
+            R.id.btn_percent -> PERCENT
+            else -> ' '
+        }
+    }
+
 
     private fun viewSetup() {
         b0 = findViewById(R.id.btn0)
@@ -85,23 +121,54 @@ class MainActivity : AppCompatActivity() {
         b7 = findViewById(R.id.btn7)
         b8 = findViewById(R.id.btn8)
         b9 = findViewById(R.id.btn9)
+
+        btn_main = findViewById(R.id.btn_main)
+        btn_secondary1 = findViewById(R.id.btn_secondary1)
+        btn_secondary2 = findViewById(R.id.btn_secondary2)
+
         b_equal = findViewById(R.id.btn_equal)
         b_multi = findViewById(R.id.btn_multi)
         b_divide = findViewById(R.id.btn_divide)
         b_add = findViewById(R.id.btn_add)
         b_sub = findViewById(R.id.btn_sub)
         b_clear = findViewById(R.id.btn_clear)
-//        b_dot = findViewById(R.id.btn_dot)
         b_percent = findViewById(R.id.btn_percent)
-//        b_para2 = findViewById(R.id.btn_para2)
         txvResult = findViewById(R.id.txtResult)
-//        t2 = findViewById(R.id.output)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
         viewSetup()
+
+        setCurrencyBtn()
+
+        var viewModel = CurrencyListViewModel(application, DataRepository())
+
+        viewModel.currencyList.observe(this) {
+            Log.i("MainAct", "listSize: " + it.size)
+//            adapter.setMovies(it)
+        }
+
+        viewModel.currencyRates.observe(this) {
+            Log.i("MainAct", "rate,Value: " + it.firstRate.Value)
+//            adapter.setMovies(it)
+        }
+
+        viewModel.errorMessage.observe(this) {
+            Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
+        }
+
+        viewModel.loading.observe(this, Observer {
+            if (it) {
+//                binding.progressDialog.visibility = View.VISIBLE
+            } else {
+//                binding.progressDialog.visibility = View.GONE
+            }
+        })
+
+        viewModel.getCurrencyList()
 
         b0.setOnClickListener(onNumberClickListener)
         b1.setOnClickListener(onNumberClickListener)
@@ -114,46 +181,12 @@ class MainActivity : AppCompatActivity() {
         b8.setOnClickListener(onNumberClickListener)
         b9.setOnClickListener(onNumberClickListener)
 
-//        b_dot.setOnClickListener {
-//            exceedLength()
-//            txvResult.text = txvResult.text.toString() + "."
-//        }
+        b_percent.setOnClickListener(onPercentageClickListener)
+        b_add.setOnClickListener(onActionClickListener)
+        b_sub.setOnClickListener(onActionClickListener)
+        b_multi.setOnClickListener(onActionClickListener)
+        b_divide.setOnClickListener(onActionClickListener)
 
-        b_percent.setOnClickListener {
-            if (txvResult.text.isNotEmpty()) {
-                operation(PERCENT)
-                isActionSelected = true
-//                txvResult.setText(null)
-            }
-        }
-        b_add.setOnClickListener {
-            if (txvResult.text.isNotEmpty()) {
-                operation(ADDITION)
-                isActionSelected = true
-//                txvResult.text = null
-            }
-        }
-        b_sub.setOnClickListener {
-            if (txvResult.text.isNotEmpty()) {
-                operation(SUBTRACTION)
-                isActionSelected = true
-//                txvResult.text = null
-            }
-        }
-        b_multi.setOnClickListener {
-            if (txvResult.text.isNotEmpty()) {
-                operation(MULTIPLICATION)
-                isActionSelected = true
-//                txvResult.text = null
-            }
-        }
-        b_divide.setOnClickListener {
-            if (txvResult.text.isNotEmpty()) {
-                operation(DIVISION)
-                isActionSelected = true
-//                txvResult.text = null
-            }
-        }
         b_equal.setOnClickListener {
             if (txvResult.text.isNotEmpty()) {
                 if (!val1.isNaN() && SELECTED_ACTION != ' ') {
@@ -171,17 +204,13 @@ class MainActivity : AppCompatActivity() {
             txvResult.text = "0"
         }
 
-//        b_para2.setOnClickListener {
-//            if (!t2.isEmpty() || !txvResult.text.toString().isEmpty()) {
-//                val1 = txvResult.text.toString().toDouble()
-//                ACTION = EXTRA
-//                t2 = "-" + txvResult.text.toString()
-//                txvResult.text = ""
-//            } else {
-//                t2 = "Error"
-//            }
-//        }
+        // viewModel.getCurrencyRates("USD", "AED", "KZT")
+    }
 
+    private fun setCurrencyBtn() {
+        btn_main.setImageResource(R.drawable.usd)
+        btn_secondary1.setImageResource(R.drawable.aed)
+        btn_secondary2.setImageResource(R.drawable.kzt)
     }
 
     private fun showResult(result: Double) {

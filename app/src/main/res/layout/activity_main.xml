@@ -11,6 +11,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="end"
+        android:text="0"
         android:textSize="@dimen/txt_main_size"
         app:layout_constraintBottom_toTopOf="@+id/clPain"
         app:layout_constraintEnd_toEndOf="parent"
@@ -52,33 +53,36 @@
             app:layout_constraintEnd_toEndOf="@id/btn_main"
             app:layout_constraintStart_toStartOf="@id/btn_main" />
 
-        <Button
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/btn_main"
-            style="@style/Widget.Button.Action"
+            style="@style/imageview_base"
             android:layout_width="@dimen/btn_size"
             android:layout_height="@dimen/btn_size"
             android:layout_marginBottom="@dimen/btn_margin"
-            android:text="/"
+            android:scaleType="centerCrop"
+            android:src="@drawable/usd"
             app:layout_constraintBottom_toTopOf="@id/btn7"
             app:layout_constraintEnd_toEndOf="@id/btn4" />
 
-        <Button
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/btn_secondary1"
-            style="@style/Widget.Button.Action"
+            style="@style/imageview_base"
             android:layout_width="@dimen/btn_size"
             android:layout_height="@dimen/btn_size"
             android:layout_marginBottom="@dimen/btn_margin"
-            android:text="/"
+            android:scaleType="centerCrop"
+            android:src="@drawable/aed"
             app:layout_constraintBottom_toTopOf="@id/btn8"
             app:layout_constraintEnd_toEndOf="@id/btn5" />
 
-        <Button
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/btn_secondary2"
-            style="@style/Widget.Button.Action"
+            style="@style/imageview_base"
             android:layout_width="@dimen/btn_size"
             android:layout_height="@dimen/btn_size"
             android:layout_marginBottom="@dimen/btn_margin"
-            android:text="/"
+            android:scaleType="centerCrop"
+            android:src="@drawable/kzt"
             app:layout_constraintBottom_toTopOf="@id/btn9"
             app:layout_constraintStart_toStartOf="@id/btn6" />
 
@@ -217,7 +221,7 @@
             android:layout_height="@dimen/btn_size"
             android:layout_marginStart="@dimen/btn_margin"
             android:layout_marginBottom="@dimen/btn_margin"
-            android:text="/"
+            android:text="\u00F7"
             app:layout_constraintBottom_toTopOf="@id/btn_multi"
             app:layout_constraintStart_toEndOf="@id/btn_secondary2" />
 
@@ -249,7 +253,7 @@
             android:layout_width="@dimen/btn_size"
             android:layout_height="@dimen/btn_size"
             android:layout_marginTop="@dimen/btn_margin"
-            android:text="AC"
+            android:foreground="@drawable/ac_large"
             android:textSize="24sp"
             app:layout_constraintStart_toStartOf="@id/btn6"
             app:layout_constraintTop_toBottomOf="@id/btn3" />

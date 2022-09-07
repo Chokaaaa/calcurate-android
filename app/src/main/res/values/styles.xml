@@ -17,6 +17,13 @@
 
     </style>
 
+    <style name="imageview_base">
+        <item name="android:width">@dimen/btn_size</item>
+        <item name="android:height">@dimen/btn_size</item>
+        <item name="shapeAppearanceOverlay">@style/ButtonRounded</item>
+
+    </style>
+
     <style name="Widget.Button" parent="button_base">
         <!--        <item name="android:shadowColor">#FF000000</item>-->
         <!--        <item name="android:shadowDx">0</item>-->
