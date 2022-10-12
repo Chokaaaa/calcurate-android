@@ -32,39 +32,31 @@ import kotlinx.coroutines.*
 
 class CurrencyListViewModel(application: Application, private val mRepository: DataRepository) :
     AndroidViewModel(application) {
-
+    val TAG = "CurrencyListViewModel"
     private val _errorMessage = MutableLiveData<String>()
     val errorMessage: LiveData<String>
         get() = _errorMessage
 
     var currencyList = MutableLiveData<List<CurrencyItem>>()
-    var currencyRates = MutableLiveData<SecondaryRates>()
+    var currencyRateList = MutableLiveData<List<Rate>>()
     val loading = MutableLiveData<Boolean>()
     var job: Job? = null
 
-    fun getCurrencyList() {
-        currencyList.postValue(mRepository.getCurrencyList())
-    }
-
     fun getCurrencyRates(baseCurrency: String, firstSecondary: String, secondSecondary: String) {
-
         job = CoroutineScope(Dispatchers.IO).launch {
             val response = mRepository.getCurrencyRates(baseCurrency)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
-                    var firstRate = response.body()!!.rates.filter {
-                        it.Code == firstSecondary
-                    }[0]
-                    var secondRate = response.body()!!.rates.filter {
-                        it.Code == secondSecondary
-                    }[0]
-
-                    currencyRates.postValue(
-                        SecondaryRates(
-                            Rate(firstRate.Code, firstRate.Value),
-                            Rate(secondRate.Code, secondRate.Value)
-                        )
-                    )
+                    val curList = mRepository.getCurrencyList()
+                    currencyList.postValue(
+                        curList.map { rate->
+                            var mappedList =response.body()!!.conversion_rates.filter {
+                                it.Code == rate.code
+                            }
+//                            Log.e(TAG, "getCurrencyRates rate.code: ${rate.code}, mappedList.isEmpty: ${mappedList.isEmpty()}")
+                            CurrencyItem(rate.name, rate.code, mappedList[0].Value)
+                        } )
+                    currencyRateList.postValue(response.body()!!.conversion_rates)
                     loading.value = false
                 } else {
                     onError("Error : ${response.message()} ")

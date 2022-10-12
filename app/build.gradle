@@ -35,28 +35,33 @@ android {
         dev {
             dimension 'environments'
             applicationIdSuffix '.dev'
-            buildConfigField "String", "API_URL", '"https://open.exchangerate-api.com"'
+            buildConfigField "String", "API_URL", '"https://v6.exchangerate-api.com"'
         }
         stg {
             dimension 'environments'
             applicationIdSuffix '.stg'
-            buildConfigField "String", "API_URL", '"https://open.exchangerate-api.com"'
+            buildConfigField "String", "API_URL", '"https://v6.exchangerate-api.com"'
         }
         prod {
             dimension 'environments'
-            buildConfigField "String", "API_URL", '"https://open.exchangerate-api.com"'
+            buildConfigField "String", "API_URL", '"https://v6.exchangerate-api.com"'
         }
+    }
+    dataBinding {
+        enabled true
     }
 }
 
 dependencies {
-    implementation 'androidx.appcompat:appcompat:1.5.0'
+    implementation 'androidx.appcompat:appcompat:1.5.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
     implementation 'com.google.android.material:material:1.6.1'
-    implementation 'com.google.android.gms:play-services-ads:21.1.0'
+    implementation 'com.google.android.gms:play-services-ads:21.2.0'
+    implementation("com.google.android.gms:play-services-cronet:18.0.1")
     implementation 'com.google.code.gson:gson:2.9.0'
 
+    implementation 'com.github.blongho:worldCountryData:1.5.4-alpha-1'
 
     //network
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'

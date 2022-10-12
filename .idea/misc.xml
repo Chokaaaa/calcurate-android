@@ -4,15 +4,24 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="../../../../layout/custom_preview.xml" value="0.1" />
+        <entry key="../../Library/Android/sdk/platforms/android-32/data/res/layout/activity_list_item.xml" value="0.12993920972644377" />
+        <entry key="app/src/main/res/drawable-v24/favourite.xml" value="0.127" />
         <entry key="app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/arithmatic_button.xml" value="0.166" />
+        <entry key="app/src/main/res/drawable/btn_main.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/button.xml" value="0.166" />
         <entry key="app/src/main/res/drawable/button_action.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/circle_button.xml" value="0.166" />
+        <entry key="app/src/main/res/drawable/favourite.xml" value="0.1435" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_search.xml" value="0.127" />
+        <entry key="app/src/main/res/drawable/ic_star.xml" value="0.127" />
+        <entry key="app/src/main/res/drawable/ic_star_border.xml" value="0.127" />
         <entry key="app/src/main/res/drawable/new_but.xml" value="0.166" />
         <entry key="app/src/main/res/drawable/ripple.xml" value="0.1" />
-        <entry key="app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.375" />
+        <entry key="app/src/main/res/layout/currency_item.xml" value="0.20924574209245742" />
+        <entry key="app/src/main/res/layout/currency_search.xml" value="0.17269076305220885" />
       </map>
     </option>
   </component>

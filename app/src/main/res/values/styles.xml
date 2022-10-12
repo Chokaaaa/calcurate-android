@@ -12,9 +12,10 @@
         <item name="android:textStyle">bold</item>
         <item name="android:width">@dimen/btn_size</item>
         <item name="android:height">@dimen/btn_size</item>
-        <item name="android:background">@drawable/circle_button</item>
+        <item name="android:maxWidth">@dimen/btn_size</item>
+        <item name="android:maxHeight">@dimen/btn_size</item>
+        <!--        <item name="android:background">@drawable/circle_button</item>-->
         <item name="shapeAppearanceOverlay">@style/ButtonRounded</item>
-
     </style>
 
     <style name="imageview_base">
@@ -24,12 +25,18 @@
 
     </style>
 
+    <style name="checkBoxStyle" parent="Base.Theme.AppCompat">
+        <item name="colorAccent">@color/yellow</item>
+<!--        <item name="android:textColorSecondary">UNCHECKEDCOLOR</item>-->
+    </style>
+
     <style name="Widget.Button" parent="button_base">
         <!--        <item name="android:shadowColor">#FF000000</item>-->
         <!--        <item name="android:shadowDx">0</item>-->
         <!--        <item name="android:shadowDy">-1</item>-->
         <!--        <item name="android:shadowRadius">0.2</item>-->
-        <item name="android:backgroundTint">@color/number_button</item>
+        <item name="android:backgroundTint">@color/number_button</item>\
+
     </style>
 
     <style name="Widget.Button.Action" parent="button_base">

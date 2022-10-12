@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <TextView
+    <com.thecalcurate.android.ui.MainTextView
         android:id="@+id/txtResult"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -59,6 +59,7 @@
             android:layout_width="@dimen/btn_size"
             android:layout_height="@dimen/btn_size"
             android:layout_marginBottom="@dimen/btn_margin"
+            android:foreground="@drawable/btn_main"
             android:scaleType="centerCrop"
             android:src="@drawable/usd"
             app:layout_constraintBottom_toTopOf="@id/btn7"
@@ -70,6 +71,7 @@
             android:layout_width="@dimen/btn_size"
             android:layout_height="@dimen/btn_size"
             android:layout_marginBottom="@dimen/btn_margin"
+            android:foreground="@drawable/btn_main"
             android:scaleType="centerCrop"
             android:src="@drawable/aed"
             app:layout_constraintBottom_toTopOf="@id/btn8"
@@ -81,76 +83,83 @@
             android:layout_width="@dimen/btn_size"
             android:layout_height="@dimen/btn_size"
             android:layout_marginBottom="@dimen/btn_margin"
+            android:foreground="@drawable/btn_main"
             android:scaleType="centerCrop"
             android:src="@drawable/kzt"
             app:layout_constraintBottom_toTopOf="@id/btn9"
             app:layout_constraintStart_toStartOf="@id/btn6" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn1"
             style="@style/Widget.Button"
             android:layout_width="@dimen/btn_size"
             android:layout_height="@dimen/btn_size"
             android:layout_marginTop="@dimen/btn_margin"
             android:text="1"
+            app:cornerRadius="@dimen/btn_halfsize"
             app:layout_constraintEnd_toEndOf="@id/btn4"
             app:layout_constraintTop_toBottomOf="@id/btn5" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn2"
             style="@style/Widget.Button"
             android:layout_width="@dimen/btn_size"
             android:layout_height="@dimen/btn_size"
             android:layout_marginTop="@dimen/btn_margin"
             android:text="2"
+            app:cornerRadius="@dimen/btn_halfsize"
             app:layout_constraintEnd_toEndOf="@id/btn5"
             app:layout_constraintTop_toBottomOf="@id/btn5" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn3"
             style="@style/Widget.Button"
             android:layout_width="@dimen/btn_size"
             android:layout_height="@dimen/btn_size"
-
             android:layout_marginTop="@dimen/btn_margin"
+
             android:text="3"
+            app:cornerRadius="@dimen/btn_halfsize"
             app:layout_constraintStart_toStartOf="@id/btn6"
             app:layout_constraintTop_toBottomOf="@id/btn6" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn4"
             style="@style/Widget.Button"
             android:layout_width="@dimen/btn_size"
             android:layout_height="@dimen/btn_size"
             android:layout_margin="@dimen/btn_margin"
             android:text="4"
+            app:cornerRadius="@dimen/btn_halfsize"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/btn5"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn5"
             style="@style/Widget.Button"
             android:layout_width="@dimen/btn_size"
             android:layout_height="@dimen/btn_size"
             android:layout_margin="@dimen/btn_margin_half"
             android:text="5"
+            app:cornerRadius="@dimen/btn_halfsize"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/glV"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn6"
             style="@style/Widget.Button"
             android:layout_width="@dimen/btn_size"
             android:layout_height="@dimen/btn_size"
             android:layout_margin="@dimen/btn_margin_half"
             android:text="6"
+            app:cornerRadius="@dimen/btn_halfsize"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/glV"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn7"
             style="@style/Widget.Button"
             android:layout_width="@dimen/btn_size"
@@ -160,37 +169,40 @@
             app:layout_constraintBottom_toTopOf="@id/btn5"
             app:layout_constraintEnd_toEndOf="@id/btn4" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn8"
             style="@style/Widget.Button"
             android:layout_width="@dimen/btn_size"
             android:layout_height="@dimen/btn_size"
             android:layout_marginBottom="@dimen/btn_margin"
             android:text="8"
+            app:cornerRadius="@dimen/btn_halfsize"
             app:layout_constraintBottom_toTopOf="@id/btn5"
             app:layout_constraintEnd_toEndOf="@id/btn5" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn9"
             style="@style/Widget.Button"
             android:layout_width="@dimen/btn_size"
             android:layout_height="@dimen/btn_size"
             android:layout_marginBottom="@dimen/btn_margin"
             android:text="9"
+            app:cornerRadius="@dimen/btn_halfsize"
             app:layout_constraintBottom_toTopOf="@id/btn5"
             app:layout_constraintStart_toStartOf="@id/btn6" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn0"
             style="@style/Widget.Button"
             android:layout_width="@dimen/btn_size"
             android:layout_height="@dimen/btn_size"
             android:layout_marginTop="@dimen/btn_margin"
             android:text="0"
+            app:cornerRadius="@dimen/btn_halfsize"
             app:layout_constraintEnd_toEndOf="@id/btn4"
             app:layout_constraintTop_toBottomOf="@id/btn2" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_equal"
             style="@style/Widget.Button.Action"
             android:layout_width="@dimen/btn_size"
@@ -200,10 +212,11 @@
             android:text="="
             android:textColor="#ffff"
             android:textSize="28sp"
+            app:cornerRadius="@dimen/btn_halfsize"
             app:layout_constraintStart_toEndOf="@id/btn6"
             app:layout_constraintTop_toBottomOf="@id/btn3" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_multi"
             style="@style/Widget.Button.Action"
             android:layout_width="@dimen/btn_size"
@@ -211,10 +224,11 @@
             android:layout_marginStart="@dimen/btn_margin"
             android:layout_marginBottom="@dimen/btn_margin"
             android:text="×"
+            app:cornerRadius="@dimen/btn_halfsize"
             app:layout_constraintBottom_toTopOf="@id/btn5"
             app:layout_constraintStart_toEndOf="@id/btn9" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_divide"
             style="@style/Widget.Button.Action"
             android:layout_width="@dimen/btn_size"
@@ -222,10 +236,11 @@
             android:layout_marginStart="@dimen/btn_margin"
             android:layout_marginBottom="@dimen/btn_margin"
             android:text="\u00F7"
+            app:cornerRadius="@dimen/btn_halfsize"
             app:layout_constraintBottom_toTopOf="@id/btn_multi"
             app:layout_constraintStart_toEndOf="@id/btn_secondary2" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_add"
             style="@style/Widget.Button.Action"
             android:layout_width="@dimen/btn_size"
@@ -233,38 +248,44 @@
             android:layout_marginStart="@dimen/btn_margin"
             android:layout_marginTop="@dimen/btn_margin"
             android:text="+"
+            app:cornerRadius="@dimen/btn_halfsize"
             app:layout_constraintStart_toEndOf="@id/btn6"
             app:layout_constraintTop_toBottomOf="@id/btn_sub" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_sub"
             style="@style/Widget.Button.Action"
             android:layout_width="@dimen/btn_size"
             android:layout_height="@dimen/btn_size"
             android:layout_marginStart="@dimen/btn_margin"
             android:text="-"
+            app:cornerRadius="@dimen/btn_halfsize"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/btn6"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_clear"
             style="@style/Widget.Button.Action"
             android:layout_width="@dimen/btn_size"
             android:layout_height="@dimen/btn_size"
             android:layout_marginTop="@dimen/btn_margin"
-            android:foreground="@drawable/ac_large"
-            android:textSize="24sp"
+            android:padding="0dp"
+            android:text="AC"
+            android:textSize="34sp"
+            android:textStyle="normal"
+            app:cornerRadius="@dimen/btn_halfsize"
             app:layout_constraintStart_toStartOf="@id/btn6"
             app:layout_constraintTop_toBottomOf="@id/btn3" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_percent"
             style="@style/button_base"
             android:layout_width="@dimen/btn_size"
             android:layout_height="@dimen/btn_size"
             android:layout_marginTop="@dimen/btn_margin"
             android:text="%"
+            app:cornerRadius="@dimen/btn_halfsize"
             app:layout_constraintEnd_toEndOf="@id/btn5"
             app:layout_constraintTop_toBottomOf="@id/btn2" />
 

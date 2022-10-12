@@ -2,6 +2,7 @@ package com.thecalcurate.android
 
 import android.content.Context
 import android.content.res.Resources
+import android.util.Log
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.LiveData
 import com.google.gson.Gson
@@ -18,16 +19,16 @@ import java.util.*
 /**
  * Repository handling the work with products and comments.
  */
-class DataRepository() {
-    private val mObservableCurrency: MediatorLiveData<List<Currency>>
+class DataRepository {
+//    private val mObservableCurrency: MediatorLiveData<List<Currency>>
 
     var network = Network
 
     /**
      * Get the list of products from the database and get notified when the data changes.
      */
-    val currencyList: LiveData<List<Currency>>
-        get() = mObservableCurrency
+//    val currencyList: LiveData<List<Currency>>
+//        get() = mObservableCurrency
 
     companion object {
         private var sInstance: DataRepository? = null
@@ -45,7 +46,7 @@ class DataRepository() {
     }
 
     init {
-        mObservableCurrency = MediatorLiveData()
+//        mObservableCurrency = MediatorLiveData()
     }
 
 
@@ -65,6 +66,8 @@ class DataRepository() {
     }
 
     suspend fun getCurrencyRates(baseUrl: String): Response<CurrencyListResponse> {
+        Log.e("DataRepository", "getCurrencyRates baseUrl: ${baseUrl}")
+
         return network.getCurrencyList(baseUrl)
     }
 }

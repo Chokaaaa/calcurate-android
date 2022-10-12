@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">Calcura+e</string>
     <string name="txt_main">MAIN</string>
+    <string name="search_your_currency">Search your currency</string>
+    <string name="favorites">Favorites</string>
+    <string name="currencies">Currencies</string>
+    <string name="rates">Rates</string>
+    <string name="saved_favourites_key">myfavourites</string>
+    <string name="preference_file">com.thecalcurate.android.preference</string>
 </resources>
