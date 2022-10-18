@@ -1,20 +1,28 @@
 package com.thecalcurate.android
 
+import android.content.Context
+import android.content.Intent
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.*
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
 import com.blongho.country_data.World
 import com.thecalcurate.android.model.CurrencyItem
 import com.thecalcurate.android.ui.CurrencyDialog
 import com.thecalcurate.android.ui.CurrencyRecyclerViewAdapter
-import com.thecalcurate.android.ui.CurrencySwipeListener
+import com.thecalcurate.android.ui.OnSwipeListener
 import com.thecalcurate.android.ui.MainTextView
 import com.thecalcurate.android.viewmodel.CurrencyListViewModel
-import java.lang.Exception
+
 
 class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
     val TAG = "MainActivity"
@@ -62,29 +70,44 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
     var secondarySelectedId = 0
 
     lateinit var viewModel: CurrencyListViewModel
+    lateinit var favList: MutableList<String>
+    var mp: MediaPlayer? = null
+    val UP = 1
+    val DOWN = 2
 
     var itemClickListener = object : CurrencyRecyclerViewAdapter.ItemClickListener {
         override fun onItemClick(view: View?, position: Int) {
             var curItem = view?.tag as CurrencyItem
-            if (longClickedId == R.id.btn_main) {
-                btn_main.tag = curItem.code
-                viewModel.getCurrencyRates(
-                    curItem.code,
-                    btn_secondary1.tag as String,
-                    btn_secondary2.tag as String
-                )
-                val resourceId = getResource(curItem.code)
-                btn_main.setImageResource(resourceId)
-            } else if (longClickedId == R.id.btn_secondary1) {
-                btn_secondary1.tag = curItem.code
-                val resourceId = getResource(curItem.code)
-                btn_secondary1.setImageResource(resourceId)
-            } else {
-                btn_secondary2.tag = curItem.code
-                val resourceId = getResource(curItem.code)
-                btn_secondary2.setImageResource(resourceId)
+            when (longClickedId) {
+                R.id.btn_main -> setCur(btn_main, curItem.code)
+                R.id.btn_secondary1 -> setCur(btn_secondary1, curItem.code)
+                R.id.btn_secondary2 -> setCur(btn_secondary2, curItem.code)
             }
         }
+    }
+
+    private fun fetchCurrencyRates(type: Int) {
+        val mainCurrencyCode = when (type) {
+            viewModel.MAIN -> btn_main.getTag(R.id.code_tag_name).toString()
+            viewModel.SEC1 -> btn_secondary1.getTag(R.id.code_tag_name).toString()
+            viewModel.SEC2 -> btn_secondary2.getTag(R.id.code_tag_name).toString()
+            else -> btn_main.getTag(R.id.code_tag_name).toString()
+        }
+        viewModel.getCurrencyRates(mainCurrencyCode, type)
+    }
+
+    fun setCur(imageView: ImageView, code: String) {
+        val resourceId = getResource(code)
+        imageView.setImageResource(resourceId)
+        imageView.setTag(R.id.code_tag_name, code)
+        imageView.setTag(R.id.resid_tag_name, resourceId)
+        val type = when (imageView.id) {
+            R.id.btn_main -> viewModel.MAIN
+            R.id.btn_secondary1 -> viewModel.SEC1
+            R.id.btn_secondary2 -> viewModel.SEC2
+            else -> viewModel.MAIN
+        }
+        fetchCurrencyRates(type)
     }
 
     var newFragment = CurrencyDialog(itemClickListener)
@@ -127,6 +150,7 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
         } else {
             txvResult.text = txvResult.text.toString() + number
         }
+        play()
     }
 
     private val onActionClickListener = View.OnClickListener {
@@ -134,6 +158,7 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
             operation(getAction(it.id))
             isActionSelected = true
         }
+        play()
     }
 
     private val onPercentageClickListener = View.OnClickListener {
@@ -148,6 +173,7 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
             val result = val1 * (0.01 * val2)
             showResult(result)
         }
+        play()
     }
 
     private val onEqualClickListener = View.OnClickListener {
@@ -160,6 +186,7 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
                 isActionSelected = true
             }
         }
+        play()
     }
     private val onClearClickListener = View.OnClickListener {
         val1 = Double.NaN
@@ -169,6 +196,7 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
         savedMainVal = .0
         unselectSecondary()
         secondarySelectedId = 0
+        play()
     }
 
 
@@ -199,7 +227,7 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
             if (secondarySelectedId != it.id) {
                 secondarySelectedId = it.id
                 it.isSelected = true
-                convertToSec(it.tag.toString())
+                convertToSec(it.getTag(R.id.code_tag_name).toString())
 
             } else if (secondarySelectedId == it.id) {
                 secondarySelectedId = 0
@@ -210,17 +238,19 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
 
     private fun convertToSec(secCode: String) {
 //        Log.e(TAG, "convertToSec: $secCode")
-        if (viewModel.currencyRateList.value != null) {
-            val rate = viewModel.currencyRateList.value!!.filter { it.Code == secCode }[0].Value
+        if (viewModel.currencyMainList.value != null) {
+            val rate = viewModel.currencyMainList.value!!.filter { it.code == secCode }[0].rate
             val converted = savedMainVal * rate
 //        Log.e(TAG, "savedMainVal: $savedMainVal, rate: $rate, converted: $converted")
             txvResult.setResult(converted)
+            val1 = txvResult.text.toString().toDouble()
         }
     }
 
     private fun convertBack() {
         Log.e(TAG, "convertBack savedMainVal: $savedMainVal")
         txvResult.setResult(savedMainVal)
+        val1 = txvResult.text.toString().toDouble()
     }
 
     private fun getNumberClicked(viewId: Int): Int {
@@ -253,10 +283,11 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
 
 
     private fun viewSetup() {
+        txvResult = findViewById(R.id.txtResult)
+
         btn_main = findViewById(R.id.btn_main)
         btn_secondary1 = findViewById(R.id.btn_secondary1)
         btn_secondary2 = findViewById(R.id.btn_secondary2)
-
 
         b0 = findViewById(R.id.btn0)
         b1 = findViewById(R.id.btn1)
@@ -276,7 +307,6 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
         b_sub = findViewById(R.id.btn_sub)
         b_clear = findViewById(R.id.btn_clear)
         b_percent = findViewById(R.id.btn_percent)
-        txvResult = findViewById(R.id.txtResult)
     }
 
 
@@ -292,11 +322,6 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
 
         viewModel = CurrencyListViewModel(application, DataRepository())
 
-        viewModel.currencyList.observe(this) {
-            Log.e("MainAct", "listSize: " + it.size)
-//            adapter.setMovies(it)
-        }
-
         viewModel.errorMessage.observe(this) {
             Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
         }
@@ -309,19 +334,9 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
             }
         })
 
-        btn_main.tag = "USD"
-        btn_secondary1.tag = "AED"
-        btn_secondary2.tag = "KZT"
-
-        viewModel.getCurrencyRates("USD", "AED", "KZT")
-
-        btn_main.setImageResource(R.drawable.usd)
-        btn_secondary1.setImageResource(R.drawable.aed)
-        btn_secondary2.setImageResource(R.drawable.kzt)
-
-//        btn_main.setOnLongClickListener(longClickListener)
-        btn_secondary1.setOnLongClickListener(longClickListener)
-        btn_secondary2.setOnLongClickListener(longClickListener)
+        setCur(btn_main, "USD")
+        setCur(btn_secondary1, "AED")
+        setCur(btn_secondary2, "KZT")
 
         btn_main.setOnClickListener(onMainClickListener)
         btn_secondary1.setOnClickListener(onSecondaryClickListener)
@@ -347,39 +362,70 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
         b_equal.setOnClickListener(onEqualClickListener)
         b_clear.setOnClickListener(onClearClickListener)
 
+
+        var sharedPref =
+            getSharedPreferences(getString(R.string.preference_file), Context.MODE_PRIVATE)
+        val favourites = sharedPref?.getString(getString(R.string.saved_favourites_key), "") ?: ""
+        val isTutorialViewed =
+            sharedPref?.getBoolean(getString(R.string.saved_is_totorial_key), false) ?: false
+
+        favList = favourites.split(",").filter { it != "" }.toMutableList()
+
+        if (!isTutorialViewed) {
+            with(sharedPref!!.edit()) {
+                putBoolean(getString(R.string.saved_is_totorial_key), true)
+                commit()
+            }
+            val intent = Intent(this, TutorialActivity::class.java)
+            startActivity(intent)
+        }
+        mp = MediaPlayer.create(this, R.raw.sound)
+
     }
 
-    private val longClickListener = View.OnLongClickListener {
-        Log.e("MainActivity", "View On Long Click!!!!")
-        longClickedId = it.id
-        showDialog()
-        false
+    fun play() {
+        try {
+            if (mp!!.isPlaying) {
+                mp!!.stop()
+                mp!!.release()
+                mp = MediaPlayer.create(this, R.raw.sound)
+            }
+            mp!!.start()
+        } catch (e: java.lang.Exception) {
+            e.printStackTrace()
+        }
     }
 
     private fun setCurrencyBtn() {
-        btn_main.setOnTouchListener(object : CurrencySwipeListener(this) {
-            override fun onSwipeRight(){
+        txvResult.setOnTouchListener(object : OnSwipeListener(this) {
+            override fun onSwipeRight() {
                 super.onSwipeRight()
-                Log.e("MainActivity", "onSwipeRight")
-
+                Log.e("MainActivity", "txvResult onSwipeRight")
+                txvResult.swipe()
             }
 
             override fun onSwipeLeft() {
                 super.onSwipeLeft()
-                Log.e("MainActivity", "onSwipeLeft")
+                Log.e("MainActivity", "txvResult onSwipeLeft")
+                txvResult.swipe()
+            }
+        })
 
+        btn_main.setOnTouchListener(object : OnSwipeListener(this) {
+            override fun onSwipeRight() {
+                super.onSwipeRight()
+                switchMain(secondarySelectedId)
             }
 
-            override fun onSwipeTop(){
+            override fun onSwipeTop() {
                 super.onSwipeTop()
-                Log.e("MainActivity", "onSwipeTop")
-
+                scrollCurrency(btn_main, UP)
             }
 
             override fun onSwipeBottom() {
                 super.onSwipeBottom()
                 Log.e("MainActivity", "onSwipeBottom")
-
+                scrollCurrency(btn_main, DOWN)
             }
 
             override fun onLongPress() {
@@ -389,7 +435,119 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
                 showDialog()
             }
         })
+        btn_secondary1.setOnTouchListener(object : OnSwipeListener(this) {
 
+            override fun onSwipeLeft() {
+                super.onSwipeLeft()
+                switchMain(R.id.btn_secondary1)
+            }
+
+            override fun onSwipeTop() {
+                super.onSwipeTop()
+                Log.e("MainActivity", "onSwipeTop")
+                scrollCurrency(btn_secondary1, UP)
+            }
+
+            override fun onSwipeBottom() {
+                super.onSwipeBottom()
+                Log.e("MainActivity", "onSwipeBottom")
+                scrollCurrency(btn_secondary1, DOWN)
+            }
+
+            override fun onLongPress() {
+                super.onLongPress()
+                Log.e("MainActivity", "View On Long Click!!!!")
+                longClickedId = R.id.btn_secondary1
+                showDialog()
+            }
+        })
+        btn_secondary2.setOnTouchListener(object : OnSwipeListener(this) {
+
+            override fun onSwipeLeft() {
+                super.onSwipeLeft()
+                switchMain(R.id.btn_secondary2)
+            }
+
+            override fun onSwipeTop() {
+                super.onSwipeTop()
+                Log.e("MainActivity", "onSwipeTop")
+                scrollCurrency(btn_secondary2, UP)
+            }
+
+            override fun onSwipeBottom() {
+                super.onSwipeBottom()
+                Log.e("MainActivity", "onSwipeBottom")
+                scrollCurrency(btn_secondary2, DOWN)
+            }
+
+            override fun onLongPress() {
+                super.onLongPress()
+                Log.e("MainActivity", "View On Long Click!!!!")
+                longClickedId = R.id.btn_secondary2
+                showDialog()
+            }
+        })
+    }
+
+    private fun scrollCurrency(btn: ImageView, scrollType: Int) {
+        var sharedPref =
+            getSharedPreferences(getString(R.string.preference_file), Context.MODE_PRIVATE)
+        val favourites = sharedPref?.getString(getString(R.string.saved_favourites_key), "") ?: ""
+
+        favList = favourites.split(",").filter { it != "" }.toMutableList()
+
+        if (favList.isNotEmpty()) {
+            val code = btn.getTag(R.id.code_tag_name)
+            var index = favList.indexOf(code)
+            val toCode =
+                if (scrollType == DOWN) {
+                    favList[if (index == favList.size - 1) 0 else index + 1]
+                } else {
+                    favList[if (index == 0) favList.size - 1 else index - 1]
+                }
+            setCur(btn, toCode)
+            if (btn.id != R.id.btn_main && secondarySelectedId != 0) {
+                convertToSec(toCode)
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Hide the status bar.
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
+        // Remember that you should never show the action bar if the
+        // status bar is hidden, so hide that too if necessary.
+        actionBar?.hide()
+        hideSystemUI()
+    }
+
+    private fun hideSystemUI() {
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        WindowInsetsControllerCompat(window, window.decorView).let { controller ->
+            controller.hide(WindowInsetsCompat.Type.systemBars())
+            controller.systemBarsBehavior =
+                WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        }
+    }
+
+    private fun switchMain(secId: Int = 0) {
+        if (secId != 0 && isMainSelected) {
+            val mainCurrencyCode = btn_main.getTag(R.id.code_tag_name) as String
+            if (secId == R.id.btn_secondary1) {
+                val sCurrencyCode = btn_secondary1.getTag(R.id.code_tag_name) as String
+                setCur(btn_main, sCurrencyCode)
+                setCur(btn_secondary1, mainCurrencyCode)
+            } else {
+                val sCurrencyCode = btn_secondary2.getTag(R.id.code_tag_name) as String
+                setCur(btn_main, sCurrencyCode)
+                setCur(btn_secondary2, mainCurrencyCode)
+            }
+            if (secondarySelectedId != 0) {
+                unselectSecondary()
+                secondarySelectedId = 0
+            }
+        }
     }
 
     private fun showResult(result: Double) {
@@ -445,7 +603,23 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
     }
 
     private fun showDialog() {
-        newFragment.setList(viewModel.currencyList)
+        val sharedPref = getSharedPreferences(
+            getString(R.string.preference_file),
+            Context.MODE_PRIVATE
+        )
+        var favourites = sharedPref?.getString(getString(R.string.saved_favourites_key), "") ?: ""
+        favList = favourites.split(",").filter { it != "" }.toMutableList()
+        var list = when (longClickedId) {
+            R.id.btn_main -> viewModel.currencyMainList.value?.toMutableList()
+            R.id.btn_secondary1 -> viewModel.currencySec1List.value?.toMutableList()
+            R.id.btn_secondary2 -> viewModel.currencySec2List.value?.toMutableList()
+            else -> viewModel.currencyMainList.value?.toMutableList()
+        }
+
+        list!!.find { favList.contains(it.code) }?.isFavorite2 = true
+        list!!.sortBy { !it.isFavorite2 }
+
+        newFragment.list = list
         newFragment.show(supportFragmentManager, "dialog")
     }
 }

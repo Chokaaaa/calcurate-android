@@ -10,13 +10,17 @@
         android:id="@+id/txtResult"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:gravity="end"
+        android:gravity="end|center_vertical"
+        android:lines="1"
         android:text="0"
         android:textSize="@dimen/txt_main_size"
+        app:autoSizeMaxTextSize="@dimen/txt_main_size"
+        app:autoSizeStepGranularity="1sp"
+        app:autoSizeTextType="uniform"
         app:layout_constraintBottom_toTopOf="@+id/clPain"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:text="100000000" />
+        tools:text="1000000" />
 
     <!--        app:layout_constraintBottom_toTopOf="@id/adView"-->
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -46,7 +50,7 @@
             android:id="@+id/txvMain"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="4dp"
             android:text="@string/txt_main"
             android:textColor="@color/white"
             app:layout_constraintBottom_toTopOf="@id/btn_main"
@@ -56,38 +60,47 @@
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/btn_main"
             style="@style/imageview_base"
-            android:layout_width="@dimen/btn_size"
-            android:layout_height="@dimen/btn_size"
-            android:layout_marginBottom="@dimen/btn_margin"
-            android:foreground="@drawable/btn_main"
+            android:layout_width="@dimen/btn_currency_size"
+            android:layout_height="@dimen/btn_currency_size"
+            android:background="@drawable/btn_background"
+            android:foreground="@drawable/btn_foreground"
+            android:padding="@dimen/btn_currency_padding"
             android:scaleType="centerCrop"
             android:src="@drawable/usd"
-            app:layout_constraintBottom_toTopOf="@id/btn7"
-            app:layout_constraintEnd_toEndOf="@id/btn4" />
+            app:layout_constraintBottom_toBottomOf="@id/btn_divide"
+            app:layout_constraintEnd_toEndOf="@id/btn4"
+            app:layout_constraintStart_toStartOf="@id/btn4"
+            app:layout_constraintTop_toTopOf="@id/btn_divide" />
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/btn_secondary1"
             style="@style/imageview_base"
-            android:layout_width="@dimen/btn_size"
-            android:layout_height="@dimen/btn_size"
-            android:layout_marginBottom="@dimen/btn_margin"
-            android:foreground="@drawable/btn_main"
+            android:layout_width="@dimen/btn_currency_size"
+            android:layout_height="@dimen/btn_currency_size"
+            android:background="@drawable/btn_background_sec"
+            android:foreground="@drawable/btn_foreground"
+            android:padding="@dimen/btn_currency_padding"
             android:scaleType="centerCrop"
             android:src="@drawable/aed"
-            app:layout_constraintBottom_toTopOf="@id/btn8"
-            app:layout_constraintEnd_toEndOf="@id/btn5" />
+            app:layout_constraintBottom_toBottomOf="@id/btn_divide"
+            app:layout_constraintEnd_toEndOf="@id/btn5"
+            app:layout_constraintStart_toStartOf="@id/btn5"
+            app:layout_constraintTop_toTopOf="@id/btn_divide" />
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/btn_secondary2"
             style="@style/imageview_base"
-            android:layout_width="@dimen/btn_size"
-            android:layout_height="@dimen/btn_size"
-            android:layout_marginBottom="@dimen/btn_margin"
-            android:foreground="@drawable/btn_main"
+            android:layout_width="@dimen/btn_currency_size"
+            android:layout_height="@dimen/btn_currency_size"
+            android:background="@drawable/btn_background_sec"
+            android:foreground="@drawable/btn_foreground"
+            android:padding="@dimen/btn_currency_padding"
             android:scaleType="centerCrop"
             android:src="@drawable/kzt"
-            app:layout_constraintBottom_toTopOf="@id/btn9"
-            app:layout_constraintStart_toStartOf="@id/btn6" />
+            app:layout_constraintBottom_toBottomOf="@id/btn_divide"
+            app:layout_constraintEnd_toEndOf="@id/btn6"
+            app:layout_constraintStart_toStartOf="@id/btn6"
+            app:layout_constraintTop_toTopOf="@id/btn_divide" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn1"
@@ -159,9 +172,10 @@
             app:layout_constraintStart_toEndOf="@id/glV"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.google.android.material.button.MaterialButton
+
+        <Button
             android:id="@+id/btn7"
-            style="@style/Widget.Button"
+            style="@style/Widget.Button2"
             android:layout_width="@dimen/btn_size"
             android:layout_height="@dimen/btn_size"
             android:layout_marginBottom="@dimen/btn_margin"
@@ -238,9 +252,9 @@
             android:text="\u00F7"
             app:cornerRadius="@dimen/btn_halfsize"
             app:layout_constraintBottom_toTopOf="@id/btn_multi"
-            app:layout_constraintStart_toEndOf="@id/btn_secondary2" />
+            app:layout_constraintStart_toEndOf="@id/btn9" />
 
-        <com.google.android.material.button.MaterialButton
+        <Button
             android:id="@+id/btn_add"
             style="@style/Widget.Button.Action"
             android:layout_width="@dimen/btn_size"
@@ -248,7 +262,6 @@
             android:layout_marginStart="@dimen/btn_margin"
             android:layout_marginTop="@dimen/btn_margin"
             android:text="+"
-            app:cornerRadius="@dimen/btn_halfsize"
             app:layout_constraintStart_toEndOf="@id/btn6"
             app:layout_constraintTop_toBottomOf="@id/btn_sub" />
 

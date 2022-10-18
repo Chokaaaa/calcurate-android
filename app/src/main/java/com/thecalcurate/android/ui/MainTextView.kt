@@ -25,13 +25,29 @@ class MainTextView @JvmOverloads constructor(
     }
 
     fun getResult(): Double {
-        var txt = text.replace(Regex(","),"")
+        var txt = text.replace(Regex(","), "")
         return txt.toDouble()
     }
 
     // Whether value if a double or not
     private fun ifReallyDecimal(result: Double): Boolean {
         return result == result.toInt().toDouble()
+    }
+
+    fun swipe() {
+        var result = text.toString().toDouble()
+        var curText = if (!ifReallyDecimal(result)) {
+            val roundedResult = Math.round(result * 1000) / 1000.0
+            doubleToStringNoDecimal2(roundedResult).toString()
+        } else {
+            doubleToStringNoDecimal(result).toString()
+        }
+        if (curText.length == 1) {
+            setResult(.0)
+        } else {
+            var r = curText.substring(0, curText.length - 2).toDouble()
+            setResult(r)
+        }
     }
 
     override fun setText(text: CharSequence?, type: BufferType?) {

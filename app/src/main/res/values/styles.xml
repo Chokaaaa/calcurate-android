@@ -9,15 +9,29 @@
         <!--        <item name="android:shadowDy">-1</item>-->
         <!--        <item name="android:shadowRadius">0.2</item>-->
         <item name="android:textSize">@dimen/btn_text_size</item>
-        <item name="android:textStyle">bold</item>
+<!--        <item name="android:textStyle">bold</item>-->
+        <item name="android:width">@dimen/btn_size</item>
+        <item name="android:height">@dimen/btn_size</item>
+        <item name="android:background">@drawable/circle_button</item>
+<!--        <item name="shapeAppearanceOverlay">@style/ButtonRounded</item>-->
+    </style>
+
+    <style name="button_base2" parent="Widget.Button">
+        <item name="android:gravity">center_vertical|center_horizontal</item>
+        <item name="android:textColor">@color/white</item>
+        <!--        <item name="android:shadowColor">#FF000000</item>-->
+        <!--        <item name="android:shadowDx">0</item>-->
+        <!--        <item name="android:shadowDy">-1</item>-->
+        <!--        <item name="android:shadowRadius">0.2</item>-->
+        <item name="android:textSize">@dimen/btn_text_size</item>
+        <!--        <item name="android:textStyle">bold</item>-->
         <item name="android:width">@dimen/btn_size</item>
         <item name="android:height">@dimen/btn_size</item>
         <item name="android:maxWidth">@dimen/btn_size</item>
         <item name="android:maxHeight">@dimen/btn_size</item>
-        <!--        <item name="android:background">@drawable/circle_button</item>-->
-        <item name="shapeAppearanceOverlay">@style/ButtonRounded</item>
+        <item name="android:background">@drawable/circle_button</item>
+<!--    <item name="shapeAppearanceOverlay">@style/ButtonRounded</item>-->
     </style>
-
     <style name="imageview_base">
         <item name="android:width">@dimen/btn_size</item>
         <item name="android:height">@dimen/btn_size</item>
@@ -31,6 +45,18 @@
     </style>
 
     <style name="Widget.Button" parent="button_base">
+        <item name="colorAccent">@color/grey</item>
+        <item name="colorPrimary">@color/grey</item>
+        <!--        <item name="android:shadowColor">#FF000000</item>-->
+        <!--        <item name="android:shadowDx">0</item>-->
+        <!--        <item name="android:shadowDy">-1</item>-->
+        <!--        <item name="android:shadowRadius">0.2</item>-->
+        <item name="android:backgroundTint">@color/number_button</item>\
+
+    </style>
+    <style name="Widget.Button2" parent="button_base2">
+        <item name="colorAccent">@color/grey</item>
+        <item name="colorPrimary">@color/grey</item>
         <!--        <item name="android:shadowColor">#FF000000</item>-->
         <!--        <item name="android:shadowDx">0</item>-->
         <!--        <item name="android:shadowDy">-1</item>-->

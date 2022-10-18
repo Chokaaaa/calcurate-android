@@ -37,31 +37,42 @@ class CurrencyListViewModel(application: Application, private val mRepository: D
     val errorMessage: LiveData<String>
         get() = _errorMessage
 
-    var currencyList = MutableLiveData<List<CurrencyItem>>()
-    var currencyRateList = MutableLiveData<List<Rate>>()
+    val MAIN = 1
+    val SEC1 = 2
+    val SEC2 = 3
+
+    var currencyMainList = MutableLiveData<List<CurrencyItem>>()
+    var currencySec1List = MutableLiveData<List<CurrencyItem>>()
+    var currencySec2List = MutableLiveData<List<CurrencyItem>>()
     val loading = MutableLiveData<Boolean>()
     var job: Job? = null
 
-    fun getCurrencyRates(baseCurrency: String, firstSecondary: String, secondSecondary: String) {
+    fun getCurrencyRates(baseCurrency: String, type: Int) {
         job = CoroutineScope(Dispatchers.IO).launch {
             val response = mRepository.getCurrencyRates(baseCurrency)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     val curList = mRepository.getCurrencyList()
-                    currencyList.postValue(
-                        curList.map { rate->
-                            var mappedList =response.body()!!.conversion_rates.filter {
-                                it.Code == rate.code
-                            }
-//                            Log.e(TAG, "getCurrencyRates rate.code: ${rate.code}, mappedList.isEmpty: ${mappedList.isEmpty()}")
-                            CurrencyItem(rate.name, rate.code, mappedList[0].Value)
-                        } )
-                    currencyRateList.postValue(response.body()!!.conversion_rates)
+                    postValue(type, curList.map { rate ->
+                        var mappedList = response.body()!!.conversion_rates.filter {
+                            it.Code == rate.code
+                        }
+                        CurrencyItem(rate.name, rate.code, mappedList[0].Value)
+                    })
+
                     loading.value = false
                 } else {
                     onError("Error : ${response.message()} ")
                 }
             }
+        }
+    }
+
+    private fun postValue(type: Int, map: List<CurrencyItem>) {
+        when (type) {
+            MAIN -> currencyMainList.postValue(map)
+            SEC1 -> currencySec1List.postValue(map)
+            SEC2 -> currencySec2List.postValue(map)
         }
     }
 

@@ -14,7 +14,10 @@
     <color name="white_grey2">#3FFFFFFF</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="white_trans3">#C0FFFFFF</color>
+    <color name="red_trans3">#F0CC3404</color>
     <color name="white_trans">#90FFFFFF</color>
+    <color name="white_trans2">#10FFFFFF</color>
     <color name="yellow">#FDCC0D</color>
     <color name="transparant">#00000000</color>
 </resources>

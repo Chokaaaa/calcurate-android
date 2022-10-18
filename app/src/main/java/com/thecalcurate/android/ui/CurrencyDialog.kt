@@ -10,6 +10,7 @@ import android.util.Log
 import android.view.View
 import android.widget.CheckBox
 import android.widget.CompoundButton
+import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.widget.addTextChangedListener
@@ -34,6 +35,8 @@ class CurrencyDialog(
     private val TAG = "CurrencyDialog"
 
     var list: MutableList<CurrencyItem>? = null
+    lateinit var imvClear: View
+    lateinit var edtSearch: EditText
 
     /* The activity that creates an instance of this dialog fragment must
      * implement this interface in order to receive event callbacks.
@@ -58,9 +61,13 @@ class CurrencyDialog(
                         editable.toString(),
                         true
                     )
-                })
+                }.toMutableList())
             }
             adapter?.notifyDataSetChanged()
+
+            if (editable?.isNotEmpty() == true && imvClear.visibility == View.GONE) {
+                imvClear.visibility = View.VISIBLE
+            }
         }
     }
 
@@ -70,6 +77,10 @@ class CurrencyDialog(
             dismiss()
         }
     }
+    val clearClickListener = View.OnClickListener {
+        edtSearch.setText("")
+        imvClear.visibility = View.GONE
+    }
 
     val checkClickListener = View.OnClickListener {
         val code = it.tag as String
@@ -77,7 +88,7 @@ class CurrencyDialog(
         Log.e(TAG, "OnCheckedChangeListener code: $code, isFavourite: $isFavorite")
 
         if (isFavorite) {
-            favList.add(code)
+            favList.add(0, code)
         } else {
             favList.remove(code)
         }
@@ -111,6 +122,8 @@ class CurrencyDialog(
             Context.MODE_PRIVATE
         )
         favourites = sharedPref?.getString(getString(R.string.saved_favourites_key), "") ?: ""
+
+        Log.e(TAG, "onAttach favourites: $favourites")
         favList = favourites.split(",").filter { it != "" }.toMutableList()
 
         adapter = CurrencyRecyclerViewAdapter(context)
@@ -119,8 +132,8 @@ class CurrencyDialog(
     override fun onDismiss(dialog: DialogInterface) {
 
         if (sharedPref != null && list != null) {
-            favourites =
-                list!!.filter { it.isFavorite2 }.joinToString(",") { it.code }
+            favourites = favList.joinToString(",") { it }
+            //list!!.filter { it.isFavorite2 }.joinToString(",") { it.code }
 
             Log.e(TAG, "onDismiss favourites: $favourites")
             with(sharedPref!!.edit()) {
@@ -133,29 +146,31 @@ class CurrencyDialog(
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        Log.e(TAG, "onCreateDialog favourites: $favourites")
         return activity?.let { fragment ->
             val builder = AlertDialog.Builder(fragment)
+            Log.e(TAG, "onCreateDialog2 (list != null): ${(list != null)}")
             if (list != null) {
-                list!!.find { favList.contains(it.code) }?.isFavorite2 = true
+                list!!.filter { curItem -> favList.contains(curItem.code) }
+                    .forEach { it.isFavorite2 = true }
                 list!!.sortBy { !it.isFavorite2 }
+                Log.e(TAG, "onCreateDialog2 favourites: $favourites")
                 // Get the layout inflater
                 val inflater = requireActivity().layoutInflater;
                 // Pass null as the parent view because its going in the dialog layout
                 var dialogView = inflater.inflate(R.layout.currency_search, null)
-                var edtSearch = dialogView.findViewById<AppCompatEditText>(R.id.edtSearch)
+                edtSearch = dialogView.findViewById<AppCompatEditText>(R.id.edtSearch)
+                imvClear = dialogView.findViewById(R.id.imvClear)
                 var recyclerView = dialogView.findViewById<RecyclerView>(R.id.recyclerview)
                 adapter?.setList(list!!)
                 adapter?.setClickListener(itemClickListener2, checkClickListener)
                 edtSearch.addTextChangedListener(textChangeListener)
+                imvClear.setOnClickListener(clearClickListener)
 
                 recyclerView.adapter = adapter
                 builder.setView(dialogView)
             }
             builder.create()
         } ?: throw IllegalStateException("Activity cannot be null")
-    }
-
-    fun setList(currencyList: MutableLiveData<List<CurrencyItem>>) {
-        list = currencyList.value?.toMutableList()
     }
 }

@@ -14,7 +14,7 @@ class CurrencyRecyclerViewAdapter internal constructor(
 ) :
     RecyclerView.Adapter<CurrencyViewHolder>() {
     val TAG = "CurrencyRecyclerViewAdapter"
-    private var mData: List<CurrencyItem>? = null
+    private var mData: MutableList<CurrencyItem>? = null
     private val mInflater: LayoutInflater
     private var mClickListener: ItemClickListener? = null
     private var mOnClickListener: View.OnClickListener? = null
@@ -58,11 +58,11 @@ class CurrencyRecyclerViewAdapter internal constructor(
         mOnClickListener = onClickListener
     }
 
-    fun setList(list: List<CurrencyItem>) {
+    fun setList(list: MutableList<CurrencyItem>) {
         mData = list
     }
 
-    fun getList(): List<CurrencyItem>? {
+    fun getList(): MutableList<CurrencyItem>? {
         return mData
     }
 

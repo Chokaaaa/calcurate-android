@@ -7,4 +7,8 @@
     <string name="rates">Rates</string>
     <string name="saved_favourites_key">myfavourites</string>
     <string name="preference_file">com.thecalcurate.android.preference</string>
+    <string name="txt_swipe">Swipe</string>
+    <string name="txt_scroll">Scroll</string>
+    <string name="txt_hold">Hold</string>
+    <string name="saved_is_totorial_key">is_shown_tutorial</string>
 </resources>

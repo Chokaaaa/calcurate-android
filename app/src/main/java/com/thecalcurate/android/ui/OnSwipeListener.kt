@@ -7,7 +7,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnTouchListener
 
-open class CurrencySwipeListener(ctx: Context) : OnTouchListener, View.OnClickListener {
+open class OnSwipeListener(ctx: Context) : OnTouchListener, View.OnClickListener {
     private val gestureDetector: GestureDetector
 
     init {
