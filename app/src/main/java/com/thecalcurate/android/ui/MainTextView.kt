@@ -3,6 +3,7 @@ package com.thecalcurate.android.ui
 import android.content.Context
 import android.util.AttributeSet
 import android.util.Log
+import android.widget.TextView
 import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.*
@@ -35,17 +36,11 @@ class MainTextView @JvmOverloads constructor(
     }
 
     fun swipe() {
-        var result = text.toString().toDouble()
-        var curText = if (!ifReallyDecimal(result)) {
-            val roundedResult = Math.round(result * 1000) / 1000.0
-            doubleToStringNoDecimal2(roundedResult).toString()
-        } else {
-            doubleToStringNoDecimal(result).toString()
-        }
-        if (curText.length == 1) {
+        var result = text.toString().replace(",","")
+        if (result.length == 1) {
             setResult(.0)
         } else {
-            var r = curText.substring(0, curText.length - 2).toDouble()
+            var r = result.substring(0, result.length - 1).toDouble()
             setResult(r)
         }
     }

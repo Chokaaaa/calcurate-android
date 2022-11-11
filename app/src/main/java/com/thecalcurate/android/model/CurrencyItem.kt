@@ -34,7 +34,7 @@ class CurrencyItem(
     companion object {
         fun getList(): MutableList<CurrencyItem> {
             var currencyItemList: MutableList<CurrencyItem> = ArrayList()
-            currencyItemList.add(CurrencyItem("🇺🇸 USA Dollar", "USD"))
+            currencyItemList.add(CurrencyItem("🇺🇸 US Dollar", "USD"))
             currencyItemList.add(CurrencyItem("🇪🇺 Euro", "EUR"))
             currencyItemList.add(CurrencyItem("🇬🇧 British Pound", "GBP"))
             currencyItemList.add(CurrencyItem("🇦🇫 Afghan Afghani", "AFN"))

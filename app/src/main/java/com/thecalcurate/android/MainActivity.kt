@@ -2,10 +2,12 @@ package com.thecalcurate.android
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.WindowManager
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
@@ -17,39 +19,37 @@ import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
 import com.blongho.country_data.World
 import com.thecalcurate.android.model.CurrencyItem
-import com.thecalcurate.android.ui.CurrencyDialog
-import com.thecalcurate.android.ui.CurrencyRecyclerViewAdapter
-import com.thecalcurate.android.ui.OnSwipeListener
-import com.thecalcurate.android.ui.MainTextView
+import com.thecalcurate.android.ui.*
 import com.thecalcurate.android.viewmodel.CurrencyListViewModel
 
 
 class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
     val TAG = "MainActivity"
-    lateinit var b0: Button
-    lateinit var b1: Button
-    lateinit var b2: Button
-    lateinit var b3: Button
-    lateinit var b4: Button
-    lateinit var b5: Button
-    lateinit var b6: Button
-    lateinit var b7: Button
-    lateinit var b8: Button
-    lateinit var b9: Button
+    lateinit var b0: View
+    lateinit var b1: View
+    lateinit var b2: View
+    lateinit var b3: View
+    lateinit var b4: View
+    lateinit var b5: View
+    lateinit var b6: View
+    lateinit var b7: View
+    lateinit var b8: View
+    lateinit var b9: View
 
-    lateinit var b_equal: Button
-    lateinit var b_multi: Button
-    lateinit var b_divide: Button
-    lateinit var b_add: Button
-    lateinit var b_sub: Button
-    lateinit var b_percent: Button
-    lateinit var b_clear: Button
+    lateinit var b_equal: View
+    lateinit var b_multi: View
+    lateinit var b_divide: View
+    lateinit var b_add: View
+    lateinit var b_sub: View
+    lateinit var b_percent: View
+    lateinit var b_clear: View
 
     lateinit var btn_main: ImageView
     lateinit var btn_secondary1: ImageView
     lateinit var btn_secondary2: ImageView
 
     lateinit var txvResult: MainTextView
+    lateinit var imvResult: ImageView
 
     private val ADDITION = '+'
     private val SUBTRACTION = '-'
@@ -71,6 +71,7 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
 
     lateinit var viewModel: CurrencyListViewModel
     lateinit var favList: MutableList<String>
+    lateinit var selectedCurList: MutableList<String>
     var mp: MediaPlayer? = null
     val UP = 1
     val DOWN = 2
@@ -108,6 +109,7 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
             else -> viewModel.MAIN
         }
         fetchCurrencyRates(type)
+        selectedCurList[type - 1] = code
     }
 
     var newFragment = CurrencyDialog(itemClickListener)
@@ -128,6 +130,14 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
             "ZMW" -> R.drawable.zmw
             "ARS" -> R.drawable.ars
             "AUD" -> R.drawable.aud
+            "UZS" -> R.drawable.uzs
+            "TWD" -> R.drawable.twd
+            "RSD" -> R.drawable.rsd
+            "KRW" -> R.drawable.krw
+            "ANG" -> R.drawable.ang
+            "NZD" -> R.drawable.nzd
+            "GEL" -> R.drawable.gel
+            "CLP" -> R.drawable.clp
             else -> {
                 val curList = World.getAllCurrencies().filter { it.code == code }
                 if (curList.isNotEmpty()) {
@@ -179,15 +189,21 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
     private val onEqualClickListener = View.OnClickListener {
         if (txvResult.text.isNotEmpty()) {
             if (!val1.isNaN() && SELECTED_ACTION != ' ') {
-                val2 = txvResult.text.toString().toDouble()
-                val result = calculate(val1, val2, SELECTED_ACTION)
-                showResult(result)
-                val1 = result
+                calculateResult()
                 isActionSelected = true
             }
         }
         play()
     }
+
+    private fun calculateResult() {
+        val2 = txvResult.text.toString().toDouble()
+        Log.i(TAG, "onEqualClickListener val1: $val1, val2: $val2")
+        val result = calculate(val1, val2, SELECTED_ACTION)
+        showResult(result)
+        val1 = result
+    }
+
     private val onClearClickListener = View.OnClickListener {
         val1 = Double.NaN
         val2 = Double.NaN
@@ -284,6 +300,7 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
 
     private fun viewSetup() {
         txvResult = findViewById(R.id.txtResult)
+        imvResult = findViewById(R.id.imvResult)
 
         btn_main = findViewById(R.id.btn_main)
         btn_secondary1 = findViewById(R.id.btn_secondary1)
@@ -327,16 +344,28 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
         }
 
         viewModel.loading.observe(this, Observer {
-            if (it) {
+//            if (it) {
 //                binding.progressDialog.visibility = View.VISIBLE
-            } else {
+//            } else {
 //                binding.progressDialog.visibility = View.GONE
-            }
+//            }
         })
 
-        setCur(btn_main, "USD")
-        setCur(btn_secondary1, "AED")
-        setCur(btn_secondary2, "KZT")
+
+        var sharedPref =
+            getSharedPreferences(getString(R.string.preference_file), Context.MODE_PRIVATE)
+        val favourites = sharedPref?.getString(getString(R.string.saved_favourites_key), "") ?: ""
+        val selectedCur =
+            sharedPref?.getString("selected_currencies_key", "USD,EUR,GBP")
+                ?: "USD,EUR,GBP"
+        val isTutorialViewed =
+            sharedPref?.getBoolean(getString(R.string.saved_is_totorial_key), false) ?: false
+
+        selectedCurList = selectedCur.split(",").filter { it != "" }.toMutableList()
+
+        setCur(btn_main, selectedCurList[0])
+        setCur(btn_secondary1, selectedCurList[1])
+        setCur(btn_secondary2, selectedCurList[2])
 
         btn_main.setOnClickListener(onMainClickListener)
         btn_secondary1.setOnClickListener(onSecondaryClickListener)
@@ -362,13 +391,6 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
         b_equal.setOnClickListener(onEqualClickListener)
         b_clear.setOnClickListener(onClearClickListener)
 
-
-        var sharedPref =
-            getSharedPreferences(getString(R.string.preference_file), Context.MODE_PRIVATE)
-        val favourites = sharedPref?.getString(getString(R.string.saved_favourites_key), "") ?: ""
-        val isTutorialViewed =
-            sharedPref?.getBoolean(getString(R.string.saved_is_totorial_key), false) ?: false
-
         favList = favourites.split(",").filter { it != "" }.toMutableList()
 
         if (!isTutorialViewed) {
@@ -381,6 +403,20 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
         }
         mp = MediaPlayer.create(this, R.raw.sound)
 
+    }
+
+    override fun onPause() {
+        var sharedPref =
+            getSharedPreferences(getString(R.string.preference_file), Context.MODE_PRIVATE)
+
+        var selected = selectedCurList.joinToString(",") { it }
+
+//        Log.e(TAG, "onPause selected: $selected")
+        with(sharedPref!!.edit()) {
+            putString("selected_currencies_key", selected)
+            commit()
+        }
+        super.onPause()
     }
 
     fun play() {
@@ -397,17 +433,21 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
     }
 
     private fun setCurrencyBtn() {
-        txvResult.setOnTouchListener(object : OnSwipeListener(this) {
+        imvResult.setOnTouchListener(object : OnSwipeListener(this) {
             override fun onSwipeRight() {
                 super.onSwipeRight()
-                Log.e("MainActivity", "txvResult onSwipeRight")
                 txvResult.swipe()
+                if (!val1.isNaN()) {
+                    val1 = txvResult.text.toString().toDouble()
+                }
             }
 
             override fun onSwipeLeft() {
                 super.onSwipeLeft()
-                Log.e("MainActivity", "txvResult onSwipeLeft")
                 txvResult.swipe()
+                if (!val1.isNaN()) {
+                    val1 = txvResult.text.toString().toDouble()
+                }
             }
         })
 
@@ -496,19 +536,31 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
 
         favList = favourites.split(",").filter { it != "" }.toMutableList()
 
+        val code = btn.getTag(R.id.code_tag_name)
+
+        var toCode = ""
+
         if (favList.isNotEmpty()) {
-            val code = btn.getTag(R.id.code_tag_name)
             var index = favList.indexOf(code)
-            val toCode =
-                if (scrollType == DOWN) {
+            toCode =
+                if (scrollType == UP) {
                     favList[if (index == favList.size - 1) 0 else index + 1]
                 } else {
                     favList[if (index == 0) favList.size - 1 else index - 1]
                 }
-            setCur(btn, toCode)
-            if (btn.id != R.id.btn_main && secondarySelectedId != 0) {
-                convertToSec(toCode)
-            }
+        } else {
+            val list = CurrencyItem.getList()
+            val index = list.indexOf(list.find { it.code == code })
+            toCode =
+                if (scrollType == UP) {
+                    list[if (index == list.size - 1) 0 else index + 1].code
+                } else {
+                    list[if (index == 0) list.size - 1 else index - 1].code
+                }
+        }
+        setCur(btn, toCode)
+        if (btn.id != R.id.btn_main && secondarySelectedId != 0) {
+            convertToSec(toCode)
         }
     }
 
@@ -569,10 +621,7 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
         try {
             if (!isActionSelected) {
                 if (!val1.isNaN()) {
-                    val2 = txvResult.text.toString().toDouble()
-                    val result = calculate(val1, val2, SELECTED_ACTION)
-                    showResult(result)
-                    val1 = result
+                    calculateResult()
                 } else {
                     val1 = txvResult.text.toString().toDouble()
                 }
@@ -609,6 +658,7 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
         )
         var favourites = sharedPref?.getString(getString(R.string.saved_favourites_key), "") ?: ""
         favList = favourites.split(",").filter { it != "" }.toMutableList()
+
         var list = when (longClickedId) {
             R.id.btn_main -> viewModel.currencyMainList.value?.toMutableList()
             R.id.btn_secondary1 -> viewModel.currencySec1List.value?.toMutableList()
@@ -616,9 +666,17 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
             else -> viewModel.currencyMainList.value?.toMutableList()
         }
 
-        list!!.find { favList.contains(it.code) }?.isFavorite2 = true
-        list!!.sortBy { !it.isFavorite2 }
+        var allFavSorted = favList.map { favItem ->
+            var d = list!!.find { it.code == favItem }
+            d!!.isFavorite2 = true
+            d
+        }
 
+        var listToShow = list!!.filter { !favList.contains(it.code) }.toMutableList()
+        listToShow.addAll(0, allFavSorted)
+
+
+        newFragment.listToShow = listToShow
         newFragment.list = list
         newFragment.show(supportFragmentManager, "dialog")
     }

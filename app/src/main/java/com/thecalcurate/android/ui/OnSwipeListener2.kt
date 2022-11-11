@@ -8,7 +8,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnTouchListener
 
-open class OnSwipeListener(ctx: Context) : OnTouchListener, View.OnClickListener {
+open class OnSwipeListener2(ctx: Context) : OnTouchListener, View.OnClickListener {
     private val gestureDetector: GestureDetector
 
     init {
@@ -16,7 +16,7 @@ open class OnSwipeListener(ctx: Context) : OnTouchListener, View.OnClickListener
     }
 
     override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-//        Log.e("OnSwipeListener", "onTouch")
+        Log.e("OnSwipeListener", "onTouch")
         return gestureDetector.onTouchEvent(event)
     }
 
@@ -34,7 +34,7 @@ open class OnSwipeListener(ctx: Context) : OnTouchListener, View.OnClickListener
             velocityX: Float,
             velocityY: Float
         ): Boolean {
-//            Log.e("GestureListener", "onFling")
+            Log.e("GestureListener", "onFling")
 
             var result = false
             try {
@@ -62,10 +62,10 @@ open class OnSwipeListener(ctx: Context) : OnTouchListener, View.OnClickListener
         }
     }
 
-    open fun onSwipeRight() {}
-    open fun onSwipeLeft() {}
-    open fun onSwipeTop() {}
-    open fun onSwipeBottom() {}
+    open fun onSwipeRight(): Boolean = false
+    open fun onSwipeLeft(): Boolean = false
+    open fun onSwipeTop(): Boolean = false
+    open fun onSwipeBottom(): Boolean = false
     open fun onLongPress() {}
     override fun onClick(v: View?) {}
 }

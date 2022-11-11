@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="btn_text_size">28sp</dimen>
-    <dimen name="btn_action_text_size">36sp</dimen>
-    <dimen name="btn_size">70dp</dimen>
-    <dimen name="btn_currency_size">90dp</dimen>
-    <dimen name="btn_currency_padding">10dp</dimen>
-    <dimen name="btn_shadow">100dp</dimen>
-    <dimen name="btn_halfsize">35dp</dimen>
+    <dimen name="btn_action_text_size">48sp</dimen>
+    <dimen name="btn_action_text_padding">4dp</dimen>
+    <dimen name="btn_size">72dp</dimen>
+    <dimen name="btn_currency_size">94dp</dimen>
+    <dimen name="btn_currency_padding">13dp</dimen>
+    <dimen name="btn_shadow">96dp</dimen>
+    <dimen name="btn_halfsize">36dp</dimen>
     <dimen name="btn_margin">24dp</dimen>
     <dimen name="btn_margin_half">12dp</dimen>
     <dimen name="txt_main_size">50sp</dimen>

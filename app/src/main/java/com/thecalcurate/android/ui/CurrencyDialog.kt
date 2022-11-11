@@ -7,7 +7,10 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.CheckBox
 import android.widget.CompoundButton
 import android.widget.EditText
@@ -34,6 +37,7 @@ class CurrencyDialog(
     private lateinit var favList: MutableList<String>
     private val TAG = "CurrencyDialog"
 
+    var listToShow: MutableList<CurrencyItem>? = null
     var list: MutableList<CurrencyItem>? = null
     lateinit var imvClear: View
     lateinit var edtSearch: EditText
@@ -54,9 +58,10 @@ class CurrencyDialog(
 
         override fun afterTextChanged(editable: Editable?) {
             if (editable.toString().isEmpty()) {
-                adapter?.setList(list!!)
+                adapter?.setList(listToShow!!)
+                imvClear.visibility = View.GONE
             } else {
-                adapter?.setList(list!!.filter { curItem ->
+                adapter?.setList(listToShow!!.filter { curItem ->
                     curItem.name.contains(
                         editable.toString(),
                         true
@@ -87,21 +92,29 @@ class CurrencyDialog(
         val isFavorite = (it as CheckBox).isChecked
         Log.e(TAG, "OnCheckedChangeListener code: $code, isFavourite: $isFavorite")
 
+        var adapterList = adapter?.getList()?.toMutableList()
         if (isFavorite) {
             favList.add(0, code)
         } else {
             favList.remove(code)
         }
-
-        var adapterList = adapter?.getList()?.toMutableList()
-
-        list!!.find { code == it.code }?.isFavorite2 = isFavorite
-        adapterList!!.find { code == it.code }?.isFavorite2 = isFavorite
-
-        list!!.sortBy { !it.isFavorite2 }
-        adapterList!!.sortBy { !it.isFavorite2 }
+        adapterList = generateListToShow(adapterList!!)
         adapter?.setList(adapterList!!)
         adapter?.notifyDataSetChanged()
+    }
+
+    private fun generateListToShow(adapterList: MutableList<CurrencyItem> = list!!): MutableList<CurrencyItem> {
+        var allFavSorted = favList.map { favItem ->
+            var d = list!!.find { it.code == favItem }
+            d!!.isFavorite2 = true
+            d
+        }
+
+        listToShow = list!!.filter { !favList.contains(it.code) }.toMutableList()
+        listToShow!!.forEach { it.isFavorite2 = false }
+        listToShow!!.addAll(0, allFavSorted)
+
+        return listToShow!!.filter { adapterList.contains(it) }.toMutableList()
     }
 
     // Override the Fragment.onAttach() method to instantiate the NoticeDialogListener
@@ -147,13 +160,11 @@ class CurrencyDialog(
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         Log.e(TAG, "onCreateDialog favourites: $favourites")
+//        dialog?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
         return activity?.let { fragment ->
             val builder = AlertDialog.Builder(fragment)
-            Log.e(TAG, "onCreateDialog2 (list != null): ${(list != null)}")
-            if (list != null) {
-                list!!.filter { curItem -> favList.contains(curItem.code) }
-                    .forEach { it.isFavorite2 = true }
-                list!!.sortBy { !it.isFavorite2 }
+            Log.e(TAG, "onCreateDialog2 (listToShow != null): ${(listToShow != null)}")
+            if (listToShow != null) {
                 Log.e(TAG, "onCreateDialog2 favourites: $favourites")
                 // Get the layout inflater
                 val inflater = requireActivity().layoutInflater;
@@ -162,7 +173,7 @@ class CurrencyDialog(
                 edtSearch = dialogView.findViewById<AppCompatEditText>(R.id.edtSearch)
                 imvClear = dialogView.findViewById(R.id.imvClear)
                 var recyclerView = dialogView.findViewById<RecyclerView>(R.id.recyclerview)
-                adapter?.setList(list!!)
+                adapter?.setList(listToShow!!)
                 adapter?.setClickListener(itemClickListener2, checkClickListener)
                 edtSearch.addTextChangedListener(textChangeListener)
                 imvClear.setOnClickListener(clearClickListener)

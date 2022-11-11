@@ -31,9 +31,12 @@
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/btn_main"
         style="@style/imageview_base"
-        android:layout_width="@dimen/btn_size"
-        android:layout_height="@dimen/btn_size"
+        android:layout_width="@dimen/btn_currency_size"
+        android:layout_height="@dimen/btn_currency_size"
         android:layout_marginBottom="@dimen/btn_margin"
+        android:background="@drawable/btn_background_tutorial"
+        android:foreground="@drawable/btn_foreground_tutorial"
+        android:padding="@dimen/btn_currency_padding"
         android:scaleType="centerCrop"
         android:src="@drawable/usd"
         app:layout_constraintBottom_toTopOf="@id/btn_main2"
@@ -44,7 +47,6 @@
         android:id="@+id/txvHold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/btn_margin_half"
         android:text="@string/txt_hold"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="@id/btn_main"
@@ -72,9 +74,12 @@
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/btn_main2"
         style="@style/imageview_base"
-        android:layout_width="@dimen/btn_size"
-        android:layout_height="@dimen/btn_size"
+        android:layout_width="@dimen/btn_currency_size"
+        android:layout_height="@dimen/btn_currency_size"
         android:layout_marginBottom="@dimen/btn_margin"
+        android:background="@drawable/btn_background_tutorial"
+        android:foreground="@drawable/btn_foreground_tutorial"
+        android:padding="@dimen/btn_currency_padding"
         android:scaleType="centerCrop"
         android:src="@drawable/euro"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -84,7 +89,6 @@
     <ImageView
         android:layout_width="60dp"
         android:layout_height="50dp"
-        android:layout_marginStart="@dimen/btn_margin_half"
         android:src="@drawable/swipe_right"
         app:layout_constraintBottom_toBottomOf="@id/btn_main2"
         app:layout_constraintStart_toEndOf="@id/btn_main2" />
@@ -103,9 +107,12 @@
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/btn_main22"
         style="@style/imageview_base"
-        android:layout_width="@dimen/btn_size"
-        android:layout_height="@dimen/btn_size"
+        android:layout_width="@dimen/btn_currency_size"
+        android:layout_height="@dimen/btn_currency_size"
         android:layout_marginBottom="@dimen/btn_margin"
+        android:background="@drawable/btn_background_tutorial"
+        android:foreground="@drawable/btn_foreground_tutorial"
+        android:padding="@dimen/btn_currency_padding"
         android:scaleType="centerCrop"
         android:src="@drawable/pound"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -115,7 +122,6 @@
     <ImageView
         android:layout_width="60dp"
         android:layout_height="50dp"
-        android:layout_marginEnd="@dimen/btn_margin_half"
         android:src="@drawable/swipe_left"
         app:layout_constraintEnd_toStartOf="@id/btn_main22"
         app:layout_constraintTop_toTopOf="@id/btn_main22" />
@@ -134,9 +140,12 @@
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/btn_main3"
         style="@style/imageview_base"
-        android:layout_width="@dimen/btn_size"
-        android:layout_height="@dimen/btn_size"
+        android:layout_width="@dimen/btn_currency_size"
+        android:layout_height="@dimen/btn_currency_size"
         android:layout_marginBottom="@dimen/btn_margin"
+        android:background="@drawable/btn_background_tutorial"
+        android:foreground="@drawable/btn_foreground_tutorial"
+        android:padding="@dimen/btn_currency_padding"
         android:scaleType="centerCrop"
         android:src="@drawable/aed"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -146,7 +155,6 @@
     <ImageView
         android:layout_width="50dp"
         android:layout_height="60dp"
-        android:layout_marginStart="@dimen/btn_margin_half"
         android:src="@drawable/swipe_up"
         app:layout_constraintBottom_toBottomOf="@id/btn_main3"
         app:layout_constraintStart_toEndOf="@id/btn_main3" />
@@ -166,9 +174,12 @@
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/btn_main32"
         style="@style/imageview_base"
-        android:layout_width="@dimen/btn_size"
-        android:layout_height="@dimen/btn_size"
+        android:layout_width="@dimen/btn_currency_size"
+        android:layout_height="@dimen/btn_currency_size"
         android:layout_marginBottom="@dimen/btn_margin"
+        android:background="@drawable/btn_background_tutorial"
+        android:foreground="@drawable/btn_foreground_tutorial"
+        android:padding="@dimen/btn_currency_padding"
         android:scaleType="centerCrop"
         android:src="@drawable/chn"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -179,7 +190,6 @@
     <ImageView
         android:layout_width="50dp"
         android:layout_height="60dp"
-        android:layout_marginEnd="@dimen/btn_margin_half"
         android:src="@drawable/swipe_down"
         app:layout_constraintBottom_toBottomOf="@id/btn_main32"
         app:layout_constraintEnd_toStartOf="@id/btn_main32" />

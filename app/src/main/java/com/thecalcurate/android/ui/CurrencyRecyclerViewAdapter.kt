@@ -1,6 +1,7 @@
 package com.thecalcurate.android.ui
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -36,6 +37,12 @@ class CurrencyRecyclerViewAdapter internal constructor(
             holder.binding.root.tag = item
             holder.binding.item = item
             holder.binding.chbFav.tag = item?.code
+            Log.e(TAG, "itemCount: $itemCount")
+            if (position == itemCount - 1) {
+                holder.binding.viewPadding.visibility = View.VISIBLE
+            } else {
+                holder.binding.viewPadding.visibility = View.GONE
+            }
         }
     }
 

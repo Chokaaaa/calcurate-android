@@ -3,8 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="500dp"
+    android:layout_height="wrap_content"
     android:background="@color/white"
+    android:minHeight="400dp"
     android:paddingStart="@dimen/dialog_padding"
     android:paddingTop="@dimen/dialog_padding"
     android:paddingEnd="@dimen/dialog_padding">
@@ -15,26 +16,28 @@
         android:layout_height="wrap_content"
         android:drawableStart="@drawable/ic_search"
         android:hint="@string/search_your_currency"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/imvClear"
-        android:visibility="gone"
         android:layout_width="48dp"
         android:layout_height="0dp"
-        app:layout_constraintTop_toTopOf="@id/edtSearch"
+        android:padding="@dimen/clear_padding"
+        android:src="@drawable/ic_close"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/edtSearch"
         app:layout_constraintEnd_toEndOf="@id/edtSearch"
-        android:src="@drawable/ic_close"
-        app:tint="@color/grey2"
-        android:padding="@dimen/clear_padding"
-        />
+        app:layout_constraintTop_toTopOf="@id/edtSearch"
+        app:tint="@color/grey2" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/txvFav"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
+        android:layout_marginBottom="1dp"
         android:text="@string/favorites"
         android:textColor="@color/teal_700"
         android:textSize="@dimen/search_titles"
@@ -65,9 +68,12 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerview"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="6dp"
         app:layoutManager="LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/txvFav"
         tools:listitem="@layout/currency_item" />
 
