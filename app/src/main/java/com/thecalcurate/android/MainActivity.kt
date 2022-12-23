@@ -2,13 +2,11 @@ package com.thecalcurate.android
 
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.media.MediaPlayer
-import android.os.Bundle
+import android.os.*
 import android.util.Log
 import android.view.View
-import android.view.WindowManager
-import android.widget.Button
+import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -75,6 +73,7 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
     var mp: MediaPlayer? = null
     val UP = 1
     val DOWN = 2
+    val VIBRATION_MILIS = 200L
 
     var itemClickListener = object : CurrencyRecyclerViewAdapter.ItemClickListener {
         override fun onItemClick(view: View?, position: Int) {
@@ -84,6 +83,15 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
                 R.id.btn_secondary1 -> setCur(btn_secondary1, curItem.code)
                 R.id.btn_secondary2 -> setCur(btn_secondary2, curItem.code)
             }
+//            hideKeyboard()
+        }
+    }
+
+    fun hideKeyboard() {
+        // Only runs if there is a view that is currently focused
+        this.currentFocus?.let { view ->
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+            imm?.hideSoftInputFromWindow(view.windowToken, 0)
         }
     }
 
@@ -98,7 +106,7 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
     }
 
     fun setCur(imageView: ImageView, code: String) {
-        val resourceId = getResource(code)
+        val resourceId = CurrencyButton.getResource(code)
         imageView.setImageResource(resourceId)
         imageView.setTag(R.id.code_tag_name, code)
         imageView.setTag(R.id.resid_tag_name, resourceId)
@@ -113,42 +121,6 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
     }
 
     var newFragment = CurrencyDialog(itemClickListener)
-
-    private fun getResource(code: String): Int {
-        return when (code) {
-            "KZT" -> R.drawable.kzt
-            "USD" -> R.drawable.usd
-            "AED" -> R.drawable.aed
-            "EUR" -> R.drawable.euro
-            "BYN" -> R.drawable.byn
-            "BTN" -> R.drawable.btn
-            "STN" -> R.drawable.stn
-            "ERN" -> R.drawable.ern
-            "MRU" -> R.drawable.mru
-            "WST" -> R.drawable.wst
-            "SLE" -> R.drawable.sle
-            "ZMW" -> R.drawable.zmw
-            "ARS" -> R.drawable.ars
-            "AUD" -> R.drawable.aud
-            "UZS" -> R.drawable.uzs
-            "TWD" -> R.drawable.twd
-            "RSD" -> R.drawable.rsd
-            "KRW" -> R.drawable.krw
-            "ANG" -> R.drawable.ang
-            "NZD" -> R.drawable.nzd
-            "GEL" -> R.drawable.gel
-            "CLP" -> R.drawable.clp
-            else -> {
-                val curList = World.getAllCurrencies().filter { it.code == code }
-                if (curList.isNotEmpty()) {
-                    World.getFlagOf(curList[0]!!.country)
-                } else {
-                    R.drawable.aed
-                }
-            }
-        }
-    }
-
 
     private val onNumberClickListener = View.OnClickListener {
         val number = getNumberClicked(it.id)
@@ -167,20 +139,25 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
         if (txvResult.text.isNotEmpty()) {
             operation(getAction(it.id))
             isActionSelected = true
+            isEqualPressed = false
         }
         play()
     }
 
     private val onPercentageClickListener = View.OnClickListener {
         if (txvResult.text.isNotEmpty()) {
-            if (!val1.isNaN()) {
+            val result = if (!val1.isNaN()) {
                 val2 = txvResult.text.toString().toDouble()
-                val result = val1 * (0.01 * val2)
-                showResult(result)
+                if (SELECTED_ACTION == MULTIPLICATION || SELECTED_ACTION == DIVISION) {
+                    val2 *= 0.01
+                    val2
+                } else {
+                    val1 * (0.01 * val2)
+                }
             } else {
                 val1 = .0
+                val1 * (0.01 * val2)
             }
-            val result = val1 * (0.01 * val2)
             showResult(result)
         }
         play()
@@ -196,17 +173,21 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
         play()
     }
 
+    var isEqualPressed = false
     private fun calculateResult() {
-        val2 = txvResult.text.toString().toDouble()
+        if(!isEqualPressed)
+            val2 = txvResult.text.toString().toDouble()
         Log.i(TAG, "onEqualClickListener val1: $val1, val2: $val2")
         val result = calculate(val1, val2, SELECTED_ACTION)
         showResult(result)
         val1 = result
+        isEqualPressed = true
     }
 
     private val onClearClickListener = View.OnClickListener {
         val1 = Double.NaN
         val2 = Double.NaN
+        isEqualPressed = false
         SELECTED_ACTION = ' '
         txvResult.text = "0"
         savedMainVal = .0
@@ -297,7 +278,7 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
         }
     }
 
-
+    lateinit var vibe: Vibrator
     private fun viewSetup() {
         txvResult = findViewById(R.id.txtResult)
         imvResult = findViewById(R.id.imvResult)
@@ -324,6 +305,16 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
         b_sub = findViewById(R.id.btn_sub)
         b_clear = findViewById(R.id.btn_clear)
         b_percent = findViewById(R.id.btn_percent)
+
+        vibe = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            val vibratorManager =
+                getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
+            vibratorManager.defaultVibrator
+        } else {
+            @Suppress("DEPRECATION")
+            getSystemService(VIBRATOR_SERVICE) as Vibrator
+        }
+
     }
 
 
@@ -652,6 +643,17 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
     }
 
     private fun showDialog() {
+        if (Build.VERSION.SDK_INT >= 26) {
+            vibe.vibrate(
+                VibrationEffect.createOneShot(
+                    VIBRATION_MILIS,
+                    VibrationEffect.DEFAULT_AMPLITUDE
+                )
+            )
+        } else {
+            vibe.vibrate(VIBRATION_MILIS)
+        }
+
         val sharedPref = getSharedPreferences(
             getString(R.string.preference_file),
             Context.MODE_PRIVATE

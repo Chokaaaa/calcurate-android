@@ -20,6 +20,7 @@ import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
+import com.thecalcurate.android.MainActivity
 import com.thecalcurate.android.R
 import com.thecalcurate.android.model.CurrencyItem
 import okhttp3.internal.notifyAll
@@ -154,6 +155,8 @@ class CurrencyDialog(
                 commit()
             }
         }
+
+//        (activity as MainActivity).hideKeyboard()
 
         super.onDismiss(dialog)
     }

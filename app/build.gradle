@@ -10,8 +10,8 @@ android {
         applicationId "com.thecalcurate.android"
         minSdk 23
         targetSdk 32
-        versionCode 4
-        versionName "1.3"
+        versionCode 12
+        versionName "1.11"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -21,7 +21,6 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
-
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
