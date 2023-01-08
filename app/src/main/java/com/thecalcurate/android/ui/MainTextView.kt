@@ -3,7 +3,6 @@ package com.thecalcurate.android.ui
 import android.content.Context
 import android.util.AttributeSet
 import android.util.Log
-import android.widget.TextView
 import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.*
@@ -36,7 +35,7 @@ class MainTextView @JvmOverloads constructor(
     }
 
     fun swipe() {
-        var result = text.toString().replace(",","")
+        var result = text.toString().replace(",", "")
         if (result.length == 1) {
             setResult(.0)
         } else {
@@ -46,14 +45,21 @@ class MainTextView @JvmOverloads constructor(
     }
 
     override fun setText(text: CharSequence?, type: BufferType?) {
-        var result = text.toString().toDouble()
-        Log.e(TAG, "setText result: $result, text: $text")
+        var textStr = text.toString()
+        Log.e(TAG, "setText textStr: $textStr")
 
-        var newText = if (!ifReallyDecimal(result)) {
-            val roundedResult = Math.round(result * 1000) / 1000.0
-            doubleToStringNoDecimal2(roundedResult).toString()
+        var newText = if (textStr.isNotEmpty() && textStr[textStr.length - 1] == '.') {
+            textStr
         } else {
-            doubleToStringNoDecimal(result).toString()
+            var result = text.toString().toDouble()
+            Log.e(TAG, "setText result: $result")
+
+            if (!ifReallyDecimal(result)) {
+                val roundedResult = Math.round(result * 1000) / 1000.0
+                doubleToStringNoDecimal2(roundedResult).toString()
+            } else {
+                doubleToStringNoDecimal(result).toString()
+            }
         }
         Log.e(TAG, "setText newText: $newText")
 

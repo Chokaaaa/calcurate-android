@@ -40,6 +40,7 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
     lateinit var b_add: View
     lateinit var b_sub: View
     lateinit var b_percent: View
+    lateinit var b_dot: View
     lateinit var b_clear: View
 
     lateinit var btn_main: ImageView
@@ -135,6 +136,20 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
         play()
     }
 
+    private val onDotClickListener = View.OnClickListener {
+        ifErrorOnOutput()
+
+        if (isActionSelected || txvResult.text.toString() == "0") {
+            txvResult.text = "0."
+            isActionSelected = false
+            play()
+        } else if (!txvResult.text.toString().contains(".")) {
+            txvResult.text = txvResult.text.toString() + "."
+            play()
+        }
+
+    }
+
     private val onActionClickListener = View.OnClickListener {
         if (txvResult.text.isNotEmpty()) {
             operation(getAction(it.id))
@@ -175,7 +190,7 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
 
     var isEqualPressed = false
     private fun calculateResult() {
-        if(!isEqualPressed)
+        if (!isEqualPressed)
             val2 = txvResult.text.toString().toDouble()
         Log.i(TAG, "onEqualClickListener val1: $val1, val2: $val2")
         val result = calculate(val1, val2, SELECTED_ACTION)
@@ -298,6 +313,7 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
         b8 = findViewById(R.id.btn8)
         b9 = findViewById(R.id.btn9)
 
+        b_dot = findViewById(R.id.btn_dot)
         b_equal = findViewById(R.id.btn_equal)
         b_multi = findViewById(R.id.btn_multi)
         b_divide = findViewById(R.id.btn_divide)
@@ -372,6 +388,7 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
         b7.setOnClickListener(onNumberClickListener)
         b8.setOnClickListener(onNumberClickListener)
         b9.setOnClickListener(onNumberClickListener)
+        b_dot.setOnClickListener(onDotClickListener)
 
         b_percent.setOnClickListener(onPercentageClickListener)
         b_add.setOnClickListener(onActionClickListener)
@@ -643,43 +660,50 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
     }
 
     private fun showDialog() {
-        if (Build.VERSION.SDK_INT >= 26) {
-            vibe.vibrate(
-                VibrationEffect.createOneShot(
-                    VIBRATION_MILIS,
-                    VibrationEffect.DEFAULT_AMPLITUDE
+        try {
+
+            if (Build.VERSION.SDK_INT >= 26) {
+                vibe.vibrate(
+                    VibrationEffect.createOneShot(
+                        VIBRATION_MILIS,
+                        VibrationEffect.DEFAULT_AMPLITUDE
+                    )
                 )
+            } else {
+                vibe.vibrate(VIBRATION_MILIS)
+            }
+
+            val sharedPref = getSharedPreferences(
+                getString(R.string.preference_file),
+                Context.MODE_PRIVATE
             )
-        } else {
-            vibe.vibrate(VIBRATION_MILIS)
+            var favourites =
+                sharedPref?.getString(getString(R.string.saved_favourites_key), "") ?: ""
+            favList = favourites.split(",").filter { it != "" }.toMutableList()
+
+            var list = when (longClickedId) {
+                R.id.btn_main -> viewModel.currencyMainList.value?.toMutableList()
+                R.id.btn_secondary1 -> viewModel.currencySec1List.value?.toMutableList()
+                R.id.btn_secondary2 -> viewModel.currencySec2List.value?.toMutableList()
+                else -> viewModel.currencyMainList.value?.toMutableList()
+            }
+
+            var allFavSorted = favList.map { favItem ->
+                var d = list!!.find { it.code == favItem }
+                d!!.isFavorite2 = true
+                d
+            }
+
+            var listToShow = list!!.filter { !favList.contains(it.code) }.toMutableList()
+            listToShow.addAll(0, allFavSorted)
+
+
+            newFragment.listToShow = listToShow
+            newFragment.list = list
+            newFragment.show(supportFragmentManager, "dialog")
+
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
-
-        val sharedPref = getSharedPreferences(
-            getString(R.string.preference_file),
-            Context.MODE_PRIVATE
-        )
-        var favourites = sharedPref?.getString(getString(R.string.saved_favourites_key), "") ?: ""
-        favList = favourites.split(",").filter { it != "" }.toMutableList()
-
-        var list = when (longClickedId) {
-            R.id.btn_main -> viewModel.currencyMainList.value?.toMutableList()
-            R.id.btn_secondary1 -> viewModel.currencySec1List.value?.toMutableList()
-            R.id.btn_secondary2 -> viewModel.currencySec2List.value?.toMutableList()
-            else -> viewModel.currencyMainList.value?.toMutableList()
-        }
-
-        var allFavSorted = favList.map { favItem ->
-            var d = list!!.find { it.code == favItem }
-            d!!.isFavorite2 = true
-            d
-        }
-
-        var listToShow = list!!.filter { !favList.contains(it.code) }.toMutableList()
-        listToShow.addAll(0, allFavSorted)
-
-
-        newFragment.listToShow = listToShow
-        newFragment.list = list
-        newFragment.show(supportFragmentManager, "dialog")
     }
 }

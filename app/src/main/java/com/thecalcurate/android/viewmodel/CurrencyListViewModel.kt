@@ -46,9 +46,12 @@ class CurrencyListViewModel(application: Application, private val mRepository: D
     var currencySec2List = MutableLiveData<List<CurrencyItem>>()
     val loading = MutableLiveData<Boolean>()
     var job: Job? = null
+    val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
+        throwable.printStackTrace()
+    }
 
     fun getCurrencyRates(baseCurrency: String, type: Int) {
-        job = CoroutineScope(Dispatchers.IO).launch {
+        job = CoroutineScope(Dispatchers.IO + coroutineExceptionHandler).launch {
             val response = mRepository.getCurrencyRates(baseCurrency)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {

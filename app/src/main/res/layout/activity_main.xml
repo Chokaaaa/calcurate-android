@@ -294,12 +294,25 @@
             android:layout_height="@dimen/btn_size"
             android:fontFamily="@font/coolvetica"
             android:text="%"
+            android:visibility="gone"
             android:textSize="@dimen/btn_percent_text_size"
             android:textStyle="bold"
             app:cornerRadius="@dimen/btn_halfsize"
             app:layout_constraintEnd_toEndOf="@id/btn5"
             app:layout_constraintTop_toTopOf="@+id/btn_equal" />
 
+        <TextView
+            android:id="@+id/btn_dot"
+            style="@style/Widget.Button2"
+            android:layout_width="@dimen/btn_size"
+            android:layout_height="@dimen/btn_size"
+            android:fontFamily="@font/coolvetica"
+            android:text="."
+            android:textSize="@dimen/btn_percent_text_size"
+            android:textStyle="bold"
+            app:cornerRadius="@dimen/btn_halfsize"
+            app:layout_constraintEnd_toEndOf="@id/btn5"
+            app:layout_constraintTop_toTopOf="@+id/btn_equal" />
 
         <!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
 
