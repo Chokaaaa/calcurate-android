@@ -1,11 +1,11 @@
 package com.thecalcurate.android
 
 import android.content.Context
-import android.content.Intent
 import android.media.MediaPlayer
 import android.os.*
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.Toast
@@ -19,6 +19,8 @@ import com.blongho.country_data.World
 import com.thecalcurate.android.model.CurrencyItem
 import com.thecalcurate.android.ui.*
 import com.thecalcurate.android.viewmodel.CurrencyListViewModel
+import eightbitlab.com.blurview.BlurView
+import eightbitlab.com.blurview.RenderScriptBlur
 
 
 class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
@@ -43,9 +45,22 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
     lateinit var b_dot: View
     lateinit var b_clear: View
 
+    lateinit var blurView: BlurView
     lateinit var btn_main: ImageView
     lateinit var btn_secondary1: ImageView
     lateinit var btn_secondary2: ImageView
+
+    //Tutorial Views
+    lateinit var btn_secondary1_tut: ImageView
+    lateinit var btn_secondary2_tut: ImageView
+    lateinit var txvHold: View
+    lateinit var txvSwipe: View
+    lateinit var txvSwipeRight: View
+    lateinit var txvSwipeLeft: View
+    lateinit var txvSroll: View
+    lateinit var txvSwipeUp: View
+    lateinit var txvSwipeDown: View
+
 
     lateinit var txvResult: MainTextView
     lateinit var imvResult: ImageView
@@ -67,6 +82,9 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
     var isMainSelected = false
     var savedMainVal = .0
     var secondarySelectedId = 0
+
+    var tutorialStep = 1
+    var isTutorialViewed = false
 
     lateinit var viewModel: CurrencyListViewModel
     lateinit var favList: MutableList<String>
@@ -294,6 +312,7 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
     }
 
     lateinit var vibe: Vibrator
+
     private fun viewSetup() {
         txvResult = findViewById(R.id.txtResult)
         imvResult = findViewById(R.id.imvResult)
@@ -301,6 +320,17 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
         btn_main = findViewById(R.id.btn_main)
         btn_secondary1 = findViewById(R.id.btn_secondary1)
         btn_secondary2 = findViewById(R.id.btn_secondary2)
+
+        //Tutorial Views
+        txvHold = findViewById(R.id.txvHold)
+        btn_secondary1_tut = findViewById(R.id.btn_secondary1_tut)
+        btn_secondary2_tut = findViewById(R.id.btn_secondary2_tut)
+        txvSwipe = findViewById(R.id.txvSwipe)
+        txvSwipeRight = findViewById(R.id.txvSwipeRight)
+        txvSwipeLeft = findViewById(R.id.txvSwipeLeft)
+        txvSroll = findViewById(R.id.txvScroll)
+        txvSwipeUp = findViewById(R.id.txvSwipeUp)
+        txvSwipeDown = findViewById(R.id.txvSwipeDown)
 
         b0 = findViewById(R.id.btn0)
         b1 = findViewById(R.id.btn1)
@@ -313,6 +343,7 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
         b8 = findViewById(R.id.btn8)
         b9 = findViewById(R.id.btn9)
 
+        blurView = findViewById(R.id.blurView)
         b_dot = findViewById(R.id.btn_dot)
         b_equal = findViewById(R.id.btn_equal)
         b_multi = findViewById(R.id.btn_multi)
@@ -331,6 +362,39 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
             getSystemService(VIBRATOR_SERVICE) as Vibrator
         }
 
+        var radius = 10f
+
+        var decorView = window.decorView
+        // ViewGroup you want to start blur from. Choose root as close to BlurView in hierarchy as possible.
+        var rootView: ViewGroup = decorView.findViewById(android.R.id.content)
+
+        // Optional:
+        // Set drawable to draw in the beginning of each blurred frame.
+        // Can be used in case your layout has a lot of transparent space and your content
+        // gets a too low alpha value after blur is applied.
+        var windowBackground = decorView.background
+
+
+        if (!isTutorialViewed) {
+            blurView.setupWith(rootView, RenderScriptBlur(this)) // or RenderEffectBlur
+                .setFrameClearDrawable(windowBackground) // Optional
+                .setBlurRadius(radius)
+            blurView.setOnClickListener(null)
+
+            btn_secondary1.visibility = View.GONE
+            btn_secondary2.visibility = View.GONE
+            btn_secondary1_tut.visibility = View.VISIBLE
+            btn_secondary2_tut.visibility = View.VISIBLE
+        } else {
+            blurView.visibility = View.GONE
+            btn_secondary1.visibility = View.VISIBLE
+            btn_secondary2.visibility = View.VISIBLE
+
+            txvHold.visibility = View.GONE
+            btn_secondary1_tut.visibility = View.GONE
+            btn_secondary2_tut.visibility = View.GONE
+
+        }
     }
 
 
@@ -339,6 +403,17 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
         setContentView(R.layout.activity_main)
 
         World.init(applicationContext)
+
+
+        var sharedPref =
+            getSharedPreferences(getString(R.string.preference_file), Context.MODE_PRIVATE)
+        val favourites = sharedPref?.getString(getString(R.string.saved_favourites_key), "") ?: ""
+        val selectedCur =
+            sharedPref?.getString("selected_currencies_key", "USD,EUR,GBP")
+                ?: "USD,EUR,GBP"
+        isTutorialViewed =
+            sharedPref?.getBoolean(getString(R.string.saved_is_totorial_key), false) ?: false
+
 
         viewSetup()
 
@@ -359,20 +434,13 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
         })
 
 
-        var sharedPref =
-            getSharedPreferences(getString(R.string.preference_file), Context.MODE_PRIVATE)
-        val favourites = sharedPref?.getString(getString(R.string.saved_favourites_key), "") ?: ""
-        val selectedCur =
-            sharedPref?.getString("selected_currencies_key", "USD,EUR,GBP")
-                ?: "USD,EUR,GBP"
-        val isTutorialViewed =
-            sharedPref?.getBoolean(getString(R.string.saved_is_totorial_key), false) ?: false
-
         selectedCurList = selectedCur.split(",").filter { it != "" }.toMutableList()
 
         setCur(btn_main, selectedCurList[0])
         setCur(btn_secondary1, selectedCurList[1])
         setCur(btn_secondary2, selectedCurList[2])
+        setCur(btn_secondary1_tut, selectedCurList[1])
+        setCur(btn_secondary2_tut, selectedCurList[2])
 
         btn_main.setOnClickListener(onMainClickListener)
         btn_secondary1.setOnClickListener(onSecondaryClickListener)
@@ -401,14 +469,19 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
 
         favList = favourites.split(",").filter { it != "" }.toMutableList()
 
+//        if (!isTutorialViewed) {
+//            with(sharedPref!!.edit()) {
+//                putBoolean(getString(R.string.saved_is_totorial_key), true)
+//                commit()
+//            }
+//            val intent = Intent(this, TutorialActivity::class.java)
+//            startActivity(intent)
+//        }
+
         if (!isTutorialViewed) {
-            with(sharedPref!!.edit()) {
-                putBoolean(getString(R.string.saved_is_totorial_key), true)
-                commit()
-            }
-            val intent = Intent(this, TutorialActivity::class.java)
-            startActivity(intent)
+            btn_main.callOnClick()
         }
+
         mp = MediaPlayer.create(this, R.raw.sound)
 
     }
@@ -468,17 +541,29 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
             override fun onSwipeTop() {
                 super.onSwipeTop()
                 scrollCurrency(btn_main, UP)
+                if (!isTutorialViewed && tutorialStep == 3) {
+                    tutorialStep++
+                    nextTutorialStep()
+                }
             }
 
             override fun onSwipeBottom() {
                 super.onSwipeBottom()
                 Log.e("MainActivity", "onSwipeBottom")
                 scrollCurrency(btn_main, DOWN)
+                if (!isTutorialViewed && tutorialStep == 3) {
+                    tutorialStep++
+                    nextTutorialStep()
+                }
             }
 
             override fun onLongPress() {
                 super.onLongPress()
-                Log.e("MainActivity", "View On Long Click!!!!")
+//                Log.e("MainActivity", "View On Long Click!!!!")
+                if (!isTutorialViewed && tutorialStep == 1) {
+                    tutorialStep++
+                    nextTutorialStep()
+                }
                 longClickedId = R.id.btn_main
                 showDialog()
             }
@@ -514,18 +599,31 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
             override fun onSwipeLeft() {
                 super.onSwipeLeft()
                 switchMain(R.id.btn_secondary2)
+                if (!isTutorialViewed && tutorialStep == 2) {
+                    tutorialStep++
+                    nextTutorialStep()
+                }
             }
 
             override fun onSwipeTop() {
                 super.onSwipeTop()
                 Log.e("MainActivity", "onSwipeTop")
                 scrollCurrency(btn_secondary2, UP)
+                if (!isTutorialViewed && tutorialStep == 3) {
+                    tutorialStep++
+                    nextTutorialStep()
+                }
+
             }
 
             override fun onSwipeBottom() {
                 super.onSwipeBottom()
                 Log.e("MainActivity", "onSwipeBottom")
                 scrollCurrency(btn_secondary2, DOWN)
+                if (!isTutorialViewed && tutorialStep == 3) {
+                    tutorialStep++
+                    nextTutorialStep()
+                }
             }
 
             override fun onLongPress() {
@@ -535,6 +633,45 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
                 showDialog()
             }
         })
+    }
+
+    private fun nextTutorialStep() {
+        if (tutorialStep == 2) {
+            txvHold.visibility = View.GONE
+            btn_secondary1.visibility = View.INVISIBLE
+            btn_secondary2.visibility = View.VISIBLE
+
+            txvSwipe.visibility = View.VISIBLE
+//            txvSwipeRight.visibility = View.VISIBLE
+            txvSwipeLeft.visibility = View.VISIBLE
+
+        } else if (tutorialStep == 3) {
+            txvSwipe.visibility = View.GONE
+//            txvSwipeRight.visibility = View.GONE
+            txvSwipeLeft.visibility = View.GONE
+
+            txvSroll.visibility = View.VISIBLE
+            txvSwipeUp.visibility = View.VISIBLE
+            txvSwipeDown.visibility = View.VISIBLE
+        } else if (tutorialStep == 4) {
+            var sharedPref =
+                getSharedPreferences(getString(R.string.preference_file), Context.MODE_PRIVATE)
+            with(sharedPref!!.edit()) {
+                putBoolean(getString(R.string.saved_is_totorial_key), true)
+                commit()
+            }
+            isTutorialViewed = true
+
+            txvSroll.visibility = View.GONE
+            txvSwipeUp.visibility = View.GONE
+            txvSwipeDown.visibility = View.GONE
+            blurView.visibility = View.GONE
+            btn_secondary1_tut.visibility = View.GONE
+            btn_secondary2_tut.visibility = View.GONE
+
+            btn_secondary1.visibility = View.VISIBLE
+
+        }
     }
 
     private fun scrollCurrency(btn: ImageView, scrollType: Int) {
@@ -661,7 +798,6 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
 
     private fun showDialog() {
         try {
-
             if (Build.VERSION.SDK_INT >= 26) {
                 vibe.vibrate(
                     VibrationEffect.createOneShot(

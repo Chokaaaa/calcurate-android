@@ -6,323 +6,438 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-        <com.thecalcurate.android.ui.MainTextView
-            android:id="@+id/txtResult"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:gravity="end|center_vertical"
-            android:lines="1"
-            android:text="0"
-            android:textSize="@dimen/txt_main_size"
-            app:autoSizeMaxTextSize="@dimen/txt_main_size"
-            app:autoSizeStepGranularity="1sp"
-            app:autoSizeTextType="uniform"
-            app:layout_constraintBottom_toTopOf="@+id/txvMain"
-            app:layout_constraintEnd_toEndOf="@+id/btn_equal"
-            app:layout_constraintStart_toStartOf="@+id/btn0"
-            tools:text="1000000" />
+    <com.thecalcurate.android.ui.MainTextView
+        android:id="@+id/txtResult"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="end|center_vertical"
+        android:lines="1"
+        android:text="0"
+        android:textSize="@dimen/txt_main_size"
+        app:autoSizeMaxTextSize="@dimen/txt_main_size"
+        app:autoSizeStepGranularity="1sp"
+        app:autoSizeTextType="uniform"
+        app:layout_constraintBottom_toTopOf="@+id/txvMain"
+        app:layout_constraintEnd_toEndOf="@+id/btn_equal"
+        app:layout_constraintStart_toStartOf="@+id/btn0"
+        tools:text="1000000" />
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/imvResult"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:clickable="true"
-            android:focusable="true"
-            app:layout_constraintBottom_toBottomOf="@+id/txtResult"
-            app:layout_constraintEnd_toEndOf="@+id/btn_equal"
-            app:layout_constraintStart_toStartOf="@+id/btn0"
-            app:layout_constraintTop_toTopOf="@+id/txtResult"
-            tools:text="1000000" />
-
-
-        <!--        app:layout_constraintBottom_toTopOf="@id/adView"-->
-        <!--    <androidx.constraintlayout.widget.ConstraintLayout-->
-        <!--        android:id="@+id/clPain"-->
-        <!--        android:layout_width="0dp"-->
-        <!--        android:layout_height="wrap_content"-->
-        <!--        app:layout_constraintBottom_toBottomOf="parent"-->
-        <!--        app:layout_constraintEnd_toEndOf="parent"-->
-        <!--        app:layout_constraintStart_toStartOf="parent">-->
-        <!--        app:layout_constraintDimensionRatio="H,7:10"-->
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/glH"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_begin="446dp" />
-
-        <TextView
-            android:id="@+id/txvMain"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
-            android:text="@string/txt_main"
-            android:textColor="@color/white"
-            app:layout_constraintBottom_toTopOf="@id/btn_main"
-            app:layout_constraintEnd_toEndOf="@id/btn_main"
-            app:layout_constraintStart_toStartOf="@id/btn_main" />
-
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/btn_main"
-            style="@style/imageview_base"
-            android:layout_width="@dimen/btn_currency_size"
-            android:layout_height="@dimen/btn_currency_size"
-            android:background="@drawable/btn_background"
-            android:foreground="@drawable/btn_foreground"
-            android:padding="@dimen/btn_currency_padding"
-            android:scaleType="centerCrop"
-            android:src="@drawable/usd"
-            app:layout_constraintBottom_toBottomOf="@id/btn_divide"
-            app:layout_constraintEnd_toEndOf="@id/btn4"
-            app:layout_constraintStart_toStartOf="@id/btn4"
-            app:layout_constraintTop_toTopOf="@id/btn_divide" />
-
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/btn_secondary1"
-            style="@style/imageview_base"
-            android:layout_width="@dimen/btn_currency_size"
-            android:layout_height="@dimen/btn_currency_size"
-            android:background="@drawable/btn_background_sec"
-            android:foreground="@drawable/btn_foreground"
-            android:padding="@dimen/btn_currency_padding"
-            android:scaleType="centerCrop"
-            android:src="@drawable/aed"
-            app:layout_constraintBottom_toBottomOf="@id/btn_divide"
-            app:layout_constraintEnd_toEndOf="@id/btn5"
-            app:layout_constraintStart_toStartOf="@id/btn5"
-            app:layout_constraintTop_toTopOf="@id/btn_divide" />
-
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/btn_secondary2"
-            style="@style/imageview_base"
-            android:layout_width="@dimen/btn_currency_size"
-            android:layout_height="@dimen/btn_currency_size"
-            android:background="@drawable/btn_background_sec"
-            android:foreground="@drawable/btn_foreground"
-            android:padding="@dimen/btn_currency_padding"
-            android:scaleType="centerCrop"
-            android:src="@drawable/kzt"
-            app:layout_constraintBottom_toBottomOf="@id/btn_divide"
-            app:layout_constraintEnd_toEndOf="@id/btn6"
-            app:layout_constraintStart_toStartOf="@id/btn6"
-            app:layout_constraintTop_toTopOf="@id/btn_divide" />
-
-        <TextView
-            android:id="@+id/btn1"
-            style="@style/Widget.Button2"
-            android:layout_width="@dimen/btn_size"
-            android:layout_height="@dimen/btn_size"
-            android:text="1"
-            app:cornerRadius="@dimen/btn_halfsize"
-            app:layout_constraintBottom_toBottomOf="@+id/btn_add"
-            app:layout_constraintEnd_toEndOf="@+id/btn4"
-            app:layout_constraintTop_toTopOf="@+id/btn_add" />
-
-        <TextView
-            android:id="@+id/btn2"
-            style="@style/Widget.Button2"
-            android:layout_width="@dimen/btn_size"
-            android:layout_height="@dimen/btn_size"
-            android:text="2"
-            app:cornerRadius="@dimen/btn_halfsize"
-            app:layout_constraintEnd_toEndOf="@id/btn5"
-            app:layout_constraintTop_toTopOf="@id/btn_add" />
-
-        <TextView
-            android:id="@+id/btn3"
-            style="@style/Widget.Button2"
-            android:layout_width="@dimen/btn_size"
-            android:layout_height="@dimen/btn_size"
-            android:text="3"
-            app:cornerRadius="@dimen/btn_halfsize"
-            app:layout_constraintStart_toStartOf="@id/btn6"
-            app:layout_constraintTop_toTopOf="@id/btn_add" />
-
-        <TextView
-            android:id="@+id/btn4"
-            style="@style/Widget.Button2"
-            android:layout_width="@dimen/btn_size"
-            android:layout_height="@dimen/btn_size"
-            android:text="4"
-            app:cornerRadius="@dimen/btn_halfsize"
-            app:layout_constraintBottom_toBottomOf="@+id/btn_sub"
-            app:layout_constraintEnd_toStartOf="@id/btn5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/btn_sub" />
-
-        <TextView
-            android:id="@+id/btn5"
-            style="@style/Widget.Button2"
-            android:layout_width="@dimen/btn_size"
-            android:layout_height="@dimen/btn_size"
-            android:text="5"
-            app:cornerRadius="@dimen/btn_halfsize"
-            app:layout_constraintBottom_toBottomOf="@+id/btn_sub"
-            app:layout_constraintEnd_toStartOf="@id/btn6"
-            app:layout_constraintStart_toEndOf="@id/btn4"
-            app:layout_constraintTop_toTopOf="@+id/btn_sub" />
-
-        <TextView
-            android:id="@+id/btn6"
-            style="@style/Widget.Button2"
-            android:layout_width="@dimen/btn_size"
-            android:layout_height="@dimen/btn_size"
-            android:text="6"
-            app:cornerRadius="@dimen/btn_halfsize"
-            app:layout_constraintBottom_toBottomOf="@+id/btn_sub"
-            app:layout_constraintEnd_toStartOf="@id/btn_sub"
-            app:layout_constraintStart_toEndOf="@id/btn5"
-            app:layout_constraintTop_toTopOf="@+id/btn_sub" />
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/imvResult"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintBottom_toBottomOf="@+id/txtResult"
+        app:layout_constraintEnd_toEndOf="@+id/btn_equal"
+        app:layout_constraintStart_toStartOf="@+id/btn0"
+        app:layout_constraintTop_toTopOf="@+id/txtResult"
+        tools:text="1000000" />
 
 
-        <TextView
-            android:id="@+id/btn7"
-            style="@style/Widget.Button2"
-            android:layout_width="@dimen/btn_size"
-            android:layout_height="@dimen/btn_size"
-            android:text="7"
-            app:layout_constraintBottom_toBottomOf="@id/btn_multi"
-            app:layout_constraintEnd_toEndOf="@id/btn4" />
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/btn_secondary1_tut"
+        style="@style/imageview_base"
+        android:layout_width="@dimen/btn_currency_size"
+        android:layout_height="@dimen/btn_currency_size"
+        android:background="@drawable/btn_background_sec"
+        android:foreground="@drawable/btn_foreground"
+        android:padding="@dimen/btn_currency_padding"
+        android:scaleType="centerCrop"
+        android:src="@drawable/euro"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/btn_divide"
+        app:layout_constraintEnd_toEndOf="@id/btn5"
+        app:layout_constraintStart_toStartOf="@id/btn5"
+        app:layout_constraintTop_toTopOf="@id/btn_divide" />
 
-        <TextView
-            android:id="@+id/btn8"
-            style="@style/Widget.Button2"
-            android:layout_width="@dimen/btn_size"
-            android:layout_height="@dimen/btn_size"
-            android:text="8"
-            app:cornerRadius="@dimen/btn_halfsize"
-            app:layout_constraintBottom_toBottomOf="@id/btn_multi"
-            app:layout_constraintEnd_toEndOf="@id/btn5" />
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/btn_secondary2_tut"
+        style="@style/imageview_base"
+        android:layout_width="@dimen/btn_currency_size"
+        android:layout_height="@dimen/btn_currency_size"
+        android:background="@drawable/btn_background_sec"
+        android:foreground="@drawable/btn_foreground"
+        android:padding="@dimen/btn_currency_padding"
+        android:scaleType="centerCrop"
+        android:src="@drawable/pound"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/btn_divide"
+        app:layout_constraintEnd_toEndOf="@id/btn6"
+        app:layout_constraintStart_toStartOf="@id/btn6"
+        app:layout_constraintTop_toTopOf="@id/btn_divide" />
 
-        <TextView
-            android:id="@+id/btn9"
-            style="@style/Widget.Button2"
-            android:layout_width="@dimen/btn_size"
-            android:layout_height="@dimen/btn_size"
-            android:text="9"
-            app:cornerRadius="@dimen/btn_halfsize"
-            app:layout_constraintBottom_toBottomOf="@id/btn_multi"
-            app:layout_constraintStart_toStartOf="@id/btn6" />
+    <!--        app:layout_constraintBottom_toTopOf="@id/adView"-->
+    <!--    <androidx.constraintlayout.widget.ConstraintLayout-->
+    <!--        android:id="@+id/clPain"-->
+    <!--        android:layout_width="0dp"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintStart_toStartOf="parent">-->
+    <!--        app:layout_constraintDimensionRatio="H,7:10"-->
 
-        <TextView
-            android:id="@+id/btn0"
-            style="@style/Widget.Button2"
-            android:layout_width="@dimen/btn_size"
-            android:layout_height="@dimen/btn_size"
-            android:text="0"
-            app:cornerRadius="@dimen/btn_halfsize"
-            app:layout_constraintBottom_toBottomOf="@+id/btn_equal"
-            app:layout_constraintEnd_toEndOf="@id/btn4"
-            app:layout_constraintTop_toTopOf="@+id/btn_equal" />
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/glH"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="446dp" />
 
-        <TextView
-            android:id="@+id/btn_equal"
-            style="@style/Widget.Button.Action"
-            android:layout_width="@dimen/btn_size"
-            android:layout_height="@dimen/btn_size"
-            android:layout_marginBottom="@dimen/btn_margin"
-            android:text="="
-            android:textColor="#ffff"
-            app:cornerRadius="@dimen/btn_halfsize"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@id/btn_sub" />
+    <TextView
+        android:id="@+id/btn1"
+        style="@style/Widget.Button2"
+        android:layout_width="@dimen/btn_size"
+        android:layout_height="@dimen/btn_size"
+        android:text="1"
+        app:cornerRadius="@dimen/btn_halfsize"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_add"
+        app:layout_constraintEnd_toEndOf="@+id/btn4"
+        app:layout_constraintTop_toTopOf="@+id/btn_add" />
 
-        <TextView
-            android:id="@+id/btn_multi"
-            style="@style/Widget.Button.Action"
-            android:layout_width="@dimen/btn_size"
-            android:layout_height="@dimen/btn_size"
-            android:layout_marginBottom="@dimen/btn_margin"
-            android:text="×"
-            app:cornerRadius="@dimen/btn_halfsize"
-            app:layout_constraintBottom_toTopOf="@id/btn_sub"
-            app:layout_constraintStart_toStartOf="@id/btn_sub" />
+    <TextView
+        android:id="@+id/btn2"
+        style="@style/Widget.Button2"
+        android:layout_width="@dimen/btn_size"
+        android:layout_height="@dimen/btn_size"
+        android:text="2"
+        app:cornerRadius="@dimen/btn_halfsize"
+        app:layout_constraintEnd_toEndOf="@id/btn5"
+        app:layout_constraintTop_toTopOf="@id/btn_add" />
 
-        <TextView
-            android:id="@+id/btn_divide"
-            style="@style/Widget.Button.Action"
-            android:layout_width="@dimen/btn_size"
-            android:layout_height="@dimen/btn_size"
-            android:layout_marginBottom="@dimen/btn_margin"
-            android:text="\u00F7"
-            app:cornerRadius="@dimen/btn_halfsize"
-            app:layout_constraintBottom_toTopOf="@id/btn_multi"
-            app:layout_constraintStart_toStartOf="@id/btn_sub" />
+    <TextView
+        android:id="@+id/btn3"
+        style="@style/Widget.Button2"
+        android:layout_width="@dimen/btn_size"
+        android:layout_height="@dimen/btn_size"
+        android:text="3"
+        app:cornerRadius="@dimen/btn_halfsize"
+        app:layout_constraintStart_toStartOf="@id/btn6"
+        app:layout_constraintTop_toTopOf="@id/btn_add" />
 
-        <TextView
-            android:id="@+id/btn_add"
-            style="@style/Widget.Button.Action"
-            android:layout_width="@dimen/btn_size"
-            android:layout_height="@dimen/btn_size"
-            android:layout_marginBottom="@dimen/btn_margin"
-            android:text="+"
-            app:layout_constraintBottom_toTopOf="@+id/btn_equal"
-            app:layout_constraintStart_toStartOf="@id/btn_sub"/>
+    <TextView
+        android:id="@+id/btn4"
+        style="@style/Widget.Button2"
+        android:layout_width="@dimen/btn_size"
+        android:layout_height="@dimen/btn_size"
+        android:text="4"
+        app:cornerRadius="@dimen/btn_halfsize"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_sub"
+        app:layout_constraintEnd_toStartOf="@id/btn5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btn_sub" />
 
-        <TextView
-            android:id="@+id/btn_sub"
-            style="@style/Widget.Button.Action"
-            android:layout_width="@dimen/btn_size"
-            android:layout_height="@dimen/btn_size"
-            android:text="—"
-            android:textSize="@dimen/btn_percent_text_size"
-            android:textStyle="bold"
-            android:layout_marginBottom="@dimen/btn_margin"
-            app:cornerRadius="@dimen/btn_halfsize"
-            app:layout_constraintBottom_toTopOf="@+id/btn_add"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/btn6"/>
+    <TextView
+        android:id="@+id/btn5"
+        style="@style/Widget.Button2"
+        android:layout_width="@dimen/btn_size"
+        android:layout_height="@dimen/btn_size"
+        android:text="5"
+        app:cornerRadius="@dimen/btn_halfsize"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_sub"
+        app:layout_constraintEnd_toStartOf="@id/btn6"
+        app:layout_constraintStart_toEndOf="@id/btn4"
+        app:layout_constraintTop_toTopOf="@+id/btn_sub" />
 
-        <TextView
-            android:id="@+id/btn_clear"
-            style="@style/Widget.Button.Action"
-            android:layout_width="@dimen/btn_size"
-            android:layout_height="@dimen/btn_size"
-            android:padding="0dp"
-            android:text="AC"
-            android:textSize="@dimen/btn_ac_text_size"
-            android:textStyle="normal"
-            app:cornerRadius="@dimen/btn_halfsize"
-            app:layout_constraintStart_toStartOf="@id/btn6"
-            app:layout_constraintTop_toTopOf="@+id/btn_equal" />
-
-        <TextView
-            android:id="@+id/btn_percent"
-            style="@style/Widget.Button.Action"
-            android:layout_width="@dimen/btn_size"
-            android:layout_height="@dimen/btn_size"
-            android:fontFamily="@font/coolvetica"
-            android:text="%"
-            android:visibility="gone"
-            android:textSize="@dimen/btn_percent_text_size"
-            android:textStyle="bold"
-            app:cornerRadius="@dimen/btn_halfsize"
-            app:layout_constraintEnd_toEndOf="@id/btn5"
-            app:layout_constraintTop_toTopOf="@+id/btn_equal" />
-
-        <TextView
-            android:id="@+id/btn_dot"
-            style="@style/Widget.Button2"
-            android:layout_width="@dimen/btn_size"
-            android:layout_height="@dimen/btn_size"
-            android:fontFamily="@font/coolvetica"
-            android:text="."
-            android:textSize="@dimen/btn_percent_text_size"
-            android:textStyle="bold"
-            app:cornerRadius="@dimen/btn_halfsize"
-            app:layout_constraintEnd_toEndOf="@id/btn5"
-            app:layout_constraintTop_toTopOf="@+id/btn_equal" />
-
-        <!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
+    <TextView
+        android:id="@+id/btn6"
+        style="@style/Widget.Button2"
+        android:layout_width="@dimen/btn_size"
+        android:layout_height="@dimen/btn_size"
+        android:text="6"
+        app:cornerRadius="@dimen/btn_halfsize"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_sub"
+        app:layout_constraintEnd_toStartOf="@id/btn_sub"
+        app:layout_constraintStart_toEndOf="@id/btn5"
+        app:layout_constraintTop_toTopOf="@+id/btn_sub" />
 
 
-        <!--    <com.google.android.gms.ads.AdView-->
-        <!--        android:id="@+id/adView"-->
-        <!--        android:layout_width="wrap_content"-->
-        <!--        android:layout_height="wrap_content"-->
-        <!--        app:layout_constraintBottom_toBottomOf="parent"-->
-        <!--        app:layout_constraintEnd_toEndOf="parent"-->
-        <!--        app:layout_constraintStart_toStartOf="parent" />-->
+    <TextView
+        android:id="@+id/btn7"
+        style="@style/Widget.Button2"
+        android:layout_width="@dimen/btn_size"
+        android:layout_height="@dimen/btn_size"
+        android:text="7"
+        app:layout_constraintBottom_toBottomOf="@id/btn_multi"
+        app:layout_constraintEnd_toEndOf="@id/btn4" />
+
+    <TextView
+        android:id="@+id/btn8"
+        style="@style/Widget.Button2"
+        android:layout_width="@dimen/btn_size"
+        android:layout_height="@dimen/btn_size"
+        android:text="8"
+        app:cornerRadius="@dimen/btn_halfsize"
+        app:layout_constraintBottom_toBottomOf="@id/btn_multi"
+        app:layout_constraintEnd_toEndOf="@id/btn5" />
+
+    <TextView
+        android:id="@+id/btn9"
+        style="@style/Widget.Button2"
+        android:layout_width="@dimen/btn_size"
+        android:layout_height="@dimen/btn_size"
+        android:text="9"
+        app:cornerRadius="@dimen/btn_halfsize"
+        app:layout_constraintBottom_toBottomOf="@id/btn_multi"
+        app:layout_constraintStart_toStartOf="@id/btn6" />
+
+    <TextView
+        android:id="@+id/btn0"
+        style="@style/Widget.Button2"
+        android:layout_width="@dimen/btn_size"
+        android:layout_height="@dimen/btn_size"
+        android:text="0"
+        app:cornerRadius="@dimen/btn_halfsize"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_equal"
+        app:layout_constraintEnd_toEndOf="@id/btn4"
+        app:layout_constraintTop_toTopOf="@+id/btn_equal" />
+
+    <TextView
+        android:id="@+id/btn_equal"
+        style="@style/Widget.Button.Action"
+        android:layout_width="@dimen/btn_size"
+        android:layout_height="@dimen/btn_size"
+        android:layout_marginBottom="@dimen/btn_margin"
+        android:text="="
+        android:textColor="#ffff"
+        app:cornerRadius="@dimen/btn_halfsize"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@id/btn_sub" />
+
+    <TextView
+        android:id="@+id/btn_multi"
+        style="@style/Widget.Button.Action"
+        android:layout_width="@dimen/btn_size"
+        android:layout_height="@dimen/btn_size"
+        android:layout_marginBottom="@dimen/btn_margin"
+        android:text="×"
+        app:cornerRadius="@dimen/btn_halfsize"
+        app:layout_constraintBottom_toTopOf="@id/btn_sub"
+        app:layout_constraintStart_toStartOf="@id/btn_sub" />
+
+    <TextView
+        android:id="@+id/btn_divide"
+        style="@style/Widget.Button.Action"
+        android:layout_width="@dimen/btn_size"
+        android:layout_height="@dimen/btn_size"
+        android:layout_marginBottom="@dimen/btn_margin"
+        android:text="\u00F7"
+        app:cornerRadius="@dimen/btn_halfsize"
+        app:layout_constraintBottom_toTopOf="@id/btn_multi"
+        app:layout_constraintStart_toStartOf="@id/btn_sub" />
+
+    <TextView
+        android:id="@+id/btn_add"
+        style="@style/Widget.Button.Action"
+        android:layout_width="@dimen/btn_size"
+        android:layout_height="@dimen/btn_size"
+        android:layout_marginBottom="@dimen/btn_margin"
+        android:text="+"
+        app:layout_constraintBottom_toTopOf="@+id/btn_equal"
+        app:layout_constraintStart_toStartOf="@id/btn_sub" />
+
+    <TextView
+        android:id="@+id/btn_sub"
+        style="@style/Widget.Button.Action"
+        android:layout_width="@dimen/btn_size"
+        android:layout_height="@dimen/btn_size"
+        android:layout_marginBottom="@dimen/btn_margin"
+        android:text="—"
+        android:textSize="@dimen/btn_percent_text_size"
+        android:textStyle="bold"
+        app:cornerRadius="@dimen/btn_halfsize"
+        app:layout_constraintBottom_toTopOf="@+id/btn_add"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/btn6" />
+
+    <TextView
+        android:id="@+id/btn_clear"
+        style="@style/Widget.Button.Action"
+        android:layout_width="@dimen/btn_size"
+        android:layout_height="@dimen/btn_size"
+        android:padding="0dp"
+        android:text="AC"
+        android:textSize="@dimen/btn_ac_text_size"
+        android:textStyle="normal"
+        app:cornerRadius="@dimen/btn_halfsize"
+        app:layout_constraintStart_toStartOf="@id/btn6"
+        app:layout_constraintTop_toTopOf="@+id/btn_equal" />
+
+    <TextView
+        android:id="@+id/btn_percent"
+        style="@style/Widget.Button.Action"
+        android:layout_width="@dimen/btn_size"
+        android:layout_height="@dimen/btn_size"
+        android:fontFamily="@font/coolvetica"
+        android:text="%"
+        android:textSize="@dimen/btn_percent_text_size"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:cornerRadius="@dimen/btn_halfsize"
+        app:layout_constraintEnd_toEndOf="@id/btn5"
+        app:layout_constraintTop_toTopOf="@+id/btn_equal" />
+
+    <TextView
+        android:id="@+id/btn_dot"
+        style="@style/Widget.Button2"
+        android:layout_width="@dimen/btn_size"
+        android:layout_height="@dimen/btn_size"
+        android:fontFamily="@font/coolvetica"
+        android:text="."
+        android:textSize="@dimen/btn_percent_text_size"
+        android:textStyle="bold"
+        app:cornerRadius="@dimen/btn_halfsize"
+        app:layout_constraintEnd_toEndOf="@id/btn5"
+        app:layout_constraintTop_toTopOf="@+id/btn_equal" />
+
+    <eightbitlab.com.blurview.BlurView
+        android:id="@+id/blurView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <!--Any child View here, TabLayout for example. This View will NOT be blurred -->
+
+    </eightbitlab.com.blurview.BlurView>
+
+
+    <TextView
+        android:id="@+id/txvMain"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:text="@string/txt_main"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toTopOf="@id/btn_main"
+        app:layout_constraintEnd_toEndOf="@id/btn_main"
+        app:layout_constraintStart_toStartOf="@id/btn_main" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/btn_main"
+        style="@style/imageview_base"
+        android:layout_width="@dimen/btn_currency_size"
+        android:layout_height="@dimen/btn_currency_size"
+        android:background="@drawable/btn_background"
+        android:foreground="@drawable/btn_foreground"
+        android:padding="@dimen/btn_currency_padding"
+        android:scaleType="centerCrop"
+        android:src="@drawable/usd"
+        app:layout_constraintBottom_toBottomOf="@id/btn_divide"
+        app:layout_constraintEnd_toEndOf="@id/btn4"
+        app:layout_constraintStart_toStartOf="@id/btn4"
+        app:layout_constraintTop_toTopOf="@id/btn_divide" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/btn_secondary1"
+        style="@style/imageview_base"
+        android:layout_width="@dimen/btn_currency_size"
+        android:layout_height="@dimen/btn_currency_size"
+        android:background="@drawable/btn_background_sec"
+        android:foreground="@drawable/btn_foreground"
+        android:padding="@dimen/btn_currency_padding"
+        android:scaleType="centerCrop"
+        android:src="@drawable/euro"
+        app:layout_constraintBottom_toBottomOf="@id/btn_divide"
+        app:layout_constraintEnd_toEndOf="@id/btn5"
+        app:layout_constraintStart_toStartOf="@id/btn5"
+        app:layout_constraintTop_toTopOf="@id/btn_divide" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/btn_secondary2"
+        style="@style/imageview_base"
+        android:layout_width="@dimen/btn_currency_size"
+        android:layout_height="@dimen/btn_currency_size"
+        android:background="@drawable/btn_background_sec"
+        android:foreground="@drawable/btn_foreground"
+        android:padding="@dimen/btn_currency_padding"
+        android:scaleType="centerCrop"
+        android:src="@drawable/pound"
+        app:layout_constraintBottom_toBottomOf="@id/btn_divide"
+        app:layout_constraintEnd_toEndOf="@id/btn6"
+        app:layout_constraintStart_toStartOf="@id/btn6"
+        app:layout_constraintTop_toTopOf="@id/btn_divide" />
+
+    <TextView
+        android:id="@+id/txvHold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/txt_hold"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="@id/btn_main"
+        app:layout_constraintStart_toEndOf="@id/btn_main"
+        app:layout_constraintTop_toTopOf="@+id/btn_main" />
+
+    <ImageView
+        android:id="@+id/txvSwipeRight"
+        android:layout_width="60dp"
+        android:layout_height="50dp"
+        android:src="@drawable/swipe_right"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/btn_main"
+        app:layout_constraintStart_toEndOf="@id/btn_main" />
+
+    <ImageView
+        android:id="@+id/txvSwipeLeft"
+        android:layout_width="60dp"
+        android:layout_height="50dp"
+        android:src="@drawable/swipe_left"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@id/btn_secondary2"
+        app:layout_constraintTop_toTopOf="@id/btn_secondary2" />
+
+    <TextView
+        android:id="@+id/txvSwipe"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="@string/txt_swipe"
+        android:textColor="@color/white"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@id/btn_secondary2"
+        app:layout_constraintStart_toStartOf="@id/btn_main"
+        app:layout_constraintTop_toBottomOf="@id/btn_main" />
+
+    <ImageView
+        android:id="@+id/txvSwipeUp"
+        android:layout_width="50dp"
+        android:layout_height="60dp"
+        android:src="@drawable/swipe_up"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/btn_main"
+        app:layout_constraintStart_toEndOf="@id/btn_main" />
+
+    <ImageView
+        android:id="@+id/txvSwipeDown"
+        android:layout_width="50dp"
+        android:layout_height="60dp"
+        android:src="@drawable/swipe_down"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/btn_secondary2"
+        app:layout_constraintEnd_toStartOf="@id/btn_secondary2" />
+
+    <TextView
+        android:id="@+id/txvScroll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="@string/txt_scroll"
+        android:textColor="@color/white"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@id/btn_secondary2"
+        app:layout_constraintStart_toStartOf="@id/btn_main"
+        app:layout_constraintTop_toBottomOf="@id/btn_main" />
+    <!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+
+    <!--    <com.google.android.gms.ads.AdView-->
+    <!--        android:id="@+id/adView"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintStart_toStartOf="parent" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>
