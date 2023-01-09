@@ -36,23 +36,34 @@ class MainTextView @JvmOverloads constructor(
 
     fun swipe() {
         var result = text.toString().replace(",", "")
-        if (result.length == 1) {
-            setResult(.0)
+        text = if (result.length == 1) {
+            "0"
         } else {
-            var r = result.substring(0, result.length - 1).toDouble()
-            setResult(r)
+            result.substring(0, result.length - 1)
         }
     }
 
     override fun setText(text: CharSequence?, type: BufferType?) {
         var textStr = text.toString()
-        Log.e(TAG, "setText textStr: $textStr")
 
         var newText = if (textStr.isNotEmpty() && textStr[textStr.length - 1] == '.') {
-            textStr
+            var result = textStr.toDouble()
+            if (ifReallyDecimal(result)) {
+                doubleToStringNoDecimal(result).toString() + "."
+            } else {
+                textStr
+            }
+        } else if (textStr.length > 1 &&  textStr[textStr.length - 2] == '.' && textStr[textStr.length - 1] == '0') {
+            var result = textStr.toDouble()
+            Log.e(TAG, "setText .0 result: $result")
+            if (ifReallyDecimal(result)) {
+                doubleToStringNoDecimal2(result).toString() + ".0"
+            } else {
+                textStr
+            }
         } else {
-            var result = text.toString().toDouble()
-            Log.e(TAG, "setText result: $result")
+            var result = textStr.toDouble()
+            Log.e(TAG, "setText else result: $result")
 
             if (!ifReallyDecimal(result)) {
                 val roundedResult = Math.round(result * 1000) / 1000.0
@@ -60,8 +71,9 @@ class MainTextView @JvmOverloads constructor(
             } else {
                 doubleToStringNoDecimal(result).toString()
             }
+
         }
-        Log.e(TAG, "setText newText: $newText")
+        Log.e(TAG, "setText textStr: $textStr, newText: $newText")
 
         super.setText(newText, type)
     }

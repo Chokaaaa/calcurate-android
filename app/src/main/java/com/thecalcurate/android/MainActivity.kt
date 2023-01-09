@@ -1,12 +1,13 @@
 package com.thecalcurate.android
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.content.Context
 import android.media.MediaPlayer
 import android.os.*
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -102,15 +103,11 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
                 R.id.btn_secondary1 -> setCur(btn_secondary1, curItem.code)
                 R.id.btn_secondary2 -> setCur(btn_secondary2, curItem.code)
             }
+            if (!isTutorialViewed && tutorialStep == 1) {
+                tutorialStep++
+                nextTutorialStep()
+            }
 //            hideKeyboard()
-        }
-    }
-
-    fun hideKeyboard() {
-        // Only runs if there is a view that is currently focused
-        this.currentFocus?.let { view ->
-            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-            imm?.hideSoftInputFromWindow(view.windowToken, 0)
         }
     }
 
@@ -518,17 +515,17 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
             override fun onSwipeRight() {
                 super.onSwipeRight()
                 txvResult.swipe()
-                if (!val1.isNaN()) {
-                    val1 = txvResult.text.toString().toDouble()
-                }
+//                if (!val1.isNaN()) {
+//                    val1 = txvResult.text.toString().toDouble()
+//                }
             }
 
             override fun onSwipeLeft() {
                 super.onSwipeLeft()
                 txvResult.swipe()
-                if (!val1.isNaN()) {
-                    val1 = txvResult.text.toString().toDouble()
-                }
+//                if (!val1.isNaN()) {
+//                    val1 = txvResult.text.toString().toDouble()
+//                }
             }
         })
 
@@ -560,10 +557,6 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
             override fun onLongPress() {
                 super.onLongPress()
 //                Log.e("MainActivity", "View On Long Click!!!!")
-                if (!isTutorialViewed && tutorialStep == 1) {
-                    tutorialStep++
-                    nextTutorialStep()
-                }
                 longClickedId = R.id.btn_main
                 showDialog()
             }
@@ -639,20 +632,33 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
         if (tutorialStep == 2) {
             txvHold.visibility = View.GONE
             btn_secondary1.visibility = View.INVISIBLE
-            btn_secondary2.visibility = View.VISIBLE
+//            btn_secondary2.visibility = View.VISIBLE
 
-            txvSwipe.visibility = View.VISIBLE
-//            txvSwipeRight.visibility = View.VISIBLE
-            txvSwipeLeft.visibility = View.VISIBLE
+//            txvSwipe.visibility = View.VISIBLE
+////            txvSwipeRight.visibility = View.VISIBLE
+//            txvSwipeLeft.visibility = View.VISIBLE
+
+            fadeOut(txvHold)
+
+            faceIn(btn_secondary2)
+            faceIn(txvSwipe)
+            faceIn(txvSwipeLeft)
 
         } else if (tutorialStep == 3) {
-            txvSwipe.visibility = View.GONE
-//            txvSwipeRight.visibility = View.GONE
-            txvSwipeLeft.visibility = View.GONE
+//            txvSwipe.visibility = View.GONE
+////            txvSwipeRight.visibility = View.GONE
+//            txvSwipeLeft.visibility = View.GONE
+//            txvSroll.visibility = View.VISIBLE
+//            txvSwipeUp.visibility = View.VISIBLE
+//            txvSwipeDown.visibility = View.VISIBLE
 
-            txvSroll.visibility = View.VISIBLE
-            txvSwipeUp.visibility = View.VISIBLE
-            txvSwipeDown.visibility = View.VISIBLE
+            fadeOut(txvSwipe)
+            fadeOut(txvSwipeLeft)
+
+            faceIn(txvSroll)
+            faceIn(txvSwipeUp)
+            faceIn(txvSwipeDown)
+
         } else if (tutorialStep == 4) {
             var sharedPref =
                 getSharedPreferences(getString(R.string.preference_file), Context.MODE_PRIVATE)
@@ -662,15 +668,45 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
             }
             isTutorialViewed = true
 
-            txvSroll.visibility = View.GONE
-            txvSwipeUp.visibility = View.GONE
-            txvSwipeDown.visibility = View.GONE
-            blurView.visibility = View.GONE
             btn_secondary1_tut.visibility = View.GONE
             btn_secondary2_tut.visibility = View.GONE
-
             btn_secondary1.visibility = View.VISIBLE
 
+            // Animate the loading view to 0% opacity. After the animation ends,
+            // set its visibility to GONE as an optimization step (it won't
+            // participate in layout passes, etc.)
+            fadeOut(blurView,900L)
+            fadeOut(txvSroll)
+            fadeOut(txvSwipeUp)
+            fadeOut(txvSwipeDown)
+        }
+    }
+
+    private fun fadeOut(view: View, animationDuration: Long = 600L) {
+        view.visibility = View.VISIBLE
+        view.animate()
+            .alpha(0f)
+            .setDuration(animationDuration)
+            .setListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator) {
+                    view.visibility = View.GONE
+                }
+            })
+    }
+
+    private fun faceIn(view: View, animationDuration: Long = 600L) {
+        view.apply {
+            // Set the content view to 0% opacity but visible, so that it is visible
+            // (but fully transparent) during the animation.
+            alpha = 0f
+            visibility = View.VISIBLE
+
+            // Animate the content view to 100% opacity, and clear any animation
+            // listener set on the view.
+            animate()
+                .alpha(1f)
+                .setDuration(animationDuration)
+                .setListener(null)
         }
     }
 
