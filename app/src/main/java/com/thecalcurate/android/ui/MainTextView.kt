@@ -14,7 +14,11 @@ class MainTextView @JvmOverloads constructor(
 ) : androidx.appcompat.widget.AppCompatTextView(context, attrs, defStyle) {
     val TAG = "MainTextView"
     fun setResult(result: Double) {
-        text = result.toString()
+        var resText = result.toString()
+        if (resText.length > 1 && resText[resText.length - 2] == '.' && resText[resText.length - 1] == '0') {
+            resText = resText.substring(0, resText.indexOf(".0"))
+        }
+        text = resText
         Log.e(TAG, "setResult result: $result, text: $text")
         /*if (!ifReallyDecimal(result)) {
         val roundedResult = Math.round(result * 1000) / 1000.0
@@ -53,14 +57,17 @@ class MainTextView @JvmOverloads constructor(
             } else {
                 textStr
             }
-        } else if (textStr.length > 1 &&  textStr[textStr.length - 2] == '.' && textStr[textStr.length - 1] == '0') {
-            var result = textStr.toDouble()
-            Log.e(TAG, "setText .0 result: $result")
-            if (ifReallyDecimal(result)) {
-                doubleToStringNoDecimal2(result).toString() + ".0"
-            } else {
-                textStr
-            }
+        } else if (textStr.length > 1 && textStr.contains('.')) {
+            var beforeDot = textStr.split('.')[0]
+            var afterDot = textStr.split('.')[1]
+            doubleToStringNoDecimal(beforeDot.toDouble()) + "." + afterDot
+//            var result = textStr.toDouble()
+//            Log.e(TAG, "setText .0 result: $result")
+//            if (ifReallyDecimal(result)) {
+//                doubleToStringNoDecimal2(result).toString() + ".0"
+//            } else {
+//            textStr
+//            }
         } else {
             var result = textStr.toDouble()
             Log.e(TAG, "setText else result: $result")

@@ -58,6 +58,14 @@
 
     </style>
 
+    <style name="Widget.Button.ActionGray" parent="button_base2">
+        <!--        <item name="android:shadowColor">#FF000000</item>-->
+        <!--        <item name="android:shadowDx">0</item>-->
+        <!--        <item name="android:shadowDy">-1</item>-->
+        <!--        <item name="android:shadowRadius">0.2</item>-->
+        <item name="android:backgroundTint">@color/action_button_gray</item>
+    </style>
+
     <style name="Widget.Button.Action" parent="button_base2">
         <!--        <item name="android:shadowColor">#FF000000</item>-->
         <!--        <item name="android:shadowDx">0</item>-->

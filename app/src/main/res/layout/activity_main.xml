@@ -252,7 +252,7 @@
 
     <TextView
         android:id="@+id/btn_clear"
-        style="@style/Widget.Button.Action"
+        style="@style/Widget.Button.ActionGray"
         android:layout_width="@dimen/btn_size"
         android:layout_height="@dimen/btn_size"
         android:padding="0dp"
@@ -301,6 +301,19 @@
         <!--Any child View here, TabLayout for example. This View will NOT be blurred -->
 
     </eightbitlab.com.blurview.BlurView>
+
+    <ImageView
+        android:id="@+id/imvCloseTutorial"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="@dimen/tutorial_padding"
+        android:layout_marginEnd="@dimen/tutorial_padding"
+        android:visibility="gone"
+        android:padding="@dimen/btn_margin_half"
+        android:src="@drawable/ic_close"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/white" />
 
 
     <TextView

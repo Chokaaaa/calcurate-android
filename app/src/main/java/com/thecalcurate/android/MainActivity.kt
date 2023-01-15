@@ -61,6 +61,7 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
     lateinit var txvSroll: View
     lateinit var txvSwipeUp: View
     lateinit var txvSwipeDown: View
+    lateinit var imvCloseTutorial: View
 
 
     lateinit var txvResult: MainTextView
@@ -262,6 +263,10 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
             }
         }
     }
+    private val onCloseTutorialClickListener = View.OnClickListener {
+        tutorialStep++
+        nextTutorialStep()
+    }
 
     private fun convertToSec(secCode: String) {
 //        Log.e(TAG, "convertToSec: $secCode")
@@ -270,13 +275,15 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
             val converted = savedMainVal * rate
 //        Log.e(TAG, "savedMainVal: $savedMainVal, rate: $rate, converted: $converted")
             txvResult.setResult(converted)
-            val1 = txvResult.text.toString().toDouble()
+            if (txvResult.text.toString() != "0")
+                val1 = txvResult.text.toString().toDouble()
         }
     }
 
     private fun convertBack() {
         Log.e(TAG, "convertBack savedMainVal: $savedMainVal")
         txvResult.setResult(savedMainVal)
+        if (txvResult.text.toString() != "0")
         val1 = txvResult.text.toString().toDouble()
     }
 
@@ -328,6 +335,7 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
         txvSroll = findViewById(R.id.txvScroll)
         txvSwipeUp = findViewById(R.id.txvSwipeUp)
         txvSwipeDown = findViewById(R.id.txvSwipeDown)
+        imvCloseTutorial = findViewById(R.id.imvCloseTutorial)
 
         b0 = findViewById(R.id.btn0)
         b1 = findViewById(R.id.btn1)
@@ -359,7 +367,7 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
             getSystemService(VIBRATOR_SERVICE) as Vibrator
         }
 
-        var radius = 10f
+        var radius = 8f
 
         var decorView = window.decorView
         // ViewGroup you want to start blur from. Choose root as close to BlurView in hierarchy as possible.
@@ -442,6 +450,7 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
         btn_main.setOnClickListener(onMainClickListener)
         btn_secondary1.setOnClickListener(onSecondaryClickListener)
         btn_secondary2.setOnClickListener(onSecondaryClickListener)
+        imvCloseTutorial.setOnClickListener(onCloseTutorialClickListener)
 
         b0.setOnClickListener(onNumberClickListener)
         b1.setOnClickListener(onNumberClickListener)
@@ -631,18 +640,20 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
     private fun nextTutorialStep() {
         if (tutorialStep == 2) {
             txvHold.visibility = View.GONE
-            btn_secondary1.visibility = View.INVISIBLE
+//            btn_secondary1.visibility = View.VISIBLE
 //            btn_secondary2.visibility = View.VISIBLE
-
 //            txvSwipe.visibility = View.VISIBLE
 ////            txvSwipeRight.visibility = View.VISIBLE
 //            txvSwipeLeft.visibility = View.VISIBLE
 
             fadeOut(txvHold)
 
+            btn_secondary2.callOnClick()
+
             faceIn(btn_secondary2)
             faceIn(txvSwipe)
             faceIn(txvSwipeLeft)
+            faceIn(txvSwipeRight)
 
         } else if (tutorialStep == 3) {
 //            txvSwipe.visibility = View.GONE
@@ -654,12 +665,26 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
 
             fadeOut(txvSwipe)
             fadeOut(txvSwipeLeft)
+            fadeOut(txvSwipeRight)
+
+            btn_secondary2.callOnClick()
 
             faceIn(txvSroll)
             faceIn(txvSwipeUp)
             faceIn(txvSwipeDown)
 
         } else if (tutorialStep == 4) {
+
+            faceIn(btn_secondary1)
+            faceIn(imvCloseTutorial)
+            // Animate the loading view to 0% opacity. After the animation ends,
+            // set its visibility to GONE as an optimization step (it won't
+            // participate in layout passes, etc.)
+            fadeOut(txvSroll)
+            fadeOut(txvSwipeUp)
+            fadeOut(txvSwipeDown)
+
+        } else if (tutorialStep == 5) {
             var sharedPref =
                 getSharedPreferences(getString(R.string.preference_file), Context.MODE_PRIVATE)
             with(sharedPref!!.edit()) {
@@ -668,17 +693,12 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
             }
             isTutorialViewed = true
 
+            fadeOut(imvCloseTutorial)
+            fadeOut(blurView, 1000L)
+
             btn_secondary1_tut.visibility = View.GONE
             btn_secondary2_tut.visibility = View.GONE
-            btn_secondary1.visibility = View.VISIBLE
-
-            // Animate the loading view to 0% opacity. After the animation ends,
-            // set its visibility to GONE as an optimization step (it won't
-            // participate in layout passes, etc.)
-            fadeOut(blurView,900L)
-            fadeOut(txvSroll)
-            fadeOut(txvSwipeUp)
-            fadeOut(txvSwipeDown)
+            b_clear.callOnClick()
         }
     }
 
