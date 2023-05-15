@@ -73,6 +73,7 @@
         <!--        <item name="android:shadowRadius">0.2</item>-->
         <item name="android:backgroundTint">@color/action_button</item>
         <item name="android:textSize">@dimen/btn_action_text_size</item>
+        <item name="android:textColor">@color/action_text</item>
         <item name="android:paddingBottom">@dimen/btn_action_text_padding</item>
     </style>
 

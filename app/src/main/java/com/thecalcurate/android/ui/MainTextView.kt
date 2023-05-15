@@ -15,17 +15,20 @@ class MainTextView @JvmOverloads constructor(
     val TAG = "MainTextView"
     fun setResult(result: Double) {
         var resText = result.toString()
+        if (result != .0)
+            resText = (Math.round(result * 1000) / 1000.0).toString()
+
         if (resText.length > 1 && resText[resText.length - 2] == '.' && resText[resText.length - 1] == '0') {
             resText = resText.substring(0, resText.indexOf(".0"))
         }
         text = resText
         Log.e(TAG, "setResult result: $result, text: $text")
-        /*if (!ifReallyDecimal(result)) {
-        val roundedResult = Math.round(result * 1000) / 1000.0
-        doubleToStringNoDecimal2(roundedResult).toString()
-    } else {
-        doubleToStringNoDecimal(result).toString()
-    }*/
+//        if (!ifReallyDecimal(result)) {
+//            val roundedResult = Math.round(result * 1000) / 1000.0
+//            doubleToStringNoDecimal2(roundedResult).toString()
+//        } else {
+//            doubleToStringNoDecimal(result).toString()
+//        }
     }
 
     fun getResult(): Double {
@@ -69,6 +72,7 @@ class MainTextView @JvmOverloads constructor(
 //            textStr
 //            }
         } else {
+            if(textStr.length > 12){ textStr = textStr.take(12)}
             var result = textStr.toDouble()
             Log.e(TAG, "setText else result: $result")
 

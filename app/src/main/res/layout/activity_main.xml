@@ -197,7 +197,7 @@
         style="@style/Widget.Button.Action"
         android:layout_width="@dimen/btn_size"
         android:layout_height="@dimen/btn_size"
-        android:layout_marginBottom="@dimen/btn_margin"
+        android:layout_marginBottom="@dimen/btn_margin_bottom"
         android:text="="
         android:textColor="#ffff"
         app:cornerRadius="@dimen/btn_halfsize"
@@ -289,18 +289,19 @@
         app:layout_constraintEnd_toEndOf="@id/btn5"
         app:layout_constraintTop_toTopOf="@+id/btn_equal" />
 
-    <eightbitlab.com.blurview.BlurView
+<!--    <eightbitlab.com.blurview.BlurView-->
+    <View
         android:id="@+id/blurView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"/>
 
         <!--Any child View here, TabLayout for example. This View will NOT be blurred -->
 
-    </eightbitlab.com.blurview.BlurView>
+<!--    </eightbitlab.com.blurview.BlurView>-->
 
     <ImageView
         android:id="@+id/imvCloseTutorial"
@@ -308,9 +309,9 @@
         android:layout_height="48dp"
         android:layout_marginTop="@dimen/tutorial_padding"
         android:layout_marginEnd="@dimen/tutorial_padding"
-        android:visibility="gone"
         android:padding="@dimen/btn_margin_half"
         android:src="@drawable/ic_close"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:tint="@color/white" />
@@ -320,7 +321,6 @@
         android:id="@+id/txvMain"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
         android:text="@string/txt_main"
         android:textColor="@color/white"
         app:layout_constraintBottom_toTopOf="@id/btn_main"
@@ -372,76 +372,104 @@
         app:layout_constraintStart_toStartOf="@id/btn6"
         app:layout_constraintTop_toTopOf="@id/btn_divide" />
 
+
+    <ImageView
+        android:id="@+id/imgHold"
+        android:layout_width="24dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="-25dp"
+        android:layout_marginBottom="12dp"
+        android:src="@drawable/hold"
+        app:layout_constraintBottom_toBottomOf="@id/btn_main"
+        app:layout_constraintStart_toEndOf="@id/btn_main"/>
+
     <TextView
         android:id="@+id/txvHold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/btn_margin_half"
         android:text="@string/txt_hold"
         android:textColor="@color/white"
-        app:layout_constraintBottom_toBottomOf="@id/btn_main"
-        app:layout_constraintStart_toEndOf="@id/btn_main"
-        app:layout_constraintTop_toTopOf="@+id/btn_main" />
+        android:layout_marginTop="-13dp"
+        app:layout_constraintBottom_toTopOf="@+id/btn_multi"
+        android:paddingStart="4dp"
+        app:layout_constraintStart_toStartOf="@id/imgHold"
+        app:layout_constraintTop_toBottomOf="@id/btn_main" />
 
     <ImageView
         android:id="@+id/txvSwipeRight"
         android:layout_width="60dp"
         android:layout_height="50dp"
+        android:layout_marginStart="-20dp"
         android:src="@drawable/swipe_right"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/btn_main"
-        app:layout_constraintStart_toEndOf="@id/btn_main" />
+        app:layout_constraintStart_toEndOf="@id/btn_main"
+        tools:visibility="visible" />
 
     <ImageView
         android:id="@+id/txvSwipeLeft"
         android:layout_width="60dp"
         android:layout_height="50dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="-26dp"
         android:src="@drawable/swipe_left"
         android:visibility="gone"
         app:layout_constraintEnd_toStartOf="@id/btn_secondary2"
-        app:layout_constraintTop_toTopOf="@id/btn_secondary2" />
+        app:layout_constraintTop_toTopOf="@id/btn_secondary2"
+        tools:visibility="visible" />
 
     <TextView
         android:id="@+id/txvSwipe"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
         android:text="@string/txt_swipe"
+        android:layout_marginTop="-13dp"
         android:textColor="@color/white"
         android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/btn_multi"
         app:layout_constraintEnd_toEndOf="@id/btn_secondary2"
         app:layout_constraintStart_toStartOf="@id/btn_main"
-        app:layout_constraintTop_toBottomOf="@id/btn_main" />
+        app:layout_constraintTop_toBottomOf="@id/btn_main"
+        tools:visibility="visible" />
 
     <ImageView
         android:id="@+id/txvSwipeUp"
-        android:layout_width="50dp"
+        android:layout_width="wrap_content"
         android:layout_height="60dp"
+        android:layout_marginStart="-20dp"
         android:src="@drawable/swipe_up"
+        android:layout_marginBottom="12dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/btn_main"
-        app:layout_constraintStart_toEndOf="@id/btn_main" />
+        app:layout_constraintStart_toEndOf="@id/btn_main"
+        tools:visibility="visible" />
 
     <ImageView
         android:id="@+id/txvSwipeDown"
-        android:layout_width="50dp"
+        android:layout_width="wrap_content"
         android:layout_height="60dp"
+        android:layout_marginBottom="12dp"
+        android:layout_marginEnd="-44dp"
         android:src="@drawable/swipe_down"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/btn_secondary2"
-        app:layout_constraintEnd_toStartOf="@id/btn_secondary2" />
+
+        app:layout_constraintEnd_toStartOf="@id/btn_secondary2"
+        tools:visibility="visible" />
 
     <TextView
         android:id="@+id/txvScroll"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
         android:text="@string/txt_scroll"
         android:textColor="@color/white"
+        android:layout_marginTop="-13dp"
         android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/btn_multi"
         app:layout_constraintEnd_toEndOf="@id/btn_secondary2"
         app:layout_constraintStart_toStartOf="@id/btn_main"
-        app:layout_constraintTop_toBottomOf="@id/btn_main" />
+        app:layout_constraintTop_toBottomOf="@id/btn_main"
+        tools:visibility="visible" />
     <!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
 
 

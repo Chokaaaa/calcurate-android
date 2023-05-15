@@ -51,11 +51,14 @@ class CurrencyListViewModel(application: Application, private val mRepository: D
     }
 
     fun getCurrencyRates(baseCurrency: String, type: Int) {
+        val curList1 = mRepository.getCurrencyList()
+        postValue(type, curList1)
+
         job = CoroutineScope(Dispatchers.IO + coroutineExceptionHandler).launch {
             val response = mRepository.getCurrencyRates(baseCurrency)
             withContext(Dispatchers.Main) {
+                val curList = mRepository.getCurrencyList()
                 if (response.isSuccessful) {
-                    val curList = mRepository.getCurrencyList()
                     postValue(type, curList.map { rate ->
                         var mappedList = response.body()!!.conversion_rates.filter {
                             it.Code == rate.code
@@ -66,6 +69,7 @@ class CurrencyListViewModel(application: Application, private val mRepository: D
                     loading.value = false
                 } else {
                     onError("Error : ${response.message()} ")
+                    postValue(type, curList)
                 }
             }
         }

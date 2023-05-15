@@ -20,8 +20,6 @@ import com.blongho.country_data.World
 import com.thecalcurate.android.model.CurrencyItem
 import com.thecalcurate.android.ui.*
 import com.thecalcurate.android.viewmodel.CurrencyListViewModel
-import eightbitlab.com.blurview.BlurView
-import eightbitlab.com.blurview.RenderScriptBlur
 
 
 class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
@@ -46,7 +44,7 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
     lateinit var b_dot: View
     lateinit var b_clear: View
 
-    lateinit var blurView: BlurView
+    lateinit var blurView: View
     lateinit var btn_main: ImageView
     lateinit var btn_secondary1: ImageView
     lateinit var btn_secondary2: ImageView
@@ -55,6 +53,7 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
     lateinit var btn_secondary1_tut: ImageView
     lateinit var btn_secondary2_tut: ImageView
     lateinit var txvHold: View
+    lateinit var imgHold: View
     lateinit var txvSwipe: View
     lateinit var txvSwipeRight: View
     lateinit var txvSwipeLeft: View
@@ -76,6 +75,7 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
     private val PERCENT = '%'
     private var SELECTED_ACTION = ' '
     private var isActionSelected = false
+    private var selectedActionView: View? = null
     private var val1 = Double.NaN
     private var val2 = Double.NaN
 
@@ -103,6 +103,11 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
                 R.id.btn_main -> setCur(btn_main, curItem.code)
                 R.id.btn_secondary1 -> setCur(btn_secondary1, curItem.code)
                 R.id.btn_secondary2 -> setCur(btn_secondary2, curItem.code)
+            }
+            if (secondarySelectedId == longClickedId) {
+                isActionSelected = false
+                val1 = Double.NaN
+                txvResult.setResult(convertToSec(savedMainVal, curItem.code))
             }
             if (!isTutorialViewed && tutorialStep == 1) {
                 tutorialStep++
@@ -140,42 +145,49 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
     var newFragment = CurrencyDialog(itemClickListener)
 
     private val onNumberClickListener = View.OnClickListener {
+        play()
         val number = getNumberClicked(it.id)
         ifErrorOnOutput()
 
         if (isActionSelected || txvResult.text.toString() == "0") {
             txvResult.text = number.toString()
+            selectedActionView?.isSelected=false
             isActionSelected = false
         } else {
             txvResult.text = txvResult.text.toString() + number
         }
-        play()
     }
 
     private val onDotClickListener = View.OnClickListener {
+        play()
         ifErrorOnOutput()
 
         if (isActionSelected || txvResult.text.toString() == "0") {
             txvResult.text = "0."
             isActionSelected = false
-            play()
+            selectedActionView?.isSelected = false
         } else if (!txvResult.text.toString().contains(".")) {
             txvResult.text = txvResult.text.toString() + "."
-            play()
         }
 
     }
-
     private val onActionClickListener = View.OnClickListener {
+        play()
         if (txvResult.text.isNotEmpty()) {
+            val action = getAction(it.id)
             operation(getAction(it.id))
+            selectedActionView?.isSelected = false
+            if(action != EQU){
+                it.isSelected = true
+                selectedActionView = it
+            }
             isActionSelected = true
             isEqualPressed = false
         }
-        play()
     }
 
     private val onPercentageClickListener = View.OnClickListener {
+        play()
         if (txvResult.text.isNotEmpty()) {
             val result = if (!val1.isNaN()) {
                 val2 = txvResult.text.toString().toDouble()
@@ -191,17 +203,17 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
             }
             showResult(result)
         }
-        play()
     }
 
     private val onEqualClickListener = View.OnClickListener {
+        play()
         if (txvResult.text.isNotEmpty()) {
             if (!val1.isNaN() && SELECTED_ACTION != ' ') {
                 calculateResult()
+                selectedActionView?.isSelected = false
                 isActionSelected = true
             }
         }
-        play()
     }
 
     var isEqualPressed = false
@@ -213,18 +225,20 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
         showResult(result)
         val1 = result
         isEqualPressed = true
+        calculateMainVal()
     }
 
     private val onClearClickListener = View.OnClickListener {
+        play()
         val1 = Double.NaN
         val2 = Double.NaN
         isEqualPressed = false
         SELECTED_ACTION = ' '
+        selectedActionView?.isSelected = false
         txvResult.text = "0"
         savedMainVal = .0
         unselectSecondary()
         secondarySelectedId = 0
-        play()
     }
 
 
@@ -246,7 +260,8 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
     }
 
     private val onSecondaryClickListener = View.OnClickListener {
-        Log.e(TAG, "onSecondaryClickListener isMainSelected: $isMainSelected, ")
+        isActionSelected = false
+        Log.e(TAG, "onSecondaryClickListener isMainSelected: $isMainSelected")
         if (isMainSelected) {
             if (secondarySelectedId == 0) {
                 savedMainVal = txvResult.getResult()
@@ -255,36 +270,61 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
             if (secondarySelectedId != it.id) {
                 secondarySelectedId = it.id
                 it.isSelected = true
-                convertToSec(it.getTag(R.id.code_tag_name).toString())
-
+                txvResult.setResult(
+                    convertToSec(
+                        savedMainVal,
+                        it.getTag(R.id.code_tag_name).toString()
+                    )
+                )
+                val1 = Double.NaN
             } else if (secondarySelectedId == it.id) {
                 secondarySelectedId = 0
                 convertBack()
+                val1 = Double.NaN
             }
         }
     }
     private val onCloseTutorialClickListener = View.OnClickListener {
-        tutorialStep++
-        nextTutorialStep()
+        completeTutorial()
     }
 
-    private fun convertToSec(secCode: String) {
-//        Log.e(TAG, "convertToSec: $secCode")
+    private fun convertToSec(value: Double, secCode: String): Double {
+        Log.e(TAG, "value: $value,convertToSec: $secCode")
         if (viewModel.currencyMainList.value != null) {
-            val rate = viewModel.currencyMainList.value!!.filter { it.code == secCode }[0].rate
-            val converted = savedMainVal * rate
+            var rate = viewModel.currencyMainList.value!!.filter { it.code == secCode }[0].rate
+            if (rate == .0)
+                rate = 1.0
+            return value * rate
 //        Log.e(TAG, "savedMainVal: $savedMainVal, rate: $rate, converted: $converted")
-            txvResult.setResult(converted)
-            if (txvResult.text.toString() != "0")
-                val1 = txvResult.text.toString().toDouble()
+//            if (txvResult.text.toString() != "0")
+//                val1 = txvResult.text.toString().toDouble()
+        }
+        return value
+    }
+
+    private fun getSecView(secId: Int): View {
+        return if (secId == R.id.btn_secondary1) btn_secondary1 else btn_secondary2
+    }
+
+    private fun calculateMainVal() {
+        if (secondarySelectedId != 0 && viewModel.currencyMainList.value != null) {
+            val secCode = getSecView(secondarySelectedId).getTag(R.id.code_tag_name).toString()
+            var rate = viewModel.currencyMainList.value!!.filter { it.code == secCode }[0].rate
+            if (rate == .0)
+                rate = 1.0
+            savedMainVal = txvResult.getResult() / rate
+            Log.e(TAG, "calculateMainVal savedMainVal: $savedMainVal")
+//        Log.e(TAG, "savedMainVal: $savedMainVal, rate: $rate, converted: $converted")
+//            if (txvResult.text.toString() != "0")
+//                val1 = txvResult.text.toString().toDouble()
         }
     }
 
     private fun convertBack() {
         Log.e(TAG, "convertBack savedMainVal: $savedMainVal")
         txvResult.setResult(savedMainVal)
-        if (txvResult.text.toString() != "0")
-        val1 = txvResult.text.toString().toDouble()
+//        if (txvResult.text.toString() != "0")
+//            val1 = txvResult.text.toString().toDouble()
     }
 
     private fun getNumberClicked(viewId: Int): Int {
@@ -327,6 +367,7 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
 
         //Tutorial Views
         txvHold = findViewById(R.id.txvHold)
+        imgHold = findViewById(R.id.imgHold)
         btn_secondary1_tut = findViewById(R.id.btn_secondary1_tut)
         btn_secondary2_tut = findViewById(R.id.btn_secondary2_tut)
         txvSwipe = findViewById(R.id.txvSwipe)
@@ -367,7 +408,7 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
             getSystemService(VIBRATOR_SERVICE) as Vibrator
         }
 
-        var radius = 8f
+        var radius = 1f
 
         var decorView = window.decorView
         // ViewGroup you want to start blur from. Choose root as close to BlurView in hierarchy as possible.
@@ -381,21 +422,27 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
 
 
         if (!isTutorialViewed) {
-            blurView.setupWith(rootView, RenderScriptBlur(this)) // or RenderEffectBlur
-                .setFrameClearDrawable(windowBackground) // Optional
-                .setBlurRadius(radius)
+//            blurView.setupWith(rootView, RenderScriptBlur(this)) // or RenderEffectBlur
+//                .setFrameClearDrawable(windowBackground) // Optional
+//                .setBlurRadius(radius)
             blurView.setOnClickListener(null)
+            blurView.visibility = View.INVISIBLE
 
             btn_secondary1.visibility = View.GONE
             btn_secondary2.visibility = View.GONE
             btn_secondary1_tut.visibility = View.VISIBLE
             btn_secondary2_tut.visibility = View.VISIBLE
+
+            faceIn(blurView, 3000L)
+            faceIn(txvHold, 3000L)
+            faceIn(imgHold, 3000L)
         } else {
             blurView.visibility = View.GONE
             btn_secondary1.visibility = View.VISIBLE
             btn_secondary2.visibility = View.VISIBLE
 
             txvHold.visibility = View.GONE
+            imgHold.visibility = View.GONE
             btn_secondary1_tut.visibility = View.GONE
             btn_secondary2_tut.visibility = View.GONE
 
@@ -489,7 +536,6 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
         }
 
         mp = MediaPlayer.create(this, R.raw.sound)
-
     }
 
     override fun onPause() {
@@ -542,6 +588,10 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
             override fun onSwipeRight() {
                 super.onSwipeRight()
                 switchMain(secondarySelectedId)
+                if (!isTutorialViewed && tutorialStep == 2) {
+                    tutorialStep++
+                    nextTutorialStep()
+                }
             }
 
             override fun onSwipeTop() {
@@ -640,6 +690,7 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
     private fun nextTutorialStep() {
         if (tutorialStep == 2) {
             txvHold.visibility = View.GONE
+            imgHold.visibility = View.GONE
 //            btn_secondary1.visibility = View.VISIBLE
 //            btn_secondary2.visibility = View.VISIBLE
 //            txvSwipe.visibility = View.VISIBLE
@@ -647,6 +698,7 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
 //            txvSwipeLeft.visibility = View.VISIBLE
 
             fadeOut(txvHold)
+            fadeOut(imgHold)
 
             btn_secondary2.callOnClick()
 
@@ -674,32 +726,36 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
             faceIn(txvSwipeDown)
 
         } else if (tutorialStep == 4) {
-
             faceIn(btn_secondary1)
             faceIn(imvCloseTutorial)
             // Animate the loading view to 0% opacity. After the animation ends,
             // set its visibility to GONE as an optimization step (it won't
             // participate in layout passes, etc.)
-            fadeOut(txvSroll)
-            fadeOut(txvSwipeUp)
-            fadeOut(txvSwipeDown)
-
-        } else if (tutorialStep == 5) {
-            var sharedPref =
-                getSharedPreferences(getString(R.string.preference_file), Context.MODE_PRIVATE)
-            with(sharedPref!!.edit()) {
-                putBoolean(getString(R.string.saved_is_totorial_key), true)
-                commit()
-            }
-            isTutorialViewed = true
-
-            fadeOut(imvCloseTutorial)
-            fadeOut(blurView, 1000L)
-
-            btn_secondary1_tut.visibility = View.GONE
-            btn_secondary2_tut.visibility = View.GONE
-            b_clear.callOnClick()
+//            fadeOut(txvSroll)
+//            fadeOut(txvSwipeUp)
+//            fadeOut(txvSwipeDown)
         }
+    }
+
+    private fun completeTutorial() {
+        var sharedPref =
+            getSharedPreferences(getString(R.string.preference_file), Context.MODE_PRIVATE)
+        with(sharedPref!!.edit()) {
+            putBoolean(getString(R.string.saved_is_totorial_key), true)
+            commit()
+        }
+        isTutorialViewed = true
+
+        fadeOut(imvCloseTutorial)
+        fadeOut(blurView, 1000L)
+
+        fadeOut(txvSroll)
+        fadeOut(txvSwipeUp)
+        fadeOut(txvSwipeDown)
+
+        btn_secondary1_tut.visibility = View.GONE
+        btn_secondary2_tut.visibility = View.GONE
+        b_clear.callOnClick()
     }
 
     private fun fadeOut(view: View, animationDuration: Long = 600L) {
@@ -760,9 +816,10 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
                 }
         }
         setCur(btn, toCode)
-        if (btn.id != R.id.btn_main && secondarySelectedId != 0) {
-            convertToSec(toCode)
+        if (btn.id == secondarySelectedId) {
+            txvResult.setResult(convertToSec(savedMainVal, toCode))
         }
+        vibrate()
     }
 
     override fun onResume() {
@@ -800,6 +857,7 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
                 unselectSecondary()
                 secondarySelectedId = 0
             }
+            vibrate()
         }
     }
 
@@ -852,50 +910,57 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
 
     }
 
-    private fun showDialog() {
-        try {
-            if (Build.VERSION.SDK_INT >= 26) {
-                vibe.vibrate(
-                    VibrationEffect.createOneShot(
-                        VIBRATION_MILIS,
-                        VibrationEffect.DEFAULT_AMPLITUDE
-                    )
+    private fun vibrate() {
+        if (Build.VERSION.SDK_INT >= 26) {
+            vibe.vibrate(
+                VibrationEffect.createOneShot(
+                    VIBRATION_MILIS,
+                    VibrationEffect.DEFAULT_AMPLITUDE
                 )
-            } else {
-                vibe.vibrate(VIBRATION_MILIS)
-            }
-
-            val sharedPref = getSharedPreferences(
-                getString(R.string.preference_file),
-                Context.MODE_PRIVATE
             )
-            var favourites =
-                sharedPref?.getString(getString(R.string.saved_favourites_key), "") ?: ""
-            favList = favourites.split(",").filter { it != "" }.toMutableList()
-
-            var list = when (longClickedId) {
-                R.id.btn_main -> viewModel.currencyMainList.value?.toMutableList()
-                R.id.btn_secondary1 -> viewModel.currencySec1List.value?.toMutableList()
-                R.id.btn_secondary2 -> viewModel.currencySec2List.value?.toMutableList()
-                else -> viewModel.currencyMainList.value?.toMutableList()
-            }
-
-            var allFavSorted = favList.map { favItem ->
-                var d = list!!.find { it.code == favItem }
-                d!!.isFavorite2 = true
-                d
-            }
-
-            var listToShow = list!!.filter { !favList.contains(it.code) }.toMutableList()
-            listToShow.addAll(0, allFavSorted)
-
-
-            newFragment.listToShow = listToShow
-            newFragment.list = list
-            newFragment.show(supportFragmentManager, "dialog")
-
-        } catch (e: Exception) {
-            e.printStackTrace()
+        } else {
+            vibe.vibrate(VIBRATION_MILIS)
         }
+    }
+
+    private fun showDialog() {
+        val type = when (longClickedId) {
+            R.id.btn_main -> viewModel.MAIN
+            R.id.btn_secondary1 -> viewModel.SEC1
+            R.id.btn_secondary2 -> viewModel.SEC2
+            else -> viewModel.MAIN
+        }
+        fetchCurrencyRates(type)
+
+        vibrate()
+
+        val sharedPref = getSharedPreferences(
+            getString(R.string.preference_file),
+            Context.MODE_PRIVATE
+        )
+        var favourites =
+            sharedPref?.getString(getString(R.string.saved_favourites_key), "") ?: ""
+        favList = favourites.split(",").filter { it != "" }.toMutableList()
+
+        var list = when (longClickedId) {
+            R.id.btn_main -> viewModel.currencyMainList.value?.toMutableList()
+            R.id.btn_secondary1 -> viewModel.currencySec1List.value?.toMutableList()
+            R.id.btn_secondary2 -> viewModel.currencySec2List.value?.toMutableList()
+            else -> viewModel.currencyMainList.value?.toMutableList()
+        }
+
+        var allFavSorted = favList.map { favItem ->
+            var d = list!!.find { it.code == favItem }
+            d!!.isFavorite2 = true
+            d
+        }
+
+        var listToShow = list!!.filter { !favList.contains(it.code) }.toMutableList()
+        listToShow.addAll(0, allFavSorted)
+
+        newFragment.listToShow = listToShow
+        newFragment.list = list
+        newFragment.show(supportFragmentManager, "dialog")
+
     }
 }

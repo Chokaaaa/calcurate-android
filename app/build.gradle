@@ -10,8 +10,8 @@ android {
         applicationId "com.thecalcurate.android"
         minSdk 23
         targetSdk 32
-        versionCode 19
-        versionName "1.17"
+        versionCode 32
+        versionName "1.30"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

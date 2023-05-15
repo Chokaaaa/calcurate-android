@@ -11,6 +11,8 @@
     <color name="black_trns">#90000000</color>
     <color name="grey2">#99333333</color>
     <color name="white_grey">#F2F2F7</color>
+    <color name="red_pressed">#CA5C39</color>
+    <color name="red_selected">#F2F2F7</color>
     <color name="white_grey2">#3FFFFFFF</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
@@ -18,7 +20,7 @@
     <color name="red_trans3">#F0CC3404</color>
     <color name="white_trans">#90FFFFFF</color>
     <color name="white_trans2">#10FFFFFF</color>
-    <color name="gray3">#696969</color>
+    <color name="gray3">#535353</color>
     <color name="yellow">#FDCC0D</color>
     <color name="transparant">#00000000</color>
 </resources>
