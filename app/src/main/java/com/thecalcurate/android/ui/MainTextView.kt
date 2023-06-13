@@ -3,6 +3,8 @@ package com.thecalcurate.android.ui
 import android.content.Context
 import android.util.AttributeSet
 import android.util.Log
+import android.util.TypedValue
+import com.thecalcurate.android.R
 import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.*
@@ -72,7 +74,9 @@ class MainTextView @JvmOverloads constructor(
 //            textStr
 //            }
         } else {
-            if(textStr.length > 12){ textStr = textStr.take(12)}
+            if (textStr.length > 12) {
+                textStr = textStr.take(12)
+            }
             var result = textStr.toDouble()
             Log.e(TAG, "setText else result: $result")
 

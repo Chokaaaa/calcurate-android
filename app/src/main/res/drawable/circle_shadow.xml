@@ -52,7 +52,7 @@
             <!-- Background Color (white) -->
             <item>
                 <shape android:shape="oval">
-                    <solid android:color="@color/transparant" />
+                    <solid android:color="@color/transperant" />
 
                     <corners android:radius="3dp" />
                 </shape>

@@ -94,7 +94,7 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
     var mp: MediaPlayer? = null
     val UP = 1
     val DOWN = 2
-    val VIBRATION_MILIS = 200L
+    val VIBRATION_MILIS = 100L
 
     var itemClickListener = object : CurrencyRecyclerViewAdapter.ItemClickListener {
         override fun onItemClick(view: View?, position: Int) {
@@ -151,7 +151,7 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
 
         if (isActionSelected || txvResult.text.toString() == "0") {
             txvResult.text = number.toString()
-            selectedActionView?.isSelected=false
+            selectedActionView?.isSelected = false
             isActionSelected = false
         } else {
             txvResult.text = txvResult.text.toString() + number
@@ -177,7 +177,7 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
             val action = getAction(it.id)
             operation(getAction(it.id))
             selectedActionView?.isSelected = false
-            if(action != EQU){
+            if (action != EQU) {
                 it.isSelected = true
                 selectedActionView = it
             }
@@ -426,16 +426,16 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
 //                .setFrameClearDrawable(windowBackground) // Optional
 //                .setBlurRadius(radius)
             blurView.setOnClickListener(null)
-            blurView.visibility = View.INVISIBLE
+            blurView.visibility = View.GONE
 
             btn_secondary1.visibility = View.GONE
             btn_secondary2.visibility = View.GONE
             btn_secondary1_tut.visibility = View.VISIBLE
             btn_secondary2_tut.visibility = View.VISIBLE
 
-            faceIn(blurView, 3000L)
-            faceIn(txvHold, 3000L)
-            faceIn(imgHold, 3000L)
+//            fadeIn(blurView, 3000L)
+            fadeIn(txvHold, 3000L)
+            fadeIn(imgHold, 3000L)
         } else {
             blurView.visibility = View.GONE
             btn_secondary1.visibility = View.VISIBLE
@@ -456,7 +456,6 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
 
         World.init(applicationContext)
 
-
         var sharedPref =
             getSharedPreferences(getString(R.string.preference_file), Context.MODE_PRIVATE)
         val favourites = sharedPref?.getString(getString(R.string.saved_favourites_key), "") ?: ""
@@ -465,7 +464,6 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
                 ?: "USD,EUR,GBP"
         isTutorialViewed =
             sharedPref?.getBoolean(getString(R.string.saved_is_totorial_key), false) ?: false
-
 
         viewSetup()
 
@@ -556,8 +554,9 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
         try {
             if (mp!!.isPlaying) {
                 mp!!.stop()
-                mp!!.release()
-                mp = MediaPlayer.create(this, R.raw.sound)
+                mp!!.prepare()
+//                mp!!.release()
+//                mp = MediaPlayer.create(this, R.raw.sound)
             }
             mp!!.start()
         } catch (e: java.lang.Exception) {
@@ -587,102 +586,132 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
         btn_main.setOnTouchListener(object : OnSwipeListener(this) {
             override fun onSwipeRight() {
                 super.onSwipeRight()
-                switchMain(secondarySelectedId)
-                if (!isTutorialViewed && tutorialStep == 2) {
-                    tutorialStep++
-                    nextTutorialStep()
+                if (!isTutorialViewed) {
+                    if (tutorialStep == 2) {
+                        switchMain(secondarySelectedId)
+                        tutorialStep++
+                        nextTutorialStep()
+                    }
+                } else {
+                    switchMain(secondarySelectedId)
                 }
             }
 
             override fun onSwipeTop() {
                 super.onSwipeTop()
-                scrollCurrency(btn_main, UP)
-                if (!isTutorialViewed && tutorialStep == 3) {
-                    tutorialStep++
-                    nextTutorialStep()
+                if (!isTutorialViewed) {
+                    if (tutorialStep > 2) {
+                        scrollCurrency(btn_main, UP)
+                        tutorialStep++
+                        nextTutorialStep()
+                    }
+                } else {
+                    scrollCurrency(btn_main, UP)
                 }
             }
 
             override fun onSwipeBottom() {
                 super.onSwipeBottom()
-                Log.e("MainActivity", "onSwipeBottom")
-                scrollCurrency(btn_main, DOWN)
-                if (!isTutorialViewed && tutorialStep == 3) {
-                    tutorialStep++
-                    nextTutorialStep()
+                if (!isTutorialViewed) {
+                    if (tutorialStep > 2) {
+                        scrollCurrency(btn_main, DOWN)
+                        tutorialStep++
+                        nextTutorialStep()
+                    }
+                } else {
+                    scrollCurrency(btn_main, DOWN)
                 }
             }
 
             override fun onLongPress() {
                 super.onLongPress()
 //                Log.e("MainActivity", "View On Long Click!!!!")
-                longClickedId = R.id.btn_main
-                showDialog()
+                if (!isTutorialViewed) {
+                    if (tutorialStep == 1) {
+                        longClickedId = R.id.btn_main
+                        showDialog()
+                    }
+                } else {
+                    longClickedId = R.id.btn_main
+                    showDialog()
+                }
             }
         })
         btn_secondary1.setOnTouchListener(object : OnSwipeListener(this) {
 
             override fun onSwipeLeft() {
                 super.onSwipeLeft()
-                switchMain(R.id.btn_secondary1)
+                if (isTutorialViewed)
+                    switchMain(R.id.btn_secondary1)
             }
 
             override fun onSwipeTop() {
                 super.onSwipeTop()
-                Log.e("MainActivity", "onSwipeTop")
-                scrollCurrency(btn_secondary1, UP)
+                if (isTutorialViewed)
+                    scrollCurrency(btn_secondary1, UP)
             }
 
             override fun onSwipeBottom() {
                 super.onSwipeBottom()
-                Log.e("MainActivity", "onSwipeBottom")
-                scrollCurrency(btn_secondary1, DOWN)
+                if (isTutorialViewed)
+                    scrollCurrency(btn_secondary1, DOWN)
             }
 
             override fun onLongPress() {
                 super.onLongPress()
-                Log.e("MainActivity", "View On Long Click!!!!")
-                longClickedId = R.id.btn_secondary1
-                showDialog()
+                if (isTutorialViewed) {
+                    longClickedId = R.id.btn_secondary1
+                    showDialog()
+                }
             }
         })
         btn_secondary2.setOnTouchListener(object : OnSwipeListener(this) {
 
             override fun onSwipeLeft() {
                 super.onSwipeLeft()
-                switchMain(R.id.btn_secondary2)
-                if (!isTutorialViewed && tutorialStep == 2) {
-                    tutorialStep++
-                    nextTutorialStep()
+                if (!isTutorialViewed) {
+                    if (tutorialStep == 2) {
+                        switchMain(R.id.btn_secondary2)
+                        tutorialStep++
+                        nextTutorialStep()
+                    }
+                } else {
+                    switchMain(R.id.btn_secondary2)
                 }
             }
 
             override fun onSwipeTop() {
                 super.onSwipeTop()
-                Log.e("MainActivity", "onSwipeTop")
-                scrollCurrency(btn_secondary2, UP)
-                if (!isTutorialViewed && tutorialStep == 3) {
-                    tutorialStep++
-                    nextTutorialStep()
+                if (!isTutorialViewed) {
+                    if (tutorialStep > 2) {
+                        scrollCurrency(btn_secondary2, UP)
+                        tutorialStep++
+                        nextTutorialStep()
+                    }
+                } else {
+                    scrollCurrency(btn_secondary2, UP)
                 }
-
             }
 
             override fun onSwipeBottom() {
                 super.onSwipeBottom()
-                Log.e("MainActivity", "onSwipeBottom")
-                scrollCurrency(btn_secondary2, DOWN)
-                if (!isTutorialViewed && tutorialStep == 3) {
-                    tutorialStep++
-                    nextTutorialStep()
+                if (!isTutorialViewed) {
+                    if (tutorialStep > 2) {
+                        scrollCurrency(btn_secondary2, DOWN)
+                        tutorialStep++
+                        nextTutorialStep()
+                    }
+                } else {
+                    scrollCurrency(btn_secondary2, DOWN)
                 }
             }
 
             override fun onLongPress() {
                 super.onLongPress()
-                Log.e("MainActivity", "View On Long Click!!!!")
-                longClickedId = R.id.btn_secondary2
-                showDialog()
+                if (isTutorialViewed) {
+                    longClickedId = R.id.btn_secondary2
+                    showDialog()
+                }
             }
         })
     }
@@ -702,10 +731,10 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
 
             btn_secondary2.callOnClick()
 
-            faceIn(btn_secondary2)
-            faceIn(txvSwipe)
-            faceIn(txvSwipeLeft)
-            faceIn(txvSwipeRight)
+            fadeIn(btn_secondary2)
+            fadeIn(txvSwipe)
+            fadeIn(txvSwipeLeft)
+            fadeIn(txvSwipeRight)
 
         } else if (tutorialStep == 3) {
 //            txvSwipe.visibility = View.GONE
@@ -721,13 +750,13 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
 
             btn_secondary2.callOnClick()
 
-            faceIn(txvSroll)
-            faceIn(txvSwipeUp)
-            faceIn(txvSwipeDown)
+            fadeIn(txvSroll)
+            fadeIn(txvSwipeUp)
+            fadeIn(txvSwipeDown)
 
         } else if (tutorialStep == 4) {
-            faceIn(btn_secondary1)
-            faceIn(imvCloseTutorial)
+            fadeIn(btn_secondary1)
+            fadeIn(imvCloseTutorial)
             // Animate the loading view to 0% opacity. After the animation ends,
             // set its visibility to GONE as an optimization step (it won't
             // participate in layout passes, etc.)
@@ -770,7 +799,7 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
             })
     }
 
-    private fun faceIn(view: View, animationDuration: Long = 600L) {
+    private fun fadeIn(view: View, animationDuration: Long = 600L) {
         view.apply {
             // Set the content view to 0% opacity but visible, so that it is visible
             // (but fully transparent) during the animation.

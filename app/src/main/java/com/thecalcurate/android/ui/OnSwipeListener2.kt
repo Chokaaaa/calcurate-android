@@ -15,7 +15,7 @@ open class OnSwipeListener2(ctx: Context) : OnTouchListener, View.OnClickListene
         gestureDetector = GestureDetector(ctx, GestureListener())
     }
 
-    override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+    override fun onTouch(v: View?, event: MotionEvent): Boolean {
         Log.e("OnSwipeListener", "onTouch")
         return gestureDetector.onTouchEvent(event)
     }
@@ -23,7 +23,7 @@ open class OnSwipeListener2(ctx: Context) : OnTouchListener, View.OnClickListene
     private inner class GestureListener : SimpleOnGestureListener() {
         private val SWIPE_THRESHOLD = 100
         private val SWIPE_VELOCITY_THRESHOLD = 100
-        override fun onLongPress(e: MotionEvent?) {
+        override fun onLongPress(e: MotionEvent) {
             onLongPress()
             super.onLongPress(e)
         }

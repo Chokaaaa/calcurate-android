@@ -22,5 +22,5 @@
     <color name="white_trans2">#10FFFFFF</color>
     <color name="gray3">#535353</color>
     <color name="yellow">#FDCC0D</color>
-    <color name="transparant">#00000000</color>
+    <color name="transperant">#00000000</color>
 </resources>

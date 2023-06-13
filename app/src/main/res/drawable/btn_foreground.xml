@@ -3,7 +3,7 @@
     <item android:state_selected="true" >
         <shape android:shape="oval">
         <gradient
-            android:centerColor="@color/transparant"
+            android:centerColor="@color/transperant"
             android:endColor="@color/black"
             android:gradientRadius="@dimen/btn_shadow"
             android:startColor="@color/white_trans2"
