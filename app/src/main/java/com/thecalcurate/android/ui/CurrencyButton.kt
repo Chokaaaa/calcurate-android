@@ -1,11 +1,13 @@
 package com.thecalcurate.android.ui
 
+import android.util.Log
 import com.blongho.country_data.World
 import com.thecalcurate.android.R
 
 class CurrencyButton {
     companion object{
         fun getResource(code: String): Int {
+            Log.i("CurrencyButton", "code: $code")
             return when (code) {
                 "USD" -> R.drawable.usd
                 "EUR" -> R.drawable.euro
@@ -123,6 +125,7 @@ class CurrencyButton {
                 "RSD" -> R.drawable.rsd
 //                "SCR" -> R.drawable.scr
                 "SLE" -> R.drawable.sle
+                "CNY" -> R.drawable.chn
 //                "SGD" -> R.drawable.sgd
 //                "SBD" -> R.drawable.sbd
 //                "SOS" -> R.drawable.sos

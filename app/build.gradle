@@ -4,14 +4,14 @@ plugins {
 }
 
 android {
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.thecalcurate.android"
-        minSdk 23
-        targetSdk 33
-        versionCode 35
-        versionName "1.33"
+        minSdk 33
+        targetSdk 34
+        versionCode 43
+        versionName "1.43.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -49,6 +49,7 @@ android {
     dataBinding {
         enabled true
     }
+    namespace 'com.thecalcurate.android'
 }
 
 dependencies {
@@ -61,7 +62,7 @@ dependencies {
     implementation("com.google.android.gms:play-services-cronet:18.0.1")
     implementation 'com.google.code.gson:gson:2.9.0'
 
-    implementation 'com.github.blongho:worldCountryData:1.5.4-alpha-1'
+    implementation 'com.github.blongho:worldCountryData:v1.5.4-alpha-1'
 
     //network
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
