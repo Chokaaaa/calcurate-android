@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">CalcuRate</string>
+    <string name="txt_main">MAIN</string>
+    <string name="search_your_currency">Search your currency</string>
+    <string name="favorites">Favorites</string>
+    <string name="currencies">Currencies</string>
+    <string name="rates">Rates</string>
+    <string name="preference_file">com.thecalcurate.android.preference</string>
+    <string name="txt_swipe">Swipe</string>
+    <string name="txt_scroll">Scroll</string>
+    <string name="txt_hold">Hold</string>
+    <string name="saved_favourites_key">myfavourites</string>
+    <string name="saved_is_totorial_key">is_shown_tutorial</string>
+</resources>

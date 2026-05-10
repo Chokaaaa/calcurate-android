@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/tutorial_padding"
+    tools:context=".TutorialActivity">
+
+    <ImageView
+        android:id="@+id/imvClose"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:padding="@dimen/btn_margin_half"
+        android:src="@drawable/ic_close"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/white" />
+
+    <TextView
+        android:id="@+id/txvMain"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="@string/txt_main"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toTopOf="@id/btn_main"
+        app:layout_constraintEnd_toEndOf="@id/btn_main"
+        app:layout_constraintStart_toStartOf="@id/btn_main" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/btn_main"
+        style="@style/imageview_base"
+        android:layout_width="@dimen/btn_currency_size"
+        android:layout_height="@dimen/btn_currency_size"
+        android:layout_marginBottom="@dimen/btn_margin"
+        android:background="@drawable/btn_background_tutorial"
+        android:foreground="@drawable/btn_foreground_tutorial"
+        android:padding="@dimen/btn_currency_padding"
+        android:scaleType="centerCrop"
+        android:src="@drawable/usd"
+        app:layout_constraintBottom_toTopOf="@id/btn_main2"
+        app:layout_constraintStart_toStartOf="@id/btn_main2"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/txvHold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/txt_hold"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="@id/btn_main"
+        app:layout_constraintStart_toEndOf="@id/btn_main" />
+
+    <ImageView
+        android:id="@+id/imv"
+        android:layout_width="150dp"
+        android:layout_height="100dp"
+        android:src="@drawable/tutorial_dialog"
+        app:layout_constraintBottom_toBottomOf="@id/btn_main"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/txvMain2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="@string/txt_main"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toTopOf="@id/btn_main2"
+        app:layout_constraintEnd_toEndOf="@id/btn_main2"
+        app:layout_constraintStart_toStartOf="@id/btn_main2" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/btn_main2"
+        style="@style/imageview_base"
+        android:layout_width="@dimen/btn_currency_size"
+        android:layout_height="@dimen/btn_currency_size"
+        android:layout_marginBottom="@dimen/btn_margin"
+        android:background="@drawable/btn_background_tutorial"
+        android:foreground="@drawable/btn_foreground_tutorial"
+        android:padding="@dimen/btn_currency_padding"
+        android:scaleType="centerCrop"
+        android:src="@drawable/euro"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:layout_width="60dp"
+        android:layout_height="50dp"
+        android:src="@drawable/swipe_right"
+        app:layout_constraintBottom_toBottomOf="@id/btn_main2"
+        app:layout_constraintStart_toEndOf="@id/btn_main2" />
+
+    <ImageView
+        android:layout_width="60dp"
+        android:layout_height="50dp"
+        android:src="@drawable/swipe_left"
+        app:layout_constraintEnd_toStartOf="@id/btn_main22"
+        app:layout_constraintTop_toTopOf="@id/btn_main22" />
+
+    <TextView
+        android:id="@+id/txvSwipe"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="@string/txt_swipe"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="@id/btn_main22"
+        app:layout_constraintStart_toStartOf="@id/btn_main2"
+        app:layout_constraintTop_toBottomOf="@id/btn_main2" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/btn_main22"
+        style="@style/imageview_base"
+        android:layout_width="@dimen/btn_currency_size"
+        android:layout_height="@dimen/btn_currency_size"
+        android:layout_marginBottom="@dimen/btn_margin"
+        android:background="@drawable/btn_background_tutorial"
+        android:foreground="@drawable/btn_foreground_tutorial"
+        android:padding="@dimen/btn_currency_padding"
+        android:scaleType="centerCrop"
+        android:src="@drawable/pound"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/txvMain3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="@string/txt_main"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toTopOf="@id/btn_main3"
+        app:layout_constraintEnd_toEndOf="@id/btn_main3"
+        app:layout_constraintStart_toStartOf="@id/btn_main3" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/btn_main3"
+        style="@style/imageview_base"
+        android:layout_width="@dimen/btn_currency_size"
+        android:layout_height="@dimen/btn_currency_size"
+        android:layout_marginBottom="@dimen/btn_margin"
+        android:background="@drawable/btn_background_tutorial"
+        android:foreground="@drawable/btn_foreground_tutorial"
+        android:padding="@dimen/btn_currency_padding"
+        android:scaleType="centerCrop"
+        android:src="@drawable/aed"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_main2" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/btn_main32"
+        style="@style/imageview_base"
+        android:layout_width="@dimen/btn_currency_size"
+        android:layout_height="@dimen/btn_currency_size"
+        android:layout_marginBottom="@dimen/btn_margin"
+        android:background="@drawable/btn_background_tutorial"
+        android:foreground="@drawable/btn_foreground_tutorial"
+        android:padding="@dimen/btn_currency_padding"
+        android:scaleType="centerCrop"
+        android:src="@drawable/chn"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_main2" />
+
+
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="60dp"
+        android:src="@drawable/swipe_up"
+        app:layout_constraintBottom_toBottomOf="@id/btn_main3"
+        app:layout_constraintStart_toEndOf="@id/btn_main3" />
+
+
+    <TextView
+        android:id="@+id/txvScroll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="@string/txt_scroll"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="@id/btn_main32"
+        app:layout_constraintStart_toStartOf="@id/btn_main3"
+        app:layout_constraintTop_toBottomOf="@id/btn_main3" />
+
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="60dp"
+        android:src="@drawable/swipe_down"
+        app:layout_constraintBottom_toBottomOf="@id/btn_main32"
+        app:layout_constraintEnd_toStartOf="@id/btn_main32" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
