@@ -630,6 +630,7 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
 
     private fun applyNetworkBanner(quality: com.thecalcurate.android.data.NetworkQuality) {
         val banner = findViewById<View>(R.id.networkBanner)
+        val icon = findViewById<androidx.appcompat.widget.AppCompatImageView>(R.id.bannerIcon)
         val title = findViewById<android.widget.TextView>(R.id.bannerTitle)
         val desc = findViewById<android.widget.TextView>(R.id.bannerDesc)
         when (quality) {
@@ -639,6 +640,7 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
                 desc.text = getString(R.string.banner_no_connection_desc)
                 title.setTextColor(android.graphics.Color.WHITE)
                 desc.setTextColor(android.graphics.Color.WHITE)
+                icon.setColorFilter(android.graphics.Color.WHITE)
                 desc.visibility = View.VISIBLE
                 banner.visibility = View.VISIBLE
                 scheduleBannerCollapse()
@@ -647,9 +649,10 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
                 banner.setBackgroundResource(R.drawable.banner_bg_yellow)
                 title.text = getString(R.string.banner_bad_title)
                 desc.text = getString(R.string.banner_bad_desc)
-                // iOS yellow banner uses black text for contrast.
+                // iOS yellow banner uses black foreground (icon + text) for contrast.
                 title.setTextColor(android.graphics.Color.BLACK)
                 desc.setTextColor(android.graphics.Color.BLACK)
+                icon.setColorFilter(android.graphics.Color.BLACK)
                 desc.visibility = View.VISIBLE
                 banner.visibility = View.VISIBLE
                 scheduleBannerCollapse()
