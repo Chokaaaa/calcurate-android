@@ -168,30 +168,4 @@
         app:layout_constraintTop_toBottomOf="@id/btn_main2" />
 
 
-    <ImageView
-        android:layout_width="50dp"
-        android:layout_height="60dp"
-        android:src="@drawable/swipe_up"
-        app:layout_constraintBottom_toBottomOf="@id/btn_main3"
-        app:layout_constraintStart_toEndOf="@id/btn_main3" />
-
-
-    <TextView
-        android:id="@+id/txvScroll"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:text="@string/txt_scroll"
-        android:textColor="@color/white"
-        app:layout_constraintEnd_toEndOf="@id/btn_main32"
-        app:layout_constraintStart_toStartOf="@id/btn_main3"
-        app:layout_constraintTop_toBottomOf="@id/btn_main3" />
-
-    <ImageView
-        android:layout_width="50dp"
-        android:layout_height="60dp"
-        android:src="@drawable/swipe_down"
-        app:layout_constraintBottom_toBottomOf="@id/btn_main32"
-        app:layout_constraintEnd_toStartOf="@id/btn_main32" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

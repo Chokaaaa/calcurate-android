@@ -57,9 +57,6 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
     lateinit var txvSwipe: View
     lateinit var txvSwipeRight: View
     lateinit var txvSwipeLeft: View
-    lateinit var txvSroll: View
-    lateinit var txvSwipeUp: View
-    lateinit var txvSwipeDown: View
     lateinit var imvCloseTutorial: View
 
 
@@ -418,9 +415,6 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
             txvSwipe = findViewById(R.id.txvSwipe)
             txvSwipeRight = findViewById(R.id.txvSwipeRight)
             txvSwipeLeft = findViewById(R.id.txvSwipeLeft)
-            txvSroll = findViewById(R.id.txvScroll)
-            txvSwipeUp = findViewById(R.id.txvSwipeUp)
-            txvSwipeDown = findViewById(R.id.txvSwipeDown)
             imvCloseTutorial = findViewById(R.id.imvCloseTutorial)
 
             b0 = findViewById(R.id.btn0)
@@ -652,24 +646,6 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
                     }
                 }
 
-                override fun onSwipeTop() {
-                    super.onSwipeTop()
-                    scrollCurrency(btn_main, UP)
-                    if (!isTutorialViewed && tutorialStep > 2) {
-                        tutorialStep++
-                        nextTutorialStep()
-                    }
-                }
-
-                override fun onSwipeBottom() {
-                    super.onSwipeBottom()
-                    scrollCurrency(btn_main, DOWN)
-                    if (!isTutorialViewed && tutorialStep > 2) {
-                        tutorialStep++
-                        nextTutorialStep()
-                    }
-                }
-
                 override fun onLongPress() {
                     super.onLongPress()
 //                Log.e("MainActivity", "View On Long Click!!!!")
@@ -683,18 +659,6 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
                     super.onSwipeLeft()
 //                if (isTutorialViewed)
                     switchMain(R.id.btn_secondary1)
-                }
-
-                override fun onSwipeTop() {
-                    super.onSwipeTop()
-//                if (isTutorialViewed)
-                    scrollCurrency(btn_secondary1, UP)
-                }
-
-                override fun onSwipeBottom() {
-                    super.onSwipeBottom()
-//                if (isTutorialViewed)
-                    scrollCurrency(btn_secondary1, DOWN)
                 }
 
                 override fun onLongPress() {
@@ -711,24 +675,6 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
                     super.onSwipeLeft()
                     switchMain(R.id.btn_secondary2)
                     if (!isTutorialViewed && tutorialStep == 2) {
-                        tutorialStep++
-                        nextTutorialStep()
-                    }
-                }
-
-                override fun onSwipeTop() {
-                    super.onSwipeTop()
-                    scrollCurrency(btn_secondary2, UP)
-                    if (!isTutorialViewed && tutorialStep > 2) {
-                        tutorialStep++
-                        nextTutorialStep()
-                    }
-                }
-
-                override fun onSwipeBottom() {
-                    super.onSwipeBottom()
-                    scrollCurrency(btn_secondary2, DOWN)
-                    if (!isTutorialViewed && tutorialStep > 2) {
                         tutorialStep++
                         nextTutorialStep()
                     }
@@ -769,33 +715,11 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
             fadeIn(txvSwipeRight)
 
         } else if (tutorialStep == 3) {
-//            txvSwipe.visibility = View.GONE
-////            txvSwipeRight.visibility = View.GONE
-//            txvSwipeLeft.visibility = View.GONE
-//            txvSroll.visibility = View.VISIBLE
-//            txvSwipeUp.visibility = View.VISIBLE
-//            txvSwipeDown.visibility = View.VISIBLE
-
+            // Scroll-step was removed (iOS doesn't have it); step 3 now finishes the tutorial.
             fadeOut(txvSwipe)
             fadeOut(txvSwipeLeft)
             fadeOut(txvSwipeRight)
-
-            btn_secondary2.callOnClick()
-            btn_secondary2_tut.callOnClick()
-
-            fadeIn(txvSroll)
-            fadeIn(txvSwipeUp)
-            fadeIn(txvSwipeDown)
-
-        } else if (tutorialStep == 4) {
-//            fadeIn(btn_secondary1)
             fadeIn(imvCloseTutorial)
-            // Animate the loading view to 0% opacity. After the animation ends,
-            // set its visibility to GONE as an optimization step (it won't
-            // participate in layout passes, etc.)
-//            fadeOut(txvSroll)
-//            fadeOut(txvSwipeUp)
-//            fadeOut(txvSwipeDown)
         }
     }
 
@@ -810,10 +734,6 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
 
         fadeOut(imvCloseTutorial)
         fadeOut(blurView, 1000L)
-
-        fadeOut(txvSroll)
-        fadeOut(txvSwipeUp)
-        fadeOut(txvSwipeDown)
 
         btn_secondary1_tut.visibility = View.GONE
         btn_secondary2_tut.visibility = View.GONE
@@ -845,48 +765,6 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
                 .alpha(1f)
                 .setDuration(animationDuration)
                 .setListener(null)
-        }
-    }
-
-    private fun scrollCurrency(btn: ImageView, scrollType: Int) {
-        try {
-            var sharedPref =
-                getSharedPreferences(getString(R.string.preference_file), Context.MODE_PRIVATE)
-            val favourites =
-                sharedPref?.getString(getString(R.string.saved_favourites_key), "") ?: ""
-
-            favList = favourites.split(",").filter { it != "" }.toMutableList()
-
-            val code = btn.getTag(R.id.code_tag_name)
-
-            var toCode = ""
-
-            if (favList.isNotEmpty()) {
-                var index = favList.indexOf(code)
-                if (index == -1 && scrollType == DOWN) index = 0
-                toCode =
-                    if (scrollType == UP) {
-                        favList[if (index == favList.size - 1) 0 else index + 1]
-                    } else {
-                        favList[if (index == 0) favList.size - 1 else index - 1]
-                    }
-            } else {
-                val list = CurrencyItem.getList()
-                val index = list.indexOf(list.find { it.code == code })
-                toCode =
-                    if (scrollType == UP) {
-                        list[if (index == list.size - 1) 0 else index + 1].code
-                    } else {
-                        list[if (index == 0) list.size - 1 else index - 1].code
-                    }
-            }
-            setCur(btn, toCode)
-            if (btn.id == secondarySelectedId) {
-                txvResult.setResult(convertToSec(savedMainVal, toCode))
-            }
-            vibrate()
-        } catch (e: Exception) {
-            e.printStackTrace()
         }
     }
 
