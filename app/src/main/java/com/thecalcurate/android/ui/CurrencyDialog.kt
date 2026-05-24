@@ -14,7 +14,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.tabs.TabLayout
 import com.thecalcurate.android.R
 import com.thecalcurate.android.model.CryptoItem
 import com.thecalcurate.android.model.CurrencyItem
@@ -191,7 +190,8 @@ class CurrencyDialog(
                 edtSearch = dialogView.findViewById<AppCompatEditText>(R.id.edtSearch)
                 imvClear = dialogView.findViewById(R.id.imvClear)
                 var recyclerView = dialogView.findViewById<RecyclerView>(R.id.recyclerview)
-                val tabLayout = dialogView.findViewById<TabLayout>(R.id.tabLayout)
+                val segCurrencies = dialogView.findViewById<android.widget.TextView>(R.id.segCurrencies)
+                val segCrypto = dialogView.findViewById<android.widget.TextView>(R.id.segCrypto)
                 val txvFav = dialogView.findViewById<android.widget.TextView>(R.id.txvFav)
                 val txvCurr = dialogView.findViewById<android.widget.TextView>(R.id.txvCurr)
                 val txvRates = dialogView.findViewById<android.widget.TextView>(R.id.txvRates)
@@ -201,34 +201,39 @@ class CurrencyDialog(
                 edtSearch.addTextChangedListener(textChangeListener)
                 imvClear.setOnClickListener(clearClickListener)
 
-                tabLayout?.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-                    override fun onTabSelected(tab: TabLayout.Tab?) {
-                        isCryptoTab = (tab?.position == 1)
-                        if (isCryptoTab) {
-                            // Search bar stays visible (matches iOS); crypto list is just 8 rows
-                            // so search is a near no-op but the bar is part of the layout.
-                            adapter?.setList(buildCryptoRows())
-                            // iOS column headers on Crypto tab: "Crypto" (left) + "Rate" (right).
-                            txvFav?.text = getString(R.string.header_crypto)
-                            txvFav?.visibility = View.VISIBLE
-                            txvCurr?.visibility = View.GONE
-                            txvRates?.text = getString(R.string.header_rate)
-                            txvRates?.visibility = View.VISIBLE
-                        } else {
-                            adapter?.setList(listToShow!!)
-                            // Restore the fiat labels: Favorites / Currencies / Rates.
-                            txvFav?.text = getString(R.string.favorites)
-                            txvFav?.visibility = View.VISIBLE
-                            txvCurr?.text = getString(R.string.currencies)
-                            txvCurr?.visibility = View.VISIBLE
-                            txvRates?.text = getString(R.string.rates)
-                            txvRates?.visibility = View.VISIBLE
-                        }
-                        adapter?.notifyDataSetChanged()
+                fun applySegmentSelection(crypto: Boolean) {
+                    isCryptoTab = crypto
+                    if (crypto) {
+                        segCurrencies.setBackgroundResource(android.R.color.transparent)
+                        segCurrencies.setTypeface(null, android.graphics.Typeface.NORMAL)
+                        segCrypto.setBackgroundResource(R.drawable.segmented_selected_bg)
+                        segCrypto.setTypeface(null, android.graphics.Typeface.BOLD)
+                        adapter?.setList(buildCryptoRows())
+                        txvFav?.text = getString(R.string.header_crypto)
+                        txvFav?.visibility = View.VISIBLE
+                        txvCurr?.visibility = View.GONE
+                        txvRates?.text = getString(R.string.header_rate)
+                        txvRates?.visibility = View.VISIBLE
+                    } else {
+                        segCurrencies.setBackgroundResource(R.drawable.segmented_selected_bg)
+                        segCurrencies.setTypeface(null, android.graphics.Typeface.BOLD)
+                        segCrypto.setBackgroundResource(android.R.color.transparent)
+                        segCrypto.setTypeface(null, android.graphics.Typeface.NORMAL)
+                        adapter?.setList(listToShow!!)
+                        txvFav?.text = getString(R.string.favorites)
+                        txvFav?.visibility = View.VISIBLE
+                        txvCurr?.text = getString(R.string.currencies)
+                        txvCurr?.visibility = View.VISIBLE
+                        txvRates?.text = getString(R.string.rates)
+                        txvRates?.visibility = View.VISIBLE
                     }
-                    override fun onTabUnselected(tab: TabLayout.Tab?) {}
-                    override fun onTabReselected(tab: TabLayout.Tab?) {}
-                })
+                    adapter?.notifyDataSetChanged()
+                }
+
+                segCurrencies.setOnClickListener { applySegmentSelection(false) }
+                segCrypto.setOnClickListener { applySegmentSelection(true) }
+                // Start on the Currencies (fiat) tab.
+                applySegmentSelection(false)
 
                 recyclerView.adapter = adapter
                 builder.setView(dialogView)

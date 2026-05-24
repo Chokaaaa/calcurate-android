@@ -11,28 +11,41 @@
     android:paddingEnd="@dimen/dialog_padding"
     android:paddingBottom="@dimen/dialog_padding">
 
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tabLayout"
+    <LinearLayout
+        android:id="@+id/segmentedControl"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:tabMode="fixed"
-        app:tabGravity="fill"
+        android:layout_height="36dp"
+        android:background="@drawable/segmented_container_bg"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="2dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <com.google.android.material.tabs.TabItem
-            android:id="@+id/tabFiat"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Fiat" />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/segCurrencies"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/segmented_selected_bg"
+            android:gravity="center"
+            android:text="@string/segment_currencies"
+            android:textColor="@color/grey"
+            android:textSize="14sp"
+            android:textStyle="bold" />
 
-        <com.google.android.material.tabs.TabItem
-            android:id="@+id/tabCrypto"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Crypto" />
-    </com.google.android.material.tabs.TabLayout>
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/segCrypto"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:gravity="center"
+            android:text="@string/segment_crypto"
+            android:textColor="@color/grey"
+            android:textSize="14sp" />
+    </LinearLayout>
 
     <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/edtSearch"
@@ -51,7 +64,7 @@
         android:hint="@string/search_your_currency"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tabLayout" />
+        app:layout_constraintTop_toBottomOf="@id/segmentedControl" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/imvClear"
