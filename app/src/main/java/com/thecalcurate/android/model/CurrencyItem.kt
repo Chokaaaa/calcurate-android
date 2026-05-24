@@ -29,8 +29,15 @@ class CurrencyItem(
 //    }
 
     fun getRateStr(): String {
-        return if (rate == .0) "0"
-        else "%.3f".format(rate)
+        if (rate == .0) return "0"
+        // Crypto rows (set via iconResId) get up to 8 decimals to match iOS
+        // crypto formatter (USDT="1", BTC="0.00001299", ADA="4.06669378").
+        // Fiat keeps 3 decimals per the "3 decimals" iOS build variant.
+        return if (iconResId != 0) {
+            "%.8f".format(rate).trimEnd('0').trimEnd('.')
+        } else {
+            "%.3f".format(rate)
+        }
     }
 
     fun toggleFavorite() {
