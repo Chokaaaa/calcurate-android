@@ -89,9 +89,9 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
     lateinit var favList: MutableList<String>
     lateinit var selectedCurList: MutableList<String>
     var mp: MediaPlayer? = null
-    val UP = 1
-    val DOWN = 2
     val VIBRATION_MILIS = 100L
+    // Matches iOS UIImpactFeedbackGenerator(style: .heavy) — short, sharp pulse.
+    val HAPTIC_HEAVY_MILIS = 35L
 
     var itemClickListener = object : CurrencyRecyclerViewAdapter.ItemClickListener {
         override fun onItemClick(view: View?, position: Int, isCrypto: Boolean) {
@@ -873,6 +873,24 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
         }
     }
 
+    /** Short sharp pulse to mimic iOS UIImpactFeedbackGenerator(style: .heavy). */
+    private fun hapticHeavy() {
+        try {
+            if (Build.VERSION.SDK_INT >= 26) {
+                vibe.vibrate(
+                    VibrationEffect.createOneShot(
+                        HAPTIC_HEAVY_MILIS,
+                        VibrationEffect.DEFAULT_AMPLITUDE
+                    )
+                )
+            } else {
+                vibe.vibrate(HAPTIC_HEAVY_MILIS)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
     private fun showDialog() {
         try {
             val type = when (longClickedId) {
@@ -883,7 +901,7 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
             }
             fetchCurrencyRates(type)
 
-            vibrate()
+            hapticHeavy()
 
             val sharedPref = getSharedPreferences(
                 getString(R.string.preference_file),
