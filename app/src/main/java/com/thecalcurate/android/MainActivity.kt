@@ -148,6 +148,7 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
     private val onNumberClickListener = View.OnClickListener {
         try {
             play()
+            pressFlash(it, 100L)
             val number = getNumberClicked(it.id)
             ifErrorOnOutput()
 
@@ -166,6 +167,7 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
     private val onDotClickListener = View.OnClickListener {
         try {
             play()
+            pressFlash(it, 100L)
             ifErrorOnOutput()
 
             if (isActionSelected || txvResult.text.toString() == "0") {
@@ -183,6 +185,7 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
     private val onActionClickListener = View.OnClickListener {
         try {
             play()
+            pressFlash(it, 200L)
             if (txvResult.text.isNotEmpty()) {
                 val action = getAction(it.id)
                 operation(getAction(it.id))
@@ -201,6 +204,7 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
 
     private val onPercentageClickListener = View.OnClickListener {
         play()
+        pressFlash(it, 200L)
         if (txvResult.text.isNotEmpty()) {
             val result = if (!val1.isNaN()) {
                 val2 = txvResult.text.toString().filter { it.isDigit() || it=='.' }.toDouble()
@@ -221,6 +225,7 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
     private val onEqualClickListener = View.OnClickListener {
         try {
             play()
+            pressFlash(it, 200L)
             if (txvResult.text.isNotEmpty()) {
                 if (!val1.isNaN() && SELECTED_ACTION != ' ') {
                     calculateResult()
@@ -248,6 +253,7 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
     private val onClearClickListener = View.OnClickListener {
         try {
             play()
+            pressFlash(it, 200L)
             val1 = Double.NaN
             val2 = Double.NaN
             isEqualPressed = false
@@ -871,6 +877,25 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    /**
+     * Mirrors iOS press animation (NumberView.swift:51 / ActionView.swift:91).
+     * Quick alpha dip to ~0.55 and back to 1.0 over [totalMs] total.
+     */
+    private fun pressFlash(view: View, totalMs: Long) {
+        val half = totalMs / 2
+        view.animate().cancel()
+        view.animate()
+            .alpha(0.55f)
+            .setDuration(half)
+            .withEndAction {
+                view.animate()
+                    .alpha(1.0f)
+                    .setDuration(half)
+                    .start()
+            }
+            .start()
     }
 
     /** Short sharp pulse to mimic iOS UIImpactFeedbackGenerator(style: .heavy). */
