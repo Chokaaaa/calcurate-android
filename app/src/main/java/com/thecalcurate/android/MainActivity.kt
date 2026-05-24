@@ -89,6 +89,9 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
     private lateinit var networkMonitor: com.thecalcurate.android.data.NetworkMonitor
     private val bannerCollapseHandler = android.os.Handler(android.os.Looper.getMainLooper())
     private var bannerCollapseRunnable: Runnable? = null
+    private val loadingTimeoutHandler = android.os.Handler(android.os.Looper.getMainLooper())
+    private var loadingTimeoutRunnable: Runnable? = null
+    private var loadingDismissed: Boolean = false
     lateinit var favList: MutableList<String>
     lateinit var selectedCurList: MutableList<String>
     var mp: MediaPlayer? = null
@@ -505,6 +508,11 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        // Cold-start loading overlay (iOS Home.swift:537-548). Mirrors iOS 5s hard timeout.
+        findViewById<View>(R.id.loadingOverlay).visibility = View.VISIBLE
+        loadingTimeoutRunnable = Runnable { dismissLoadingOverlay() }
+        loadingTimeoutHandler.postDelayed(loadingTimeoutRunnable!!, 5_000)
+
         World.init(applicationContext)
 
         var sharedPref =
@@ -535,6 +543,13 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
         findViewById<View>(R.id.networkBanner).setOnClickListener {
             findViewById<View>(R.id.bannerDesc).visibility = View.VISIBLE
             scheduleBannerCollapse()
+        }
+
+        // Dismiss the cold-start spinner when the main slot's first non-zero rate emission lands.
+        viewModel.currencyMainList.observe(this) { list ->
+            if (!loadingDismissed && list != null && list.any { it.rate != .0 }) {
+                dismissLoadingOverlay()
+            }
         }
 
         // When fresh crypto rates arrive, recompute the selected secondary if it's a crypto slot.
@@ -626,6 +641,14 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
         super.onDestroy()
         if (this::networkMonitor.isInitialized) networkMonitor.stop()
         bannerCollapseRunnable?.let { bannerCollapseHandler.removeCallbacks(it) }
+        loadingTimeoutRunnable?.let { loadingTimeoutHandler.removeCallbacks(it) }
+    }
+
+    private fun dismissLoadingOverlay() {
+        if (loadingDismissed) return
+        loadingDismissed = true
+        findViewById<View>(R.id.loadingOverlay).visibility = View.GONE
+        loadingTimeoutRunnable?.let { loadingTimeoutHandler.removeCallbacks(it) }
     }
 
     private fun applyNetworkBanner(quality: com.thecalcurate.android.data.NetworkQuality) {
