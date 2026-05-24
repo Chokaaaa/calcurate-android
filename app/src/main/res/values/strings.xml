@@ -5,6 +5,8 @@
     <string name="favorites">Favorites</string>
     <string name="currencies">Currencies</string>
     <string name="rates">Rates</string>
+    <string name="header_crypto">Crypto</string>
+    <string name="header_rate">Rate</string>
     <string name="preference_file">com.thecalcurate.android.preference</string>
     <string name="txt_swipe">Swipe</string>
     <string name="txt_scroll">Scroll</string>

@@ -192,9 +192,9 @@ class CurrencyDialog(
                 imvClear = dialogView.findViewById(R.id.imvClear)
                 var recyclerView = dialogView.findViewById<RecyclerView>(R.id.recyclerview)
                 val tabLayout = dialogView.findViewById<TabLayout>(R.id.tabLayout)
-                val txvFav = dialogView.findViewById<View>(R.id.txvFav)
-                val txvCurr = dialogView.findViewById<View>(R.id.txvCurr)
-                val txvRates = dialogView.findViewById<View>(R.id.txvRates)
+                val txvFav = dialogView.findViewById<android.widget.TextView>(R.id.txvFav)
+                val txvCurr = dialogView.findViewById<android.widget.TextView>(R.id.txvCurr)
+                val txvRates = dialogView.findViewById<android.widget.TextView>(R.id.txvRates)
 
                 adapter?.setList(listToShow!!)
                 adapter?.setClickListener(itemClickListener2, checkClickListener)
@@ -208,8 +208,21 @@ class CurrencyDialog(
                             // Search bar stays visible (matches iOS); crypto list is just 8 rows
                             // so search is a near no-op but the bar is part of the layout.
                             adapter?.setList(buildCryptoRows())
+                            // iOS column headers on Crypto tab: "Crypto" (left) + "Rate" (right).
+                            txvFav?.text = getString(R.string.header_crypto)
+                            txvFav?.visibility = View.VISIBLE
+                            txvCurr?.visibility = View.GONE
+                            txvRates?.text = getString(R.string.header_rate)
+                            txvRates?.visibility = View.VISIBLE
                         } else {
                             adapter?.setList(listToShow!!)
+                            // Restore the fiat labels: Favorites / Currencies / Rates.
+                            txvFav?.text = getString(R.string.favorites)
+                            txvFav?.visibility = View.VISIBLE
+                            txvCurr?.text = getString(R.string.currencies)
+                            txvCurr?.visibility = View.VISIBLE
+                            txvRates?.text = getString(R.string.rates)
+                            txvRates?.visibility = View.VISIBLE
                         }
                         adapter?.notifyDataSetChanged()
                     }
