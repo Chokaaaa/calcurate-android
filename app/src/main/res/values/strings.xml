@@ -9,6 +9,12 @@
     <string name="header_rate">Rate</string>
     <string name="segment_currencies">Currencies</string>
     <string name="segment_crypto">Crypto</string>
+    <string name="banner_no_connection_title">No Network Connection</string>
+    <string name="banner_no_connection_short">No Connection</string>
+    <string name="banner_no_connection_desc">Connect to the internet to fetch live rates.</string>
+    <string name="banner_bad_title">Bad Connectivity</string>
+    <string name="banner_bad_short">Poor Connectivity</string>
+    <string name="banner_bad_desc">Your network is constrained — rates may be slow to refresh.</string>
     <string name="preference_file">com.thecalcurate.android.preference</string>
     <string name="txt_swipe">Swipe</string>
     <string name="txt_scroll">Scroll</string>
