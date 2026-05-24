@@ -954,6 +954,7 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
 
             newFragment.listToShow = listToShow
             newFragment.list = list
+            newFragment.cryptoRates = viewModel.cryptoRates.value ?: emptyMap()
             newFragment.show(supportFragmentManager, "dialog")
         } catch (e: Exception) {
             e.printStackTrace()

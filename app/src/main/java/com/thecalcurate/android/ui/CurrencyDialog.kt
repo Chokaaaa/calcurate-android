@@ -37,6 +37,9 @@ class CurrencyDialog(
     lateinit var imvClear: View
     lateinit var edtSearch: EditText
 
+    /** Populated by MainActivity from viewModel.cryptoRates before show(). */
+    var cryptoRates: Map<String, Double> = emptyMap()
+
     private var isCryptoTab: Boolean = false
 
     /* The activity that creates an instance of this dialog fragment must
@@ -117,11 +120,15 @@ class CurrencyDialog(
 
     /**
      * Build a list of CurrencyItem-shaped rows representing cryptos so the existing adapter can render them.
-     * Symbol + name go in the name slot (e.g. "₿  Bitcoin"); rate is left 0 (not shown for picker).
+     * iconResId is set so the adapter shows the branded coin icon and hides the favorite star + rate.
      */
     private fun buildCryptoRows(): MutableList<CurrencyItem> {
         return CryptoItem.getList().map { c ->
-            CurrencyItem("${c.code}  ${c.name}", c.code, 0.0).also { it.isFavorite2 = false }
+            CurrencyItem(c.name, c.code, cryptoRates[c.code] ?: 0.0).also {
+                it.isFavorite2 = false
+                it.iconResId = c.iconResId
+                it.ticker = c.code
+            }
         }.toMutableList()
     }
 
@@ -225,6 +232,9 @@ class CurrencyDialog(
                 // Match iOS: transparent window so the rounded shape shows through, plus 50% black scrim.
                 setBackgroundDrawableResource(android.R.color.transparent)
                 setDimAmount(0.5f)
+                // Explicit CENTER — without panel decoration the dialog otherwise
+                // floats to the bottom of the screen on some devices.
+                setGravity(android.view.Gravity.CENTER)
             }
             dialog
         } ?: throw IllegalStateException("Activity cannot be null")
