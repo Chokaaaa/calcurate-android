@@ -60,7 +60,7 @@ class CurrencyListViewModel(application: Application, private val mRepository: D
                 val curList = mRepository.getCurrencyList()
                 if (response.isSuccessful) {
                     postValue(type, curList.map { rate ->
-                        var mappedList = response.body()!!.conversion_rates.filter {
+                        var mappedList = response.body()!!.rates.filter {
                             it.Code == rate.code
                         }
                         CurrencyItem(rate.name, rate.code, mappedList[0].Value)

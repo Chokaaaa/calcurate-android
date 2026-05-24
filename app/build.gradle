@@ -34,16 +34,16 @@ android {
         dev {
             dimension 'environments'
             applicationIdSuffix '.dev'
-            buildConfigField "String", "API_URL", '"https://v6.exchangerate-api.com"'
+            buildConfigField "String", "API_URL", '"https://open.exchangerate-api.com"'
         }
         stg {
             dimension 'environments'
             applicationIdSuffix '.stg'
-            buildConfigField "String", "API_URL", '"https://v6.exchangerate-api.com"'
+            buildConfigField "String", "API_URL", '"https://open.exchangerate-api.com"'
         }
         prod {
             dimension 'environments'
-            buildConfigField "String", "API_URL", '"https://v6.exchangerate-api.com"'
+            buildConfigField "String", "API_URL", '"https://open.exchangerate-api.com"'
         }
     }
     dataBinding {
