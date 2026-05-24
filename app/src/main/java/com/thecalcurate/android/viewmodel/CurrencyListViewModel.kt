@@ -17,17 +17,13 @@ package com.thecalcurate.android.viewmodel
 
 import android.app.Application
 import android.util.Log
-import com.thecalcurate.android.DataRepository.Companion.instance
 import androidx.lifecycle.AndroidViewModel
-import com.thecalcurate.android.DataRepository
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
-import com.thecalcurate.android.data.remote.NetworkState
-import com.thecalcurate.android.model.Currency
+import com.thecalcurate.android.DataRepository
+import com.thecalcurate.android.data.CryptoRatesCache
+import com.thecalcurate.android.model.CryptoItem
 import com.thecalcurate.android.model.CurrencyItem
-import com.thecalcurate.android.model.Rate
-import com.thecalcurate.android.model.SecondaryRates
 import kotlinx.coroutines.*
 
 class CurrencyListViewModel(application: Application, private val mRepository: DataRepository) :
@@ -44,32 +40,96 @@ class CurrencyListViewModel(application: Application, private val mRepository: D
     var currencyMainList = MutableLiveData<List<CurrencyItem>>()
     var currencySec1List = MutableLiveData<List<CurrencyItem>>()
     var currencySec2List = MutableLiveData<List<CurrencyItem>>()
+
+    // Crypto rates: amount of crypto per 1 baseCurrency. Mirrors iOS FetchData.thirdCryptoRates.
+    val cryptoRates = MutableLiveData<Map<String, Double>>(emptyMap())
+
     val loading = MutableLiveData<Boolean>()
     var job: Job? = null
     val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
         throwable.printStackTrace()
     }
 
+    init {
+        // Load cached crypto rates immediately so UI can render stale-but-present values.
+        cryptoRates.value = CryptoRatesCache.load(application)
+    }
+
+    /**
+     * Public entry point — chooses fiat or crypto path based on whether baseCurrency is a crypto code.
+     * type is which slot's list to refresh (MAIN / SEC1 / SEC2).
+     */
     fun getCurrencyRates(baseCurrency: String, type: Int) {
+        if (CryptoItem.isCryptoCode(baseCurrency)) {
+            getRatesWithCryptoBase(baseCurrency, type)
+        } else {
+            getRatesWithFiatBase(baseCurrency, type)
+        }
+    }
+
+    private fun getRatesWithFiatBase(baseCurrency: String, type: Int) {
         val curList1 = mRepository.getCurrencyList()
         postValue(type, curList1)
 
         job = CoroutineScope(Dispatchers.IO + coroutineExceptionHandler).launch {
-            val response = mRepository.getCurrencyRates(baseCurrency)
+            // Parallel: fiat rates + crypto rates (only refresh crypto when refreshing MAIN
+            // so the rate map is base-correct)
+            val fiatDeferred = async { mRepository.getCurrencyRates(baseCurrency) }
+            val cryptoDeferred = if (type == MAIN) {
+                async { mRepository.fetchCryptoRates(baseCurrency) }
+            } else null
+
+            val response = fiatDeferred.await()
+            val newCryptoRates = cryptoDeferred?.await()
+
             withContext(Dispatchers.Main) {
                 val curList = mRepository.getCurrencyList()
                 if (response.isSuccessful) {
                     postValue(type, curList.map { rate ->
-                        var mappedList = response.body()!!.rates.filter {
-                            it.Code == rate.code
-                        }
+                        val mappedList = response.body()!!.rates.filter { it.Code == rate.code }
                         CurrencyItem(rate.name, rate.code, mappedList[0].Value)
                     })
-
                     loading.value = false
                 } else {
                     onError("Error : ${response.message()} ")
                     postValue(type, curList)
+                }
+                if (newCryptoRates != null) {
+                    cryptoRates.value = newCryptoRates
+                    CryptoRatesCache.save(getApplication(), newCryptoRates)
+                }
+            }
+        }
+    }
+
+    private fun getRatesWithCryptoBase(cryptoBase: String, type: Int) {
+        val curList1 = mRepository.getCurrencyList()
+        postValue(type, curList1)
+
+        job = CoroutineScope(Dispatchers.IO + coroutineExceptionHandler).launch {
+            val cryptoBaseDeferred = async { mRepository.fetchCryptoBaseRates(cryptoBase) }
+            val cryptoRatesDeferred = if (type == MAIN) {
+                async { mRepository.fetchCryptoRates(cryptoBase) }
+            } else null
+
+            val fiatMap = cryptoBaseDeferred.await()
+            val newCryptoRates = cryptoRatesDeferred?.await()
+
+            withContext(Dispatchers.Main) {
+                val curList = mRepository.getCurrencyList()
+                if (fiatMap != null) {
+                    postValue(type, curList.map { item ->
+                        val v = fiatMap[item.code] ?: 0.0
+                        CurrencyItem(item.name, item.code, v)
+                    })
+                    loading.value = false
+                } else {
+                    onError("Could not load crypto base rates")
+                    postValue(type, curList)
+                }
+                if (newCryptoRates != null) {
+                    cryptoRates.value = newCryptoRates
+                    CryptoRatesCache.save(getApplication(), newCryptoRates)
                 }
             }
         }
