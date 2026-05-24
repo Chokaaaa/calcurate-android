@@ -37,6 +37,23 @@ class CurrencyRecyclerViewAdapter internal constructor(
             holder.binding.root.tag = item
             holder.binding.item = item
             holder.binding.chbFav.tag = item?.code
+
+            // Crypto rows carry an iconResId; show the branded icon and hide
+            // the favorite star + rate column (rate isn't meaningful in picker mode).
+            val isCrypto = (item?.iconResId ?: 0) != 0
+            if (isCrypto) {
+                holder.binding.imgIcon.setImageResource(item!!.iconResId)
+                holder.binding.imgIcon.visibility = View.VISIBLE
+                // INVISIBLE (not GONE) keeps the column width stable so txvName
+                // doesn't shift between fiat and crypto rows.
+                holder.binding.chbFav.visibility = View.INVISIBLE
+                holder.binding.txvTicker.visibility = View.VISIBLE
+            } else {
+                holder.binding.imgIcon.visibility = View.GONE
+                holder.binding.chbFav.visibility = View.VISIBLE
+                holder.binding.txvTicker.visibility = View.GONE
+            }
+
             if (position == itemCount - 1) {
                 holder.binding.viewPadding.visibility = View.VISIBLE
             } else {

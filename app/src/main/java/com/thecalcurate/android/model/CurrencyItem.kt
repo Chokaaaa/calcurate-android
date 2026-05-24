@@ -18,6 +18,12 @@ class CurrencyItem(
     var isFavorite: LiveData<Boolean> = _isFavorite
     var isFavorite2 = false
 
+    // Set by CurrencyDialog when rendering crypto rows; 0 = no icon (default for fiat).
+    var iconResId: Int = 0
+
+    // Set by CurrencyDialog when rendering crypto rows; empty for fiat.
+    var ticker: String = ""
+
 //    val rateStr: LiveData<String> = Transformations.map(rate) {
 //        "%.4f".format(rate)
 //    }

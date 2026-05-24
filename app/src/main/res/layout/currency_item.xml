@@ -4,74 +4,84 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
             name="item"
             type="com.thecalcurate.android.model.CurrencyItem" />
-
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:background="@color/white">
 
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/txvFav"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/currency_height"
-            android:text="@string/favorites"
-            android:textColor="@color/teal_700"
-            android:textSize="@dimen/search_titles"
-            android:visibility="invisible"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <!--        android:onClick="@{()->item.toggleFavorite()}"-->
         <androidx.appcompat.widget.AppCompatCheckBox
             android:id="@+id/chbFav"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:layout_marginStart="12dp"
             android:button="@drawable/favourite"
             android:checked="@{item.isFavorite2}"
-            android:gravity="center"
-            android:paddingEnd="12dp"
             android:theme="@style/checkBoxStyle"
-            app:layout_constraintBottom_toBottomOf="@id/txvFav"
-            app:layout_constraintEnd_toEndOf="@+id/txvFav"
-            app:layout_constraintStart_toStartOf="@+id/txvFav"
-            app:layout_constraintTop_toTopOf="@id/txvFav" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/imgIcon"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/chbFav"
+            app:layout_constraintEnd_toEndOf="@id/chbFav"
+            app:layout_constraintStart_toStartOf="@id/chbFav"
+            app:layout_constraintTop_toTopOf="@id/chbFav"
+            tools:src="@drawable/crypto_btc"
+            tools:visibility="visible" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/txvName"
             android:layout_width="0dp"
-            android:layout_height="@dimen/currency_height"
-            android:gravity="start|center"
-            android:paddingStart="@dimen/dialog_padding"
+            android:layout_height="wrap_content"
+            android:gravity="start|center_vertical"
+            android:paddingStart="12dp"
             android:text="@{item.name}"
             android:textAllCaps="true"
             android:textColor="@color/grey"
             android:textSize="16sp"
-            app:layout_constraintEnd_toStartOf="@id/txvRate"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/txvTicker"
             app:layout_constraintStart_toEndOf="@id/chbFav"
-            app:layout_constraintTop_toTopOf="@id/txvFav"
-            tools:text="🇺🇸 USA Dollar" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="BITCOIN" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/txvTicker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingEnd="8dp"
+            android:text="@{item.ticker}"
+            android:textColor="@color/grey2"
+            android:textSize="13sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/txvRate"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="BTC" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/txvRate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="end|center"
+            android:layout_marginEnd="12dp"
+            android:gravity="end|center_vertical"
+            android:minWidth="80dp"
             android:text="@{item.rateStr}"
-            android:textAllCaps="true"
             android:textColor="@color/grey2"
-            android:textSize="12sp"
-            app:layout_constraintBottom_toBottomOf="@id/txvName"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/txvName"
-            tools:text="3.6666666" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="0.00001299" />
 
         <View
             android:id="@+id/viewPadding"
