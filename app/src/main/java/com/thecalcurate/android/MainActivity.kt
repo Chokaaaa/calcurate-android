@@ -925,7 +925,7 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
 
             favList = favourites.split(",").filter { it != "" }.toMutableList()
 
-            val code = btn.getTag(R.id.code_tag_name)
+            val code = btn.getTag(R.id.code_tag_name) as? String
             var toCode = ""
 
             if (favList.isNotEmpty()) {
@@ -936,9 +936,22 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
                 } else {
                     favList[if (index == 0) favList.size - 1 else index - 1]
                 }
+            } else if (code != null && com.thecalcurate.android.model.CryptoItem.isCryptoCode(code)) {
+                // Slot is a crypto with no favorites — cycle through the 8 crypto codes.
+                val cryptos = com.thecalcurate.android.model.CryptoItem.codes()
+                val index = cryptos.indexOf(code)
+                toCode = if (scrollType == UP) {
+                    cryptos[if (index == cryptos.size - 1) 0 else index + 1]
+                } else {
+                    cryptos[if (index <= 0) cryptos.size - 1 else index - 1]
+                }
             } else {
                 val list = CurrencyItem.getList()
                 val index = list.indexOf(list.find { it.code == code })
+                if (index < 0) {
+                    // Unknown code (shouldn't happen in practice) — bail rather than throw.
+                    return
+                }
                 toCode = if (scrollType == UP) {
                     list[if (index == list.size - 1) 0 else index + 1].code
                 } else {
