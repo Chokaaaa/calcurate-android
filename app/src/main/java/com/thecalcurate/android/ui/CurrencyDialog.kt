@@ -220,7 +220,13 @@ class CurrencyDialog(
                 recyclerView.adapter = adapter
                 builder.setView(dialogView)
             }
-            builder.create()
+            val dialog = builder.create()
+            dialog.window?.apply {
+                // Match iOS: transparent window so the rounded shape shows through, plus 50% black scrim.
+                setBackgroundDrawableResource(android.R.color.transparent)
+                setDimAmount(0.5f)
+            }
+            dialog
         } ?: throw IllegalStateException("Activity cannot be null")
     }
 }
