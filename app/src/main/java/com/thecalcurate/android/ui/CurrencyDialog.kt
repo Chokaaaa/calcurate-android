@@ -7,23 +7,17 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.view.WindowManager
 import android.widget.CheckBox
-import android.widget.CompoundButton
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatEditText
-import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.DialogFragment
-import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
-import com.thecalcurate.android.MainActivity
+import com.google.android.material.tabs.TabLayout
 import com.thecalcurate.android.R
+import com.thecalcurate.android.model.CryptoItem
 import com.thecalcurate.android.model.CurrencyItem
-import okhttp3.internal.notifyAll
 
 class CurrencyDialog(
     val itemClickListener: CurrencyRecyclerViewAdapter.ItemClickListener
@@ -42,6 +36,8 @@ class CurrencyDialog(
     var list: MutableList<CurrencyItem>? = null
     lateinit var imvClear: View
     lateinit var edtSearch: EditText
+
+    private var isCryptoTab: Boolean = false
 
     /* The activity that creates an instance of this dialog fragment must
      * implement this interface in order to receive event callbacks.
@@ -78,8 +74,9 @@ class CurrencyDialog(
     }
 
     val itemClickListener2 = object : CurrencyRecyclerViewAdapter.ItemClickListener {
-        override fun onItemClick(view: View?, position: Int) {
-            itemClickListener.onItemClick(view, position)
+        override fun onItemClick(view: View?, position: Int, isCrypto: Boolean) {
+            // Substitute the dialog's own tab state — the adapter doesn't know it.
+            itemClickListener.onItemClick(view, position, isCryptoTab)
             dismiss()
         }
     }
@@ -100,7 +97,7 @@ class CurrencyDialog(
             favList.remove(code)
         }
         adapterList = generateListToShow(adapterList!!)
-        adapter?.setList(adapterList!!)
+        adapter?.setList(adapterList)
         adapter?.notifyDataSetChanged()
     }
 
@@ -116,6 +113,16 @@ class CurrencyDialog(
         listToShow!!.addAll(0, allFavSorted)
 
         return listToShow!!.filter { adapterList.contains(it) }.toMutableList()
+    }
+
+    /**
+     * Build a list of CurrencyItem-shaped rows representing cryptos so the existing adapter can render them.
+     * Symbol + name go in the name slot (e.g. "₿  Bitcoin"); rate is left 0 (not shown for picker).
+     */
+    private fun buildCryptoRows(): MutableList<CurrencyItem> {
+        return CryptoItem.getList().map { c ->
+            CurrencyItem("${c.code}  ${c.name}", c.code, 0.0).also { it.isFavorite2 = false }
+        }.toMutableList()
     }
 
     // Override the Fragment.onAttach() method to instantiate the NoticeDialogListener
@@ -176,10 +183,39 @@ class CurrencyDialog(
                 edtSearch = dialogView.findViewById<AppCompatEditText>(R.id.edtSearch)
                 imvClear = dialogView.findViewById(R.id.imvClear)
                 var recyclerView = dialogView.findViewById<RecyclerView>(R.id.recyclerview)
+                val tabLayout = dialogView.findViewById<TabLayout>(R.id.tabLayout)
+                val txvFav = dialogView.findViewById<View>(R.id.txvFav)
+                val txvCurr = dialogView.findViewById<View>(R.id.txvCurr)
+                val txvRates = dialogView.findViewById<View>(R.id.txvRates)
+
                 adapter?.setList(listToShow!!)
                 adapter?.setClickListener(itemClickListener2, checkClickListener)
                 edtSearch.addTextChangedListener(textChangeListener)
                 imvClear.setOnClickListener(clearClickListener)
+
+                tabLayout?.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+                    override fun onTabSelected(tab: TabLayout.Tab?) {
+                        isCryptoTab = (tab?.position == 1)
+                        if (isCryptoTab) {
+                            edtSearch.visibility = View.GONE
+                            imvClear.visibility = View.GONE
+                            txvFav?.visibility = View.GONE
+                            txvCurr?.visibility = View.GONE
+                            txvRates?.visibility = View.GONE
+                            adapter?.setList(buildCryptoRows())
+                            adapter?.notifyDataSetChanged()
+                        } else {
+                            edtSearch.visibility = View.VISIBLE
+                            txvFav?.visibility = View.VISIBLE
+                            txvCurr?.visibility = View.VISIBLE
+                            txvRates?.visibility = View.VISIBLE
+                            adapter?.setList(listToShow!!)
+                            adapter?.notifyDataSetChanged()
+                        }
+                    }
+                    override fun onTabUnselected(tab: TabLayout.Tab?) {}
+                    override fun onTabReselected(tab: TabLayout.Tab?) {}
+                })
 
                 recyclerView.adapter = adapter
                 builder.setView(dialogView)

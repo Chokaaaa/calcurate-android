@@ -97,7 +97,7 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
     val VIBRATION_MILIS = 100L
 
     var itemClickListener = object : CurrencyRecyclerViewAdapter.ItemClickListener {
-        override fun onItemClick(view: View?, position: Int) {
+        override fun onItemClick(view: View?, position: Int, isCrypto: Boolean) {
             var curItem = view?.tag as CurrencyItem
             when (longClickedId) {
                 R.id.btn_main -> setCur(btn_main, curItem.code)
@@ -128,7 +128,11 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
     }
 
     fun setCur(imageView: ImageView, code: String) {
-        val resourceId = CurrencyButton.getResource(code)
+        val resourceId = if (com.thecalcurate.android.model.CryptoItem.isCryptoCode(code)) {
+            com.thecalcurate.android.model.CryptoItem.getList().first { it.code == code }.iconResId
+        } else {
+            CurrencyButton.getResource(code)
+        }
         imageView.setImageResource(resourceId)
         imageView.setTag(R.id.code_tag_name, code)
         imageView.setTag(R.id.resid_tag_name, resourceId)
@@ -319,6 +323,13 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
 
     private fun convertToSec(value: Double, secCode: String): Double {
         Log.e(TAG, "value: $value ,convertToSec: $secCode")
+        // If the secondary slot is a crypto, look up rate from cryptoRates map.
+        // Mirrors iOS CryptoChoice.convertFromBase (CurrencyEnums.swift:72).
+        if (com.thecalcurate.android.model.CryptoItem.isCryptoCode(secCode)) {
+            var rate = viewModel.cryptoRates.value?.get(secCode) ?: .0
+            if (rate == .0) rate = 1.0
+            return value * rate
+        }
         if (viewModel.currencyMainList.value != null) {
             var rate = viewModel.currencyMainList.value!!.filter { it.code == secCode }[0].rate
             if (rate == .0)
@@ -338,7 +349,11 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
     private fun calculateMainVal() {
         if (secondarySelectedId != 0 && viewModel.currencyMainList.value != null) {
             val secCode = getSecView(secondarySelectedId).getTag(R.id.code_tag_name).toString()
-            var rate = viewModel.currencyMainList.value!!.filter { it.code == secCode }[0].rate
+            var rate: Double = if (com.thecalcurate.android.model.CryptoItem.isCryptoCode(secCode)) {
+                viewModel.cryptoRates.value?.get(secCode) ?: .0
+            } else {
+                viewModel.currencyMainList.value!!.filter { it.code == secCode }[0].rate
+            }
             if (rate == .0)
                 rate = 1.0
             savedMainVal = txvResult.getResult() / rate
@@ -506,6 +521,16 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
 
         viewModel.errorMessage.observe(this) {
             Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
+        }
+
+        // When fresh crypto rates arrive, recompute the selected secondary if it's a crypto slot.
+        viewModel.cryptoRates.observe(this) {
+            if (secondarySelectedId != 0) {
+                val secCode = getSecView(secondarySelectedId).getTag(R.id.code_tag_name)?.toString()
+                if (secCode != null && com.thecalcurate.android.model.CryptoItem.isCryptoCode(secCode)) {
+                    txvResult.setResult(convertToSec(savedMainVal, secCode))
+                }
+            }
         }
 
         viewModel.loading.observe(this, Observer {

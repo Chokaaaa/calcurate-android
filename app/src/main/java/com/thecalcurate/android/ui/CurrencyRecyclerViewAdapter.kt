@@ -72,9 +72,10 @@ class CurrencyRecyclerViewAdapter internal constructor(
         return mData
     }
 
-    // parent activity will implement this method to respond to click events
+    // parent activity will implement this method to respond to click events.
+    // isCrypto distinguishes fiat-tab vs crypto-tab selections in the picker.
     interface ItemClickListener {
-        fun onItemClick(view: View?, position: Int)
+        fun onItemClick(view: View?, position: Int, isCrypto: Boolean = false)
     }
 
     // data is passed into the constructor
