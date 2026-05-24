@@ -16,8 +16,10 @@ import java.lang.reflect.Type
 
 object Network {
     var currencyService: CurrencyService
+    var binanceService: BinanceService
 
     const val BASE_URL = BuildConfig.API_URL
+    const val BINANCE_BASE_URL = "https://api.binance.com/"
 
     init {
         val interceptor = HttpLoggingInterceptor()
@@ -35,11 +37,21 @@ object Network {
             .build()
             .create(CurrencyService::class.java)
 
+        binanceService = Retrofit.Builder()
+            .baseUrl(BINANCE_BASE_URL)
+            .client(client)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(BinanceService::class.java)
     }
 
     suspend fun getCurrencyList(base: String): Response<CurrencyListResponse> {
         Log.e("Network", "getCurrencyList base: ${base}")
 
         return currencyService.getWeatherData(base)
+    }
+
+    suspend fun getBinancePrice(symbol: String): Response<BinanceTickerPrice> {
+        return binanceService.getTickerPrice(symbol)
     }
 }
