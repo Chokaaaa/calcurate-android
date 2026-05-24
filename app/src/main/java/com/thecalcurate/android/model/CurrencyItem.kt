@@ -24,7 +24,7 @@ class CurrencyItem(
 
     fun getRateStr(): String {
         return if (rate == .0) "0"
-        else "%.4f".format(rate)
+        else "%.3f".format(rate)
     }
 
     fun toggleFavorite() {
