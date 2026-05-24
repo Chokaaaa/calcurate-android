@@ -39,6 +39,9 @@ class CurrencyDialog(
     /** Populated by MainActivity from viewModel.cryptoRates before show(). */
     var cryptoRates: Map<String, Double> = emptyMap()
 
+    /** Set by MainActivity: true if the slot being edited currently holds a crypto code. */
+    var openOnCryptoTab: Boolean = false
+
     private var isCryptoTab: Boolean = false
 
     /* The activity that creates an instance of this dialog fragment must
@@ -201,6 +204,26 @@ class CurrencyDialog(
                 edtSearch.addTextChangedListener(textChangeListener)
                 imvClear.setOnClickListener(clearClickListener)
 
+                val density = resources.displayMetrics.density
+                // Crypto tab: ~30% reduction of the empty gap between "Crypto" (left) and
+                // "Rate" (right) — fiat tab uses a smaller "Rates" nudge only.
+                val cryptoHeaderInsetPx = (48 * density).toInt()
+                // Fiat tab: nudge "Rates" ~5% to the left (Crypto/Rate not affected here).
+                val fiatRatesInsetPx = (16 * density).toInt()
+
+                fun applyHeaderInset(crypto: Boolean) {
+                    val startInset = if (crypto) cryptoHeaderInsetPx else 0
+                    val endInset = if (crypto) cryptoHeaderInsetPx else fiatRatesInsetPx
+                    (txvFav?.layoutParams as? androidx.constraintlayout.widget.ConstraintLayout.LayoutParams)?.let {
+                        it.marginStart = startInset
+                        txvFav?.layoutParams = it
+                    }
+                    (txvRates?.layoutParams as? androidx.constraintlayout.widget.ConstraintLayout.LayoutParams)?.let {
+                        it.marginEnd = endInset
+                        txvRates?.layoutParams = it
+                    }
+                }
+
                 fun applySegmentSelection(crypto: Boolean) {
                     isCryptoTab = crypto
                     if (crypto) {
@@ -227,13 +250,14 @@ class CurrencyDialog(
                         txvRates?.text = getString(R.string.rates)
                         txvRates?.visibility = View.VISIBLE
                     }
+                    applyHeaderInset(crypto)
                     adapter?.notifyDataSetChanged()
                 }
 
                 segCurrencies.setOnClickListener { applySegmentSelection(false) }
                 segCrypto.setOnClickListener { applySegmentSelection(true) }
-                // Start on the Currencies (fiat) tab.
-                applySegmentSelection(false)
+                // Open on the tab matching the slot being edited.
+                applySegmentSelection(openOnCryptoTab)
 
                 recyclerView.adapter = adapter
                 builder.setView(dialogView)
