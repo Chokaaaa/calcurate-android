@@ -86,6 +86,9 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
     var isTutorialViewed = false
 
     lateinit var viewModel: CurrencyListViewModel
+    private lateinit var networkMonitor: com.thecalcurate.android.data.NetworkMonitor
+    private val bannerCollapseHandler = android.os.Handler(android.os.Looper.getMainLooper())
+    private var bannerCollapseRunnable: Runnable? = null
     lateinit var favList: MutableList<String>
     lateinit var selectedCurList: MutableList<String>
     var mp: MediaPlayer? = null
@@ -523,6 +526,17 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
             Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
         }
 
+        networkMonitor = com.thecalcurate.android.data.NetworkMonitor(this)
+        networkMonitor.start()
+        networkMonitor.quality.observe(this) { quality ->
+            applyNetworkBanner(quality)
+        }
+        // Tap collapsed banner → re-expand description for another 15s.
+        findViewById<View>(R.id.networkBanner).setOnClickListener {
+            findViewById<View>(R.id.bannerDesc).visibility = View.VISIBLE
+            scheduleBannerCollapse()
+        }
+
         // When fresh crypto rates arrive, recompute the selected secondary if it's a crypto slot.
         viewModel.cryptoRates.observe(this) {
             if (secondarySelectedId != 0) {
@@ -606,6 +620,54 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
             commit()
         }
         super.onPause()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (this::networkMonitor.isInitialized) networkMonitor.stop()
+        bannerCollapseRunnable?.let { bannerCollapseHandler.removeCallbacks(it) }
+    }
+
+    private fun applyNetworkBanner(quality: com.thecalcurate.android.data.NetworkQuality) {
+        val banner = findViewById<View>(R.id.networkBanner)
+        val title = findViewById<android.widget.TextView>(R.id.bannerTitle)
+        val desc = findViewById<android.widget.TextView>(R.id.bannerDesc)
+        when (quality) {
+            com.thecalcurate.android.data.NetworkQuality.NONE -> {
+                banner.setBackgroundResource(R.drawable.banner_bg_red)
+                title.text = getString(R.string.banner_no_connection_title)
+                desc.text = getString(R.string.banner_no_connection_desc)
+                title.setTextColor(android.graphics.Color.WHITE)
+                desc.setTextColor(android.graphics.Color.WHITE)
+                desc.visibility = View.VISIBLE
+                banner.visibility = View.VISIBLE
+                scheduleBannerCollapse()
+            }
+            com.thecalcurate.android.data.NetworkQuality.METERED -> {
+                banner.setBackgroundResource(R.drawable.banner_bg_yellow)
+                title.text = getString(R.string.banner_bad_title)
+                desc.text = getString(R.string.banner_bad_desc)
+                // iOS yellow banner uses black text for contrast.
+                title.setTextColor(android.graphics.Color.BLACK)
+                desc.setTextColor(android.graphics.Color.BLACK)
+                desc.visibility = View.VISIBLE
+                banner.visibility = View.VISIBLE
+                scheduleBannerCollapse()
+            }
+            com.thecalcurate.android.data.NetworkQuality.HEALTHY -> {
+                banner.visibility = View.GONE
+                bannerCollapseRunnable?.let { bannerCollapseHandler.removeCallbacks(it) }
+            }
+        }
+    }
+
+    private fun scheduleBannerCollapse() {
+        bannerCollapseRunnable?.let { bannerCollapseHandler.removeCallbacks(it) }
+        val r = Runnable {
+            findViewById<View>(R.id.bannerDesc).visibility = View.GONE
+        }
+        bannerCollapseRunnable = r
+        bannerCollapseHandler.postDelayed(r, 15_000)
     }
 
     fun play() {
@@ -955,6 +1017,15 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
             newFragment.listToShow = listToShow
             newFragment.list = list
             newFragment.cryptoRates = viewModel.cryptoRates.value ?: emptyMap()
+            // If the slot we're editing currently holds a crypto code, open the picker on the Crypto tab.
+            val activeCode = when (longClickedId) {
+                R.id.btn_main -> selectedCurList.getOrNull(0)
+                R.id.btn_secondary1 -> selectedCurList.getOrNull(1)
+                R.id.btn_secondary2 -> selectedCurList.getOrNull(2)
+                else -> null
+            }
+            newFragment.openOnCryptoTab =
+                activeCode != null && com.thecalcurate.android.model.CryptoItem.isCryptoCode(activeCode)
             newFragment.show(supportFragmentManager, "dialog")
         } catch (e: Exception) {
             e.printStackTrace()
