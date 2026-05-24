@@ -57,15 +57,16 @@ class CurrencyDialog(
         }
 
         override fun afterTextChanged(editable: Editable?) {
+            // Search filters the currently-active tab's source list (fiat OR crypto).
+            val source: MutableList<CurrencyItem> =
+                if (isCryptoTab) buildCryptoRows() else listToShow!!
             if (editable.toString().isEmpty()) {
-                adapter?.setList(listToShow!!)
+                adapter?.setList(source)
                 imvClear.visibility = View.GONE
             } else {
-                adapter?.setList(listToShow!!.filter { curItem ->
-                    curItem.name.contains(
-                        editable.toString(),
-                        true
-                    )
+                adapter?.setList(source.filter { curItem ->
+                    curItem.name.contains(editable.toString(), true) ||
+                        curItem.code.contains(editable.toString(), true)
                 }.toMutableList())
             }
             adapter?.notifyDataSetChanged()
