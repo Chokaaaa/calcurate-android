@@ -432,6 +432,9 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
             txvSwipe = findViewById(R.id.txvSwipe)
             txvSwipeRight = findViewById(R.id.txvSwipeRight)
             txvSwipeLeft = findViewById(R.id.txvSwipeLeft)
+            txvSroll = findViewById(R.id.txvScroll)
+            txvSwipeUp = findViewById(R.id.txvSwipeUp)
+            txvSwipeDown = findViewById(R.id.txvSwipeDown)
             imvCloseTutorial = findViewById(R.id.imvCloseTutorial)
 
             b0 = findViewById(R.id.btn0)
