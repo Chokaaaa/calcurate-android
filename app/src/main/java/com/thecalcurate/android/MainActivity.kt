@@ -54,9 +54,6 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
     lateinit var btn_secondary2_tut: ImageView
     lateinit var txvHold: View
     lateinit var imgHold: View
-    lateinit var txvSwipe: View
-    lateinit var txvSwipeRight: View
-    lateinit var txvSwipeLeft: View
     lateinit var txvSroll: View
     lateinit var txvSwipeUp: View
     lateinit var txvSwipeDown: View
@@ -429,9 +426,6 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
             imgHold = findViewById(R.id.imgHold)
             btn_secondary1_tut = findViewById(R.id.btn_secondary1_tut)
             btn_secondary2_tut = findViewById(R.id.btn_secondary2_tut)
-            txvSwipe = findViewById(R.id.txvSwipe)
-            txvSwipeRight = findViewById(R.id.txvSwipeRight)
-            txvSwipeLeft = findViewById(R.id.txvSwipeLeft)
             txvSroll = findViewById(R.id.txvScroll)
             txvSwipeUp = findViewById(R.id.txvSwipeUp)
             txvSwipeDown = findViewById(R.id.txvSwipeDown)
@@ -821,11 +815,6 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
         if (tutorialStep == 2) {
             txvHold.visibility = View.GONE
             imgHold.visibility = View.GONE
-//            btn_secondary1.visibility = View.VISIBLE
-//            btn_secondary2.visibility = View.VISIBLE
-//            txvSwipe.visibility = View.VISIBLE
-////            txvSwipeRight.visibility = View.VISIBLE
-//            txvSwipeLeft.visibility = View.VISIBLE
 
             fadeOut(txvHold)
             fadeOut(imgHold)
@@ -834,15 +823,14 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
             btn_secondary2_tut.callOnClick()
 
             fadeIn(btn_secondary2)
-            fadeIn(txvSwipe)
-            fadeIn(txvSwipeLeft)
-            fadeIn(txvSwipeRight)
+            fadeIn(txvSroll)
+            fadeIn(txvSwipeUp)
+            fadeIn(txvSwipeDown)
 
         } else if (tutorialStep == 3) {
-            // Scroll-step was removed (iOS doesn't have it); step 3 now finishes the tutorial.
-            fadeOut(txvSwipe)
-            fadeOut(txvSwipeLeft)
-            fadeOut(txvSwipeRight)
+            fadeOut(txvSroll)
+            fadeOut(txvSwipeUp)
+            fadeOut(txvSwipeDown)
             fadeIn(imvCloseTutorial)
         }
     }
