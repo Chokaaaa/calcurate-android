@@ -57,6 +57,9 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
     lateinit var txvSwipe: View
     lateinit var txvSwipeRight: View
     lateinit var txvSwipeLeft: View
+    lateinit var txvSroll: View
+    lateinit var txvSwipeUp: View
+    lateinit var txvSwipeDown: View
     lateinit var imvCloseTutorial: View
 
 
@@ -95,6 +98,8 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
     lateinit var favList: MutableList<String>
     lateinit var selectedCurList: MutableList<String>
     var mp: MediaPlayer? = null
+    val UP = 1
+    val DOWN = 2
     val VIBRATION_MILIS = 100L
     // Matches iOS UIImpactFeedbackGenerator(style: .heavy) — short, sharp pulse.
     val HAPTIC_HEAVY_MILIS = 35L
@@ -740,6 +745,16 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
                     }
                 }
 
+                override fun onSwipeTop() {
+                    super.onSwipeTop()
+                    scrollCurrency(btn_main, UP)
+                }
+
+                override fun onSwipeBottom() {
+                    super.onSwipeBottom()
+                    scrollCurrency(btn_main, DOWN)
+                }
+
                 override fun onLongPress() {
                     super.onLongPress()
 //                Log.e("MainActivity", "View On Long Click!!!!")
@@ -753,6 +768,16 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
                     super.onSwipeLeft()
 //                if (isTutorialViewed)
                     switchMain(R.id.btn_secondary1)
+                }
+
+                override fun onSwipeTop() {
+                    super.onSwipeTop()
+                    scrollCurrency(btn_secondary1, UP)
+                }
+
+                override fun onSwipeBottom() {
+                    super.onSwipeBottom()
+                    scrollCurrency(btn_secondary1, DOWN)
                 }
 
                 override fun onLongPress() {
@@ -772,6 +797,16 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
                         tutorialStep++
                         nextTutorialStep()
                     }
+                }
+
+                override fun onSwipeTop() {
+                    super.onSwipeTop()
+                    scrollCurrency(btn_secondary2, UP)
+                }
+
+                override fun onSwipeBottom() {
+                    super.onSwipeBottom()
+                    scrollCurrency(btn_secondary2, DOWN)
                 }
 
                 override fun onLongPress() {
@@ -878,6 +913,45 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
             controller.hide(WindowInsetsCompat.Type.systemBars())
             controller.systemBarsBehavior =
                 WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        }
+    }
+
+    private fun scrollCurrency(btn: ImageView, scrollType: Int) {
+        try {
+            val sharedPref =
+                getSharedPreferences(getString(R.string.preference_file), Context.MODE_PRIVATE)
+            val favourites =
+                sharedPref?.getString(getString(R.string.saved_favourites_key), "") ?: ""
+
+            favList = favourites.split(",").filter { it != "" }.toMutableList()
+
+            val code = btn.getTag(R.id.code_tag_name)
+            var toCode = ""
+
+            if (favList.isNotEmpty()) {
+                var index = favList.indexOf(code)
+                if (index == -1 && scrollType == DOWN) index = 0
+                toCode = if (scrollType == UP) {
+                    favList[if (index == favList.size - 1) 0 else index + 1]
+                } else {
+                    favList[if (index == 0) favList.size - 1 else index - 1]
+                }
+            } else {
+                val list = CurrencyItem.getList()
+                val index = list.indexOf(list.find { it.code == code })
+                toCode = if (scrollType == UP) {
+                    list[if (index == list.size - 1) 0 else index + 1].code
+                } else {
+                    list[if (index == 0) list.size - 1 else index - 1].code
+                }
+            }
+            setCur(btn, toCode)
+            if (btn.id == secondarySelectedId) {
+                txvResult.setResult(convertToSec(savedMainVal, toCode))
+            }
+            vibrate()
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
