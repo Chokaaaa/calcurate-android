@@ -739,23 +739,22 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
             })
 
             btn_main.setOnTouchListener(object : OnSwipeListener(this) {
-                override fun onSwipeRight() {
-                    super.onSwipeRight()
-                    switchMain(secondarySelectedId)
+                override fun onSwipeTop() {
+                    super.onSwipeTop()
+                    scrollCurrency(btn_main, UP)
                     if (!isTutorialViewed && tutorialStep == 2) {
                         tutorialStep++
                         nextTutorialStep()
                     }
                 }
 
-                override fun onSwipeTop() {
-                    super.onSwipeTop()
-                    scrollCurrency(btn_main, UP)
-                }
-
                 override fun onSwipeBottom() {
                     super.onSwipeBottom()
                     scrollCurrency(btn_main, DOWN)
+                    if (!isTutorialViewed && tutorialStep == 2) {
+                        tutorialStep++
+                        nextTutorialStep()
+                    }
                 }
 
                 override fun onLongPress() {
@@ -766,12 +765,6 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
                 }
             })
             btn_secondary1.setOnTouchListener(object : OnSwipeListener(this) {
-
-                override fun onSwipeLeft() {
-                    super.onSwipeLeft()
-//                if (isTutorialViewed)
-                    switchMain(R.id.btn_secondary1)
-                }
 
                 override fun onSwipeTop() {
                     super.onSwipeTop()
@@ -793,23 +786,22 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
             })
             btn_secondary2.setOnTouchListener(object : OnSwipeListener(this) {
 
-                override fun onSwipeLeft() {
-                    super.onSwipeLeft()
-                    switchMain(R.id.btn_secondary2)
+                override fun onSwipeTop() {
+                    super.onSwipeTop()
+                    scrollCurrency(btn_secondary2, UP)
                     if (!isTutorialViewed && tutorialStep == 2) {
                         tutorialStep++
                         nextTutorialStep()
                     }
                 }
 
-                override fun onSwipeTop() {
-                    super.onSwipeTop()
-                    scrollCurrency(btn_secondary2, UP)
-                }
-
                 override fun onSwipeBottom() {
                     super.onSwipeBottom()
                     scrollCurrency(btn_secondary2, DOWN)
+                    if (!isTutorialViewed && tutorialStep == 2) {
+                        tutorialStep++
+                        nextTutorialStep()
+                    }
                 }
 
                 override fun onLongPress() {
@@ -970,26 +962,6 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
             vibrate()
         } catch (e: Exception) {
             e.printStackTrace()
-        }
-    }
-
-    private fun switchMain(secId: Int = 0) {
-        if (secId != 0 && isMainSelected) {
-            val mainCurrencyCode = btn_main.getTag(R.id.code_tag_name) as String
-            if (secId == R.id.btn_secondary1) {
-                val sCurrencyCode = btn_secondary1.getTag(R.id.code_tag_name) as String
-                setCur(btn_main, sCurrencyCode)
-                setCur(btn_secondary1, mainCurrencyCode)
-            } else {
-                val sCurrencyCode = btn_secondary2.getTag(R.id.code_tag_name) as String
-                setCur(btn_main, sCurrencyCode)
-                setCur(btn_secondary2, mainCurrencyCode)
-            }
-            if (secondarySelectedId != 0) {
-                unselectSecondary()
-                secondarySelectedId = 0
-            }
-            vibrate()
         }
     }
 
