@@ -204,21 +204,13 @@ class CurrencyDialog(
                     override fun onTabSelected(tab: TabLayout.Tab?) {
                         isCryptoTab = (tab?.position == 1)
                         if (isCryptoTab) {
-                            edtSearch.visibility = View.GONE
-                            imvClear.visibility = View.GONE
-                            txvFav?.visibility = View.GONE
-                            txvCurr?.visibility = View.GONE
-                            txvRates?.visibility = View.GONE
+                            // Search bar stays visible (matches iOS); crypto list is just 8 rows
+                            // so search is a near no-op but the bar is part of the layout.
                             adapter?.setList(buildCryptoRows())
-                            adapter?.notifyDataSetChanged()
                         } else {
-                            edtSearch.visibility = View.VISIBLE
-                            txvFav?.visibility = View.VISIBLE
-                            txvCurr?.visibility = View.VISIBLE
-                            txvRates?.visibility = View.VISIBLE
                             adapter?.setList(listToShow!!)
-                            adapter?.notifyDataSetChanged()
                         }
+                        adapter?.notifyDataSetChanged()
                     }
                     override fun onTabUnselected(tab: TabLayout.Tab?) {}
                     override fun onTabReselected(tab: TabLayout.Tab?) {}
