@@ -5,6 +5,7 @@ import androidx.databinding.BaseObservable
 import androidx.databinding.Bindable
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import java.util.Locale
 
 class CurrencyItem(
     val name: String,
@@ -33,10 +34,12 @@ class CurrencyItem(
         // Crypto rows (set via iconResId) get up to 8 decimals to match iOS
         // crypto formatter (USDT="1", BTC="0.00001299", ADA="4.06669378").
         // Fiat keeps 3 decimals per the "3 decimals" iOS build variant.
+        // Lock to Locale.US so the decimal separator is always "." (otherwise
+        // German/Turkish locales produce "1,0" which breaks trimEnd('.')).
         return if (iconResId != 0) {
-            "%.8f".format(rate).trimEnd('0').trimEnd('.')
+            String.format(Locale.US, "%.8f", rate).trimEnd('0').trimEnd('.')
         } else {
-            "%.3f".format(rate)
+            String.format(Locale.US, "%.3f", rate)
         }
     }
 
