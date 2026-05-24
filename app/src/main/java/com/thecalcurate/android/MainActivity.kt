@@ -928,22 +928,24 @@ class MainActivity : AppCompatActivity(), CurrencyDialog.NoticeDialogListener {
             val code = btn.getTag(R.id.code_tag_name) as? String
             var toCode = ""
 
-            if (favList.isNotEmpty()) {
-                var index = favList.indexOf(code)
-                if (index == -1 && scrollType == DOWN) index = 0
-                toCode = if (scrollType == UP) {
-                    favList[if (index == favList.size - 1) 0 else index + 1]
-                } else {
-                    favList[if (index == 0) favList.size - 1 else index - 1]
-                }
-            } else if (code != null && com.thecalcurate.android.model.CryptoItem.isCryptoCode(code)) {
-                // Slot is a crypto with no favorites — cycle through the 8 crypto codes.
+            // iOS keeps fiat and crypto in separate pools — mirror that here. Crypto slot
+            // always cycles through the 8 cryptos regardless of favorites. Fiat slot uses
+            // favorites if set, else the full fiat list.
+            if (code != null && com.thecalcurate.android.model.CryptoItem.isCryptoCode(code)) {
                 val cryptos = com.thecalcurate.android.model.CryptoItem.codes()
                 val index = cryptos.indexOf(code)
                 toCode = if (scrollType == UP) {
                     cryptos[if (index == cryptos.size - 1) 0 else index + 1]
                 } else {
                     cryptos[if (index <= 0) cryptos.size - 1 else index - 1]
+                }
+            } else if (favList.isNotEmpty()) {
+                var index = favList.indexOf(code)
+                if (index == -1 && scrollType == DOWN) index = 0
+                toCode = if (scrollType == UP) {
+                    favList[if (index == favList.size - 1) 0 else index + 1]
+                } else {
+                    favList[if (index == 0) favList.size - 1 else index - 1]
                 }
             } else {
                 val list = CurrencyItem.getList()
